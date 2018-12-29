@@ -1,0 +1,1510 @@
+#+TITLE: dotfiles
+* msmtp
+
+#+BEGIN_SRC text :tangle ~/.msmtprc
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+
+logfile        ~/.msmtp.log
+
+account        personal
+host           smtp.gmail.com
+from           carlsson.niklas@gmail.com
+user           carlsson.niklas@gmail.com
+passwordeval   "gpg --use-agent --quiet --for-your-eyes-only --no-tty --decrypt ~/.local/share/password-store/email/gmail.com.gpg"
+port           587
+
+account default : personal
+#+END_SRC
+* mbsync
+
+#+BEGIN_SRC text :tangle ~/.mbsyncrc
+IMAPAccount gmail
+# Address to connect to
+Host imap.gmail.com
+User carlsson.niklas@gmail.com
+# To store the password in an encrypted file use PassCmd instead of Pass
+PassCmd "pass email/gmail.com"
+#
+# Use SSL
+SSLType IMAPS
+# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+#CertificateFile ~/.cert/imap.gmail.com.pem
+#CertificateFile ~/.cert/Equifax_Secure_CA.pem
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Subfolders Verbatim
+# The trailing "/" is important
+Path ~/.mail/gmail/
+Inbox ~/.mail/gmail/Inbox
+
+Channel gmail
+Master :gmail-remote:
+Slave :gmail-local:
+Patterns * "[Gmail]/Sent Mail" !"[Gmail]/All Mail" !"[Gmail]/Important" !"[Gmail]/Starred"
+# Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
+
+# Exclude everything under the internal [Gmail] folder, except the interesting folders
+# Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
+# Or include everything
+#Patterns *
+# Automatically create missing mailboxes, both locally and on the server
+Create Both
+# Save the synchronization state files in the relevant directory
+SyncState *
+
+#+END_SRC
+
+* offlineimap
+
+#+BEGIN_SRC text :tangle ~/.offlineimaprc
+[general]
+accounts = Gmail
+pythonfile = ~/.offlineimap.py
+
+[DEFAULT]
+
+
+[Account Gmail]
+localrepository = LocalGmail
+remoterepository = RepositoryGmail
+synclabels = yes
+labelsheader = X-Keywords
+maxconnections = 3
+
+postsynchook = ~/.offlinepostsync.sh
+
+[Repository LocalGmail]
+type = GmailMaildir
+localfolders = ~/.mail/gmail.com
+nametrans = nametrans
+
+[Repository RepositoryGmail]
+type = Gmail
+remoteusereval = get_pass("gmail.com")["user"]
+remotepasseval = get_pass("gmail.com")["password"]
+folderfilter = folder_filter
+realdelete=no
+ssl = true
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+nametrans = nametrans_reverse
+
+folderfilter = lambda foldername: foldername in ['INBOX', '[Gmail]/Drafts', '[Gmail]/Sent Mail', '[Gmail]/Trash']
+#+END_SRC
+
+#+BEGIN_SRC python :tangle ~/.offlineimap.py
+#!/usr/bin/env python
+
+from subprocess import check_output
+from re import sub
+
+def get_pass(account):
+    data = check_output("/usr/bin/pass email/" + account, shell=True).splitlines()
+    password = data[0].decode('ascii')
+    user_entry = [entry for entry in data if entry.decode('ascii').startswith('user:')]
+    if len(user_entry) > 0:
+        user = user_entry[0].decode('ascii').split(":", 1)[1]
+        # Guard against potential whitespace at the beginning
+        user = user.lstrip()
+
+    return {"password": password, "user": user}
+
+def folder_filter(name):
+    return not (name in ['INBOX',
+                         '[Gmail]/Spam',
+                         '[Gmail]/Important',
+                         '[Gmail]/Starred'] or
+                name.startswith('[Airmail]'))
+
+def nametrans(name):
+    return sub('^(Starred|Sent Mail|Drafts|Trash|All Mail|Spam)$', '[Gmail]/\\1', name)
+
+def nametrans_reverse(name):
+    return sub('^(\[Gmail\]/)', '', name)
+
+
+if __name__ == '__main__':
+    print(get_pass("gmail.com")["user"])
+
+    print(get_pass("gmail.com")["password"])
+
+#+END_SRC
+
+#+BEGIN_SRC text :tangle ~/.offlinepostsync.sh
+notmuch new
+notmuch tag -inbox +sent from:carlsson.niklas@gmail.com
+
+#+END_SRC
+* notmuch
+
+#+BEGIN_SRC text :tangle ~/.notmuch-config
+# .notmuch-config - Configuration file for the notmuch mail system
+#
+# For more information about notmuch, see https://notmuchmail.org
+
+# Database configuration
+#
+# The only value supported here is 'path' which should be the top-level
+# directory where your mail currently exists and to where mail will be
+# delivered in the future. Files should be individual email messages.
+# Notmuch will store its database within a sub-directory of the path
+# configured here named ".notmuch".
+#
+
+[database]
+path=/home/niklascarlsson/.mail/
+
+# User configuration
+#
+# Here is where you can let notmuch know how you would like to be
+# addressed. Valid settings are
+#
+#	name		Your full name.
+#	primary_email	Your primary email address.
+#	other_email	A list (separated by ';') of other email addresses
+#			at which you receive email.
+#
+# Notmuch will use the various email addresses configured here when
+# formatting replies. It will avoid including your own addresses in the
+# recipient list of replies, and will set the From address based on the
+# address to which the original email was addressed.
+#
+
+[user]
+name=Niklas Carlsson
+primary_email=carlsson.niklas@gmail.com
+
+# Configuration for "notmuch new"
+#
+# The following options are supported here:
+#
+#	tags	A list (separated by ';') of the tags that will be
+#		added to all messages incorporated by "notmuch new".
+#
+#	ignore	A list (separated by ';') of file and directory names
+#		that will not be searched for messages by "notmuch new".
+#
+#		NOTE: *Every* file/directory that goes by one of those
+#		names will be ignored, independent of its depth/location
+#		in the mail store.
+#
+
+[new]
+tags=unread;inbox;
+ignore=
+
+# Search configuration
+#
+# The following option is supported here:
+#
+#	exclude_tags
+#		A ;-separated list of tags that will be excluded from
+#		search results by default.  Using an excluded tag in a
+#		query will override that exclusion.
+#
+
+[search]
+exclude_tags=deleted;spam;
+
+# Maildir compatibility configuration
+#
+# The following option is supported here:
+#
+#	synchronize_flags      Valid values are true and false.
+#
+#	If true, then the following maildir flags (in message filenames)
+#	will be synchronized with the corresponding notmuch tags:
+#
+#		Flag	Tag
+#		----	-------
+#		D	draft
+#		F	flagged
+#		P	passed
+#		R	replied
+#		S	unread (added when 'S' flag is not present)
+#
+#	The "notmuch new" command will notice flag changes in filenames
+#	and update tags, while the "notmuch tag" and "notmuch restore"
+#	commands will notice tag changes and update flags in filenames
+#
+
+[maildir]
+synchronize_flags=true
+
+#+END_SRC
+* xinit
+
+#+BEGIN_SRC text :tangle ~/.xinitrc
+#! /bin/sh
+
+# customize x resources
+[[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
+# set keyboard
+[[ -f ~/.Xmodmap ]] && xmodmap ~/.Xmodmap
+# set keyboard layouts
+setxkbmap -layout us,se -option grp:shifts_toggle
+
+# set wallpaper
+feh --bg-scale ~/host/colourful_lines_abstract.jpg
+
+## start programs
+sxhkd &
+urxvt &
+compton &
+exec bspwm
+
+#+END_SRC
+* Xresources
+
+#+BEGIN_SRC text :tangle ~/.Xresources
+!! OCT-2017
+
+!! Colors
+#define blk  #141517
+#define bblk #969896
+#define red  #cc6666
+#define bred #de935f
+#define grn  #b5bd68
+#define bgrn #757d28
+#define ylw  #f0c674
+#define bylw #f9a03f
+#define blu  #81a2be
+#define bblu #2a8fed
+#define mag  #b294bb
+#define bmag #bc77a8
+#define cyn  #8abeb7
+#define bcyn #a3685a
+#define wht  #c5c8c6
+#define bwht #ffffff
+#define bg blk
+#define fg wht
+
+,*.foreground:  fg
+,*.background:  bg
+,*.cursorColor: mag
+
+,*.color0:  blk
+,*.color8:  bblk
+,*.color1:  red
+,*.color9:  bred
+,*.color2:  grn
+,*.color10: bgrn
+,*.color3:  ylw
+,*.color11: bylw
+,*.color4:  blu
+,*.color12: bblu
+,*.color5:  mag
+,*.color13: bmag
+,*.color6:  cyn
+,*.color14: bcyn
+,*.color7:  wht
+,*.color15: bwht
+
+! greys
+,*.color234: #1d2021
+,*.color235: #282828
+,*.color236: #32302f
+,*.color237: #3c3836
+,*.color239: #504945
+,*.color240: #544c49
+,*.color241: #665c54
+
+
+!! Settings
+! font rendering
+!Xft.hinting: 0
+!Xft.antialias: 1
+!Xft.autohint: 1
+
+Xft.hintstyle: hintslight
+Xft.lcdfilter: lcddefault
+Xft.rgba: rgb
+
+!Xft.dpi: 227
+!Xft.rgba: rgb
+!Xft.antialias: true
+!Xft.hinting: false
+!Xft.lcdfilter: lcddefault
+
+! cursor
+Xcursor.theme: default
+Xcursor.size: 32
+
+! emacs
+Emacs.toolBar: 0
+Emacs.menuBar: 0
+Emacs.verticalScrollBars: off
+
+! urxvt
+URxvt*.background:             [96]blk
+URxvt*.termName:               xterm-256color
+URxvt*.geometry:               81x20
+URxvt*.buffered:               true
+URxvt*.cursorBlink:            true
+URxvt*.underlineColor:         grey
+URxvt*.depth:                  32
+URxvt*.borderless:             1
+! URxvt*.lineSpace:              1
+! URxvt*.letterSpace:            0
+URxvt.iso14755:                false
+URxvt.iso14755_52:             false
+URxvt*.internalBorder:         14
+URxvt*.scrollBar:              false
+URxvt*.saveLines:              5000
+URxvt*.loginShell:             false
+URxvt.perl-ext-common:         default,matcher
+URxvt*.matcher.button:         1
+URxvt*.matcher.rend.0:         Uline Bold fg5
+URxvt*.url-launcher:           firefox
+!URxvt.keysym.Shift-Control-C:  perl:clipboard:copy
+!URxvt.keysym.Shift-Control-V:  perl:clipboard:paste
+URxvt.clipboard.autocopy:      true
+
+! urxvt-stream.lineSpace:        0
+! urxvt-stream.letterSpace:      -1
+! urxvt-stream.font:             xft:Roboto Mono:pixelsize=17
+!
+! URxvt*.lineSpace:              0
+! URxvt*.letterSpace:            -1
+! URxvt*.font:                   xft:Roboto Mono:pixelsize=11
+! urxvt-scratch.font:            xft:Roboto Mono:pixelsize=16
+! urxvt-fuzzy.font:              xft:Roboto Mono:pixelsize=20
+
+URxvt*.lineSpace:              0
+! URxvt*.letterSpace:            -1
+URxvt*.letterSpace:            0
+!URxvt.font: xft:Roboto Mono Term:style=light:size=08
+!URxvt.boldFont: xft:Roboto Mono Term:style=bold:size=08
+URxvt.font: xft:Iosevka Term:style=regular:size=18
+URxvt.boldFont: xft:Iosevka Term:style=bold:size=18
+
+#+END_SRC
+* Pacman
+
+List all installed packages:
+
+#+BEGIN_SRC sh :results ouput
+pacman -Qqe
+#+END_SRC
+
+#+RESULTS:
+| alsa-utils                    |
+| aspell                        |
+| aspell-en                     |
+| autoconf                      |
+| automake                      |
+| bash                          |
+| binutils                      |
+| bison                         |
+| bluez                         |
+| bluez-utils                   |
+| bspwm                         |
+| bzip2                         |
+| clang                         |
+| compton                       |
+| coreutils                     |
+| cryptsetup                    |
+| device-mapper                 |
+| dhcpcd                        |
+| diffutils                     |
+| discord                       |
+| e2fsprogs                     |
+| emacs-git                     |
+| fakeroot                      |
+| fasd                          |
+| fd                            |
+| feh                           |
+| file                          |
+| filesystem                    |
+| findutils                     |
+| firefox                       |
+| fish                          |
+| flex                          |
+| gawk                          |
+| gcc                           |
+| gcc-libs                      |
+| gettext                       |
+| git                           |
+| glibc                         |
+| graphviz                      |
+| grep                          |
+| groff                         |
+| grub                          |
+| gzip                          |
+| htop                          |
+| hugo                          |
+| inetutils                     |
+| iproute2                      |
+| iputils                       |
+| isync                         |
+| jfsutils                      |
+| languagetool                  |
+| less                          |
+| libtool                       |
+| licenses                      |
+| linux                         |
+| logrotate                     |
+| lvm2                          |
+| m4                            |
+| make                          |
+| man-db                        |
+| man-pages                     |
+| mdadm                         |
+| minted                        |
+| msmtp                         |
+| msmtp-mta                     |
+| nano                          |
+| neofetch                      |
+| neovim                        |
+| netctl                        |
+| networkmanager                |
+| notmuch                       |
+| octave                        |
+| offlineimap-git               |
+| openssh                       |
+| openssl                       |
+| pacman                        |
+| pandoc                        |
+| pass                          |
+| patch                         |
+| pciutils                      |
+| perl                          |
+| pinentry-rofi                 |
+| pkgconf                       |
+| polybar-git                   |
+| poppler-glib                  |
+| procps-ng                     |
+| psmisc                        |
+| pulseaudio                    |
+| pulseaudio-alsa               |
+| pulseaudio-bluetooth          |
+| pygmentize                    |
+| python                        |
+| python-matplotlib             |
+| python-numpy                  |
+| python-pipenv                 |
+| reiserfsprogs                 |
+| ripgrep-git                   |
+| rofi                          |
+| rofi-pass                     |
+| rxvt-unicode-patched          |
+| s-nail                        |
+| screenkey-git                 |
+| scrot                         |
+| sed                           |
+| shadow                        |
+| simplescreenrecorder-git      |
+| sudo                          |
+| sxhkd                         |
+| sysfsutils                    |
+| systemd                       |
+| systemd-sysvcompat            |
+| tar                           |
+| texinfo                       |
+| texlive-core                  |
+| texlive-latexextra            |
+| ttf-iosevka-term              |
+| ttf-roboto-mono               |
+| usbutils                      |
+| util-linux                    |
+| vi                            |
+| vim                           |
+| virtualbox-guest-modules-arch |
+| virtualbox-guest-utils        |
+| vlc                           |
+| which                         |
+| xclip                         |
+| xfsprogs                      |
+| xkb-switch-git                |
+| xorg-bdftopcf                 |
+| xorg-iceauth                  |
+| xorg-luit                     |
+| xorg-mkfontdir                |
+| xorg-mkfontscale              |
+| xorg-server                   |
+| xorg-sessreg                  |
+| xorg-setxkbmap                |
+| xorg-smproxy                  |
+| xorg-x11perf                  |
+| xorg-xauth                    |
+| xorg-xbacklight               |
+| xorg-xcmsdb                   |
+| xorg-xcursorgen               |
+| xorg-xdpyinfo                 |
+| xorg-xdriinfo                 |
+| xorg-xev                      |
+| xorg-xgamma                   |
+| xorg-xhost                    |
+| xorg-xinit                    |
+| xorg-xinput                   |
+| xorg-xkbcomp                  |
+| xorg-xkbevd                   |
+| xorg-xkbutils                 |
+| xorg-xkill                    |
+| xorg-xlsatoms                 |
+| xorg-xlsclients               |
+| xorg-xmodmap                  |
+| xorg-xpr                      |
+| xorg-xprop                    |
+| xorg-xrandr                   |
+| xorg-xrdb                     |
+| xorg-xrefresh                 |
+| xorg-xset                     |
+| xorg-xsetroot                 |
+| xorg-xvinfo                   |
+| xorg-xwd                      |
+| xorg-xwininfo                 |
+| xorg-xwud                     |
+| yay                           |
+| zsh                           |
+| zsh-completions               |
+* bspwm
+
+#+BEGIN_SRC text :tangle ~/.config/bspwm/bspwmrc
+#!/usr/bin/env zsh
+
+#
+# Displays
+#
+
+export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
+export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
+MONITOR=${MONITOR:-${MONITORS[0]}}
+# Multiple workspaces for main monitor, but only one for others
+bspc monitor $MONITOR -d {1,2,3,4,5}
+for mon in ${MONITORS[@]/${MONITOR}}; do
+    bspc monitor $mon -d $mon/1
+done
+
+if ! pgrep polybar >/dev/null; then
+    $XDG_CONFIG_HOME/polybar/run.sh
+fi
+
+
+#
+# Aesthetics
+#
+
+
+bspc config split_ratio          0.50
+bspc config gapless_monocle      true
+bspc config borderless_monocle   true
+bspc config paddingless_monocle  true
+
+bspc config pointer_modifier mod4
+bspc config pointer_action1 move
+bspc config pointer_action2 resize_side
+bspc config pointer_action3 resize_corner
+
+bspc config remove_disabled_monitors false
+bspc config remove_unplugged_monitors true
+
+# bspc config normal_border_color  "$COLOR_0"
+# bspc config active_border_color  "$COLOR_0"
+# bspc config focused_border_color "$COLOR_0"
+
+bspc config border_width    0
+bspc config window_gap      8
+bspc config top_padding     0
+bspc config bottom_padding  0
+bspc config left_padding    0
+bspc config right_padding   0
+
+bspc config -m $MONITOR window_gap     22
+bspc config -m $MONITOR bottom_padding 36
+bspc config -m $MONITOR top_padding    0
+bspc config -m $MONITOR left_padding   0
+bspc config -m $MONITOR right_padding  0
+
+
+
+#
+# Rules
+#
+
+bspc rule -r '*'
+
+# Floating fixes
+bspc rule -a 'Emacs:org*' state=floating
+bspc rule -a Pinentry state=floating center=on
+
+# Special apps
+bspc rule -a URxvt:urxvt-scratch state=floating sticky=on center=on monitor=C
+bspc rule -a URxvt:urxvt-fuzzy state=floating sticky=on center=on monitor=C
+bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
+bspc rule -a feh state=fullscreen
+
+#+END_SRC
+* nvim
+
+#+BEGIN_SRC vimrc :tangle ~/.config/nvim/init.vim
+" vim: foldmethod=marker
+
+" {{{1 Easy configuration
+let color_config = 'dark' " light/dark
+
+" Vim-Plug (Plugin manager) {{{1
+" Installation {{{2
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source ~/.config/nvim/init.vim
+endif
+
+" Setup plugins {{{2
+call plug#begin(expand('~/.config/nvim/plugged'))
+
+" Define plugins
+Plug 'tpope/vim-fugitive' " Integrate git
+Plug 'skywind3000/asyncrun.vim' " Dispatch commands
+Plug 'airblade/vim-gitgutter' " Git changes are seen in the gutter
+Plug 'tpope/vim-commentary' " Comments
+Plug 'tpope/vim-surround' " Change surrounding chars
+Plug 'tpope/vim-unimpaired' " Improve navigation
+Plug 'tpope/vim-repeat' " Improve dot command for plugins
+Plug 'kana/vim-textobj-user' " Enable custom text objects
+Plug 'kana/vim-textobj-indent' " Indentation text object
+Plug 'sgur/vim-textobj-parameter' " Function argument text object
+Plug 'justinmk/vim-sneak' " Snipe characters with greater precision
+Plug 'tommcdo/vim-exchange' " Provide exchange object
+Plug 'qpkorr/vim-bufkill' " Improve buffer handling
+Plug 'Konfekt/FastFold' " Improve folding performance
+" Plug 'itchyny/lightline.vim' "Status line
+call plug#end()
+
+" Vim core {{{1
+" Settings {{{2
+syntax enable " Enable syntax highlighting
+set number " Show line number
+set updatetime=100 " Decrease update time from 4s to 0.1 s, useful for gutter
+set undofile " Enables persistent undo
+set noswapfile " Disables swapfile
+set spelllang=en_us " Sets spelling language to english
+filetype plugin indent on " Enable filetype detection
+set hidden " Enable hidden buffers, buffers must not be saved
+set splitbelow splitright " Set Split behavior
+set mouse=a "Enable mouse interaction
+set clipboard+=unnamedplus " Enable clipboard paste from other sources
+set equalalways " Keep windows equal
+set foldmethod=syntax " determine fold method
+set foldlevelstart=99 " start unfolded
+set tabstop=4 shiftwidth=4 expandtab
+set ignorecase smartcase " smart case enabled
+set inccommand=nosplit " Get live visualization of substitution (Neovim exclusive)
+
+" Define leader key
+let mapleader=","
+
+" Autoread when switching buffer or Vim got the focus again
+au FocusGained,BufEnter * :checktime
+
+" Mappings {{{2
+" Harmonize Y behavior with (C, D)
+map Y y$
+"" Remap t/f movement in reverse direction
+noremap \ ,
+" Change mark behavior to position rather than line
+nnoremap <silent> ' `
+" Improve search behavior
+nnoremap n nzzzv
+nnoremap N Nzzzv
+" Command-line history with C-p/C-n
+cnoremap <C-p> <up>
+cnoremap <C-n> <down>
+" Macro, fast access to macro q
+nmap Q @q
+" Windows
+nnoremap <silent> <leader>wh <C-w>h
+nnoremap <silent> <leader>wj <C-w>j
+nnoremap <silent> <leader>wk <C-w>k
+nnoremap <silent> <leader>wl <C-w>l
+nnoremap <silent> <leader>wc <C-w>c
+nnoremap <silent> <leader>wo <C-w>o
+nnoremap <silent> <leader>wO <C-w>o
+nnoremap <silent> <leader>wr <C-w>r
+nnoremap <silent> <leader>wv <C-w>v
+nnoremap <silent> <leader>wV <C-w>v <C-w>p
+nnoremap <silent> <leader>w= <C-w>=
+nnoremap <silent> <leader>wp <C-w>p
+nnoremap <silent> <leader>ws <C-w>s <C-w>p
+nnoremap <silent> <leader>wS <C-w>s
+nnoremap <silent> <leader>wd <C-w>c
+" Built in terminal
+" Ctrl-o to escape insert mode and go back to normal
+tnoremap <C-o> <C-\><C-n>
+nnoremap <leader>ot :term<CR>
+" Open a terminal in a popup window
+nnoremap <silent> <leader>oT :vsp <CR> <bar> :term <CR> <bar> :call PopupWindow()<CR>
+" Tabs
+nnoremap <silent> <leader>tc :tabclose<CR>
+" Quiting
+nnoremap <silent> <leader>qq :qall!<CR>
+" Disable current highlight search
+nnoremap <silent> <Esc> :noh<CR>
+" Close preview window
+nnoremap <silent> <leader>~ :pclose<CR>
+" Toggle Netrw window
+nnoremap <silent> <leader>tn :call ToggleNetrw("cwd")<CR>
+" Toggle quickfix list
+nnoremap <silent> <leader>tq :call ToggleList("Quickfix List", 'c')<CR>
+" Toggle location list
+nnoremap <silent> <leader>tl :call ToggleList("Location List", 'l')<CR>
+
+" Plugins {{{1
+" Mappings {{{2
+" BuffKill {{{3
+" Kill current buffer
+nnoremap <silent> <leader>bk :BD!<CR>
+" Move to previous buffer
+nnoremap <silent> <leader>b[ :BB<CR>
+" Move to next buffer
+nnoremap <silent> <leader>b] :BF<CR>
+" Create a new empty buffer
+nnoremap <silent> <leader>bn :enew<CR>
+" Gitgutter {{{3
+nmap <leader>gs <Plug>GitGutterStageHunk
+nmap <leader>gr <Plug>GitGutterUndoHunk
+nmap <leader>g[ <Plug>GitGutterPrevHunk
+nmap <leader>g] <Plug>GitGutterNextHunk
+
+" Settings {{{2
+" vim-textobj-parameter {{{3
+let g:vim_textobj_parameter_mapping = 'a'
+
+" Exchange {{{3
+nmap gx <Plug>(Exchange)
+nmap gxc <Plug>(ExchangeClear)
+nmap gxx <Plug>(ExchangeLine)
+
+" Custom functions {{{1
+" Automatically remove trailing whitespaces
+fun! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+autocmd FileType vim,c,cpp,java,python autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+" Git branch statusline {{{2
+function! Current_git_branch()
+    if exists('g:loaded_fugitive')
+        let l:branch = split(fugitive#statusline(),'[()]')
+        if len(l:branch) > 1
+            let l:branch_name = remove(l:branch, 1)
+            let l:branch_last = split(l:branch_name, "\/")[-1]
+            return l:branch_last
+        endif
+    endif
+    return ""
+endfunction
+
+" Statusline {{{1
+set statusline=
+set statusline+=%#Identifier#\ %F " Use %f for shorter name
+set statusline+=%m
+set statusline+=%=
+set statusline+=%2c
+
+" Color tweaking
+set background=dark
+
+" " Lightline
+" set noshowmode
+" let g:lightline = {
+"       \ 'colorscheme': 'jellybeans',
+"       \ }
+#+END_SRC
+* polybar
+
+#+BEGIN_SRC text :tangle ~/.config/polybar/config
+;=====================================================
+;
+;   To learn more about how to configure Polybar
+;   go to https://github.com/jaagr/polybar
+;
+;   The README contains alot of information
+;
+;=====================================================
+
+[colors]
+bg = ${xrdb:background}
+fg = ${xrdb:foreground}
+black = ${xrdb:color0}
+bblack = ${xrdb:color8}
+red = ${xrdb:color1}
+bred = ${xrdb:color9}
+green = ${xrdb:color2}
+bgreen = ${xrdb:color10}
+yellow = ${xrdb:color3}
+byellow = ${xrdb:color11}
+blue = ${xrdb:color4}
+bblue = ${xrdb:color12}
+magenta = ${xrdb:color5}
+bmagenta = ${xrdb:color13}
+cyan = ${xrdb:color6}
+bcyan = ${xrdb:color14}
+white = ${xrdb:color7}
+bwhite = ${xrdb:color15}
+
+bg-alt = #0F1013
+fg-alt = #25282a
+icons = #555856
+alert = ${colors.red}
+
+[global/wm]
+margin-top = 0
+margin-bottom = 35
+
+[bar/main]
+monitor = ${env:MONITOR}
+enable-ipc = true
+wm-restack = bspwm
+# REQUIRED to move the window with hideit.sh
+override-redirect = true
+
+background =
+foreground = ${colors.fg}
+
+width = 100%
+height = 24
+offset-x = 0
+offset-y = 16
+bottom = 1
+
+overline-size = 0
+overline-color = #f00
+underline-size = 0
+underline-color = #00f
+
+border-bottom-size = 0
+
+padding-left = 4
+padding-right = 4
+module-margin-left = 0
+module-margin-right = 0
+
+font-0 = "Iosevka Term:pixelsize=18;2"
+font-1 = "Material Icons:pixelsize=18;2"
+
+;font-0 = "Misc Tamsyn:pixelsize=12;2"
+;font-1 = "Wuncon Siji:pixelsize=12;2"
+;font-2 = "siji:pixelsize=10;2"
+
+;modules-left = battery volume pad cpu memory pad pkg mail
+modules-left = battery
+modules-center = bspwm
+modules-right = date
+
+;tray-position = center
+;tray-padding = 2
+;tray-transparent = true
+;tray-background = #0063ff
+
+[module/bspwm]
+type = internal/bspwm
+pin-workspaces = true
+enable-click = true
+
+ws-icon-0 = 1;I
+ws-icon-1 = 2;II
+ws-icon-2 = 3;III
+ws-icon-3 = 4;VI
+ws-icon-4 = 5;V
+ws-icon-default = x
+
+format = <label-state> <label-mode>
+label-padding = 1
+
+label-focused = %icon%
+;label-focused-background = ${colors.bg}
+label-focused-background = #33000000
+label-focused-foreground = ${colors.green}
+label-focused-padding = 1
+
+label-occupied = %icon%
+;label-occupied-foreground = ${colors.icons}
+label-occupied-foreground = ${colors.fg}
+label-occupied-padding = 1
+
+; label-urgent = %icon%
+label-urgent-foreground = ${colors.red}
+; label-urgent-background = ${colors.alert}
+label-urgent-padding = 1
+
+label-empty = %icon%
+; label-empty-foreground = ${colors.fg-alt}
+label-empty-foreground = ${colors.fg}
+label-empty-padding = 1
+
+[module/date]
+type = internal/date
+interval = 5
+
+label =  %time%
+time = %H:%M
+; time = %I:%M %p
+; label = %date%  %time%
+; date = %A, %h %d
+; date-alt = %Y-%m-%d
+; time = %I:%M %p
+; time-alt = %H:%M:%S
+format-prefix = ""
+format-prefix-padding = 1
+; format-prefix-background = ${colors.bg-alt}
+format-prefix-foreground = ${colors.icons}
+; format-underline = ${xrdb:color4}
+
+[module/xwindow]
+type = internal/xwindow
+label = %title:0:80:...%
+label-padding-left = 2
+
+; [module/mpd]
+; type = internal/mpd
+; host = /home/hlissner/.config/mpd/mpd.sock
+;
+; format-online = <label-song> <toggle>
+; format-padding = 5
+;
+; label-song-maxlen = 45
+; label-song-ellipsis = true
+;
+; icon-prev = 
+; icon-seekb = 
+; icon-stop = 
+; icon-play = 
+; icon-pause = 
+; icon-next = 
+; icon-seekf = 
+;
+; icon-random = 
+; icon-repeat = 
+;
+; toggle-on-foreground = ${colors.fg}
+; toggle-off-foreground = #66
+
+;[module/cpu]
+;type = internal/cpu
+;interval = 2
+;format = <bar-load>
+;format-prefix = ""
+;format-foreground = ${colors.icons}
+;; format-underline = #f90000
+;; label = %percentage%%
+;format-padding = 1
+;
+;bar-load-indicator =
+;bar-load-width = 6
+;bar-load-foreground-0 = ${colors.green}
+;bar-load-foreground-1 = ${colors.green}
+;bar-load-foreground-2 = ${colors.yellow}
+;bar-load-foreground-3 = ${colors.red}
+;bar-load-foreground-4 = ${colors.red}
+;bar-load-fill = |
+;bar-load-empty = ¦
+;bar-load-empty-foreground = ${colors.fg-alt}
+;
+;[module/memory]
+;type = internal/memory
+;interval = 3
+;format = <bar-used>
+;format-prefix = ""
+;format-prefix-foreground = ${colors.icons}
+;; format-underline = #4bffdc
+;; label = %percentage_used%%
+;format-padding-left = 1
+;
+;; Only applies if <bar-used> is used
+;bar-used-indicator =
+;bar-used-width = 6
+;bar-used-foreground-0 = ${colors.green}
+;bar-used-foreground-1 = ${colors.green}
+;bar-used-foreground-2 = ${colors.yellow}
+;bar-used-foreground-3 = ${colors.red}
+;bar-used-foreground-4 = ${colors.red}
+;bar-used-fill = |
+;bar-used-empty = ¦
+;bar-used-empty-foreground = ${colors.fg-alt}
+;
+;[module/wlan]
+;type = internal/network
+;interface = ${env:WLP:wlp3s0}
+;interval = 3.0
+;
+;format-connected = <ramp-signal>
+;format-disconnected = !
+;format-disconnected-foreground = ${colors.red}
+;
+;; label-connected =
+;; label-disconnected = !
+;; label-disconnected-foreground = ${colors.red}
+;
+;ramp-signal-0 = 
+;ramp-signal-0-foreground = ${colors.yellow}
+;ramp-signal-1 = 
+;ramp-signal-1-foreground = ${colors.yellow}
+;ramp-signal-2 = 
+;ramp-signal-2-foreground = ${colors.yellow}
+;ramp-signal-3 = 
+;ramp-signal-3-foreground = ${colors.icons}
+;ramp-signal-4 = 
+;ramp-signal-4-foreground = ${colors.icons}
+
+; [module/eth]
+; type = internal/network
+; interface = ${env:ETH:enp2s0}
+; interval = 4.0
+;
+; ; format-connected-underline = #55aa55
+; ; format-connected-prefix = " "
+; format-connected-foreground-foreground = ${colors.fg-alt}
+; label-connected = %local_ip%
+;
+; format-disconnected-underline = ${self.format-connected-underline}
+; label-disconnected = %ifname% disconnected
+; label-disconnected-foreground = ${colors.fg-alt}
+
+;[module/volume]
+;type = internal/volume
+;
+;; format-volume = <label-volume> <bar-volume>
+;format-volume = <ramp-volume> <bar-volume>
+;; label-volume = " "
+;label-volume-foreground = ${colors.fg}
+;
+;; format-muted-prefix = " "
+;format-muted-foreground = ${colors.red}
+;label-muted = 
+;
+;bar-volume-width = 8
+;bar-volume-foreground-0 = ${colors.blue}
+;bar-volume-foreground-1 = ${colors.blue}
+;bar-volume-foreground-2 = ${colors.blue}
+;bar-volume-foreground-3 = ${colors.blue}
+;bar-volume-foreground-4 = ${colors.blue}
+;bar-volume-foreground-5 = ${colors.blue}
+;bar-volume-foreground-6 = ${colors.blue}
+;bar-volume-gradient = false
+;bar-volume-indicator = |
+;bar-volume-indicator-font = 2
+;bar-volume-indicator-foreground = #ff
+;bar-volume-fill = ─
+;bar-volume-fill-font = 2
+;bar-volume-empty = ─
+;bar-volume-empty-font = 2
+;bar-volume-empty-foreground = ${colors.fg-alt}
+;
+;; Only applies if <ramp-volume> is used
+;ramp-volume-0 = 
+;ramp-volume-1 = 
+;ramp-volume-2 = 
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = ADP1
+full-at = 98
+
+;ormat-charging = <animation-charging> <label-charging>
+format-charging = <label-charging>
+format-charging-underline = #ffb52a
+
+;format-discharging = <ramp-capacity> <label-discharging>
+format-discharging = <label-discharging>
+format-discharging-underline = ${self.format-charging-underline}
+
+;format-full-prefix = " "
+format-full-prefix = ""
+format-full-prefix-foreground = ${colors.fg-alt}
+format-full-underline = ${self.format-charging-underline}
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-foreground = ${colors.fg-alt}
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-foreground = ${colors.fg-alt}
+animation-charging-framerate = 750
+
+
+;=====================================================
+; Custom scripts
+;=====================================================
+
+;[module/pad]
+;type = custom/text
+;content = "   "
+;content-foreground = ${colors.fg-alt}
+;
+;[module/pkg]
+;type = custom/ipc
+;hook-0 = ~/.config/polybar/modules/updates
+;initial = 1
+;click-left = polybar-msg -p %pid% hook pkg 1
+;format-padding = 1
+;
+;[module/mail]
+;type = custom/ipc
+;hook-0 = ~/.config/polybar/modules/mail
+;initial = 1
+;click-left = polybar-msg -p %pid% hook mail 1
+;format-padding-right = 1
+;
+;[module/app-redshift]
+;type = custom/script
+;exec = echo 1
+;exec-if = pgrep -x redshift
+;format = ""
+;format-foreground = ${colors.icons}
+;interval = 2
+;
+;[module/app-rslsync]
+;type = custom/script
+;exec = echo 1
+;exec-if = pgrep -x rslsync
+;format = ""
+;format-foreground = ${colors.icons}
+;interval = 60
+
+; vim:ft=dosini
+#+END_SRC
+
+#+BEGIN_SRC text :tangle ~/.config/polybar/run.sh
+#!/usr/bin/env zsh
+
+killall -q polybar
+while _is_running polybar; do sleep 1; done
+
+source "${0:A:h}/../../bin/inject-xcolors"
+pushd ~ >/dev/null
+polybar main >>$XDG_DATA_HOME/polybar.log 2>&1 &
+popd >/dev/null
+
+echo "Polybar launched..."
+
+#+END_SRC
+
+* rofi
+#+BEGIN_SRC text :tangle ~/.config/rofi/config
+! ------------------------------------------------------------------------------
+!                          ROFI THEME - Niklas
+! ------------------------------------------------------------------------------
+! rofi.combi-modi:   run,window
+! rofi.theme:        arc-red-dark
+! rofi.font:         hack 15
+! ! rofi.font:       iosevka term 12
+! rofi.modi:         combi
+
+﻿! ------------------------------------------------------------------------------
+!                          ROFI THEME - Plattfot
+! ------------------------------------------------------------------------------
+! rofi.width:                          100
+! rofi.lines:                          10
+! rofi.font:                           hack 18
+! rofi.color-normal:                   #111,#ddd,#222,#3387cc,#111
+! rofi.color-active:                   #222,#dd7b3b,#666,#268bd2,#fdf6e3
+! rofi.color-window:                   #111,#285577
+! rofi.bw:                             0
+! rofi.location:                       2
+! rofi.yoffset:                        100
+! rofi.terminal:                       i3-sensible-terminal
+! rofi.line-margin:                    1
+! rofi.separator-style:                dash
+! rofi.hide-scrollbar:                 true
+
+﻿! ------------------------------------------------------------------------------
+!                          ROFI THEME - MATT DOBSON
+! ------------------------------------------------------------------------------
+rofi.color-window: argb:f2171717, #535c5c,         #a4a4a4
+rofi.color-normal: argb:00171717, #a4a4a4, argb:00535c5c, argb:00171717, #535c5c
+rofi.color-urgent: argb:00171717, #cc6666, argb:e54b5160, argb:00171717, #535c5c
+rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
+rofi.width: 1000
+rofi.lines: 15
+rofi.font: hack 18
+rofi.bw: 0
+rofi.padding: 50
+rofi.line-margin: 5
+rofi.eh: 1
+rofi.sidebar-mode: true
+rofi.separator-style: none
+rofi.hide-scrollbar: true
+rofi.show-icons: false
+rofi.location: 0
+!rofi.modi: window,run,drun
+rofi.modi: window,run
+rofi.matching: fuzzy
+#+END_SRC
+* sxhkdrc
+
+#+BEGIN_SRC text :tangle ~/.config/sxhkd/sxhkdrc
+#
+# wm independent hotkeys
+#
+
+# terminal emulator
+alt + Return
+	urxvt
+
+# program launcher
+#alt + @space
+#	dmenu_run
+
+# program launcher
+alt + @space
+	rofi -show run
+#alt + @space
+#	rofi -show run -theme arc-red-dark
+
+# make sxhkd reload its configuration files:
+alt + Escape
+	pkill -USR1 -x sxhkd
+
+#
+# bspwm hotkeys
+#
+
+# quit bspwm normally
+super + alt + Escape
+	bspc quit
+
+# close and kill
+alt + {_,shift + }w
+	bspc node -{c,k}
+
+# alternate between the tiled and monocle layout
+alt + m
+	bspc desktop -l next
+
+# send the newest marked node to the newest preselected node
+alt + y
+	bspc node newest.marked.local -n newest.!automatic.local
+
+# swap the current node and the biggest node
+alt + g
+	bspc node -s biggest
+
+#
+# state/flags
+#
+
+# set the window state
+alt + {t,shift + t,s,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+
+# set the node flags
+alt + ctrl + {m,x,y,z}
+	bspc node -g {marked,locked,sticky,private}
+
+#
+# focus/swap
+#
+
+# focus the node in the given direction
+alt + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+# focus the node for the given path jump
+alt + {p,b,comma,period}
+	bspc node -f @{parent,brother,first,second}
+
+# focus the next/previous node in the current desktop
+alt + {_,shift + }c
+	bspc node -f {next,prev}.local
+
+# niklas disabled this
+# focus the next/previous desktop in the current monitor
+#alt + bracket{left,right}
+#	bspc desktop -f {prev,next}.local
+
+# focus the last node/desktop
+alt + {grave,Tab}
+	bspc {node,desktop} -f last
+
+# focus the older or newer node in the focus history
+alt + {o,i}
+	bspc wm -h off; \
+	bspc node {older,newer} -f; \
+	bspc wm -h on
+
+# focus or send to the given desktop
+alt + {_,shift + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+
+#
+# preselect
+#
+
+# Niklas disabled this
+# preselect the direction
+#alt + ctrl + {h,j,k,l}
+#	bspc node -p {west,south,north,east}
+
+# preselect the ratio
+alt + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+# cancel the preselection for the focused node
+alt + ctrl + space
+	bspc node -p cancel
+
+# cancel the preselection for the focused desktop
+alt + ctrl + shift + space
+	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+#
+# move/resize
+#
+
+# expand a window by moving one of its side outward
+# changed super to ctrl
+ctrl + alt + {h,j,k,l}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+# contract a window by moving one of its side inward
+ctrl + alt + shift + {h,j,k,l}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+# move a floating window
+alt + {Left,Down,Up,Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+# Increase/decrease window gap on focused desktop
+alt + bracket{left,right}
+	bspc config -d focused window_gap $((`bspc config -d focused window_gap` {-,+} 5 ))
+
+#+END_SRC
+* compton
+
+#+BEGIN_SRC text :tangle ~/.config/compton.conf
+# backend = "glx";
+backend = "xrender";
+# glx-no-stencil = true;
+# glx-copy-from-front = false;
+# glx-no-rebind-pixmap = true;
+# glx-swap-method = "undefined";
+
+# Set VSync method. VSync methods currently available:
+# + none: No VSync
+# + drm: VSync with DRM_IOCTL_WAIT_VBLANK. May only work on some drivers.
+# + opengl: Try to VSync with SGI_video_sync OpenGL extension. Only work on some
+#   drivers.
+# + opengl-oml: Try to VSync with OML_sync_control OpenGL extension. Only work on some
+#   drivers.
+# + opengl-swc: Try to VSync with SGI_swap_control OpenGL extension. Only work on some
+#   drivers. Works only with GLX backend. Known to be most effective on many drivers.
+#   Does not actually control paint timing, only buffer swap is affected, so it doesn’t
+#   have the effect of --sw-opti unlike other methods. Experimental.
+# + opengl-mswc: Try to VSync with MESA_swap_control OpenGL extension. Basically the
+#   same as opengl-swc above, except the extension we use.
+# (Note some VSync methods may not be enabled at compile time.)
+# vsync = "opengl-mswc";
+vsync = "none";
+
+# Limit compton to repaint at most once every 1 / refresh_rate second to boost
+# performance.  This should not be used with --vsync drm/opengl/opengl-oml as they
+# essentially does --sw-opti's job already, unless you wish to specify a lower refresh
+# rate than the actual value.
+sw-opti = false;
+
+# Painting on X Composite overlay window. Recommended.
+paint-on-overlay = true;
+
+# Enable DBE painting mode, intended to use with VSync to (hopefully) eliminate tearing.
+# Reported to have no effect, though.
+dbe = false;
+
+# Unredirect all windows if a full-screen opaque window is detected, to maximize
+# performance for full-screen windows, like games.  Known to cause flickering when
+# redirecting/unredirecting windows.  paint-on-overlay may make the flickering less
+# obvious.
+unredir-if-possible = true;
+
+# Use WM_TRANSIENT_FOR to group windows, and consider windows in the same group focused
+# at the same time.
+detect-transient = false;
+
+# Use WM_CLIENT_LEADER to group windows, and consider windows in the same group focused
+# at the same time.  WM_TRANSIENT_FOR has higher priority if --detect-transient is
+# enabled, too.
+detect-client-leader = false;
+
+
+########################################
+#
+# Shadows
+#
+########################################
+
+shadow = true;
+no-dock-shadow = true;
+no-dnd-shadow = true;
+clear-shadow = true;
+shadow-radius = 4;
+shadow-offset-x = -3;
+shadow-offset-y = 0;
+shadow-opacity = 0.15;
+# shadow-red
+# shadow-green
+# shadow-blue
+shadow-exclude = [
+    "n:e:Notification",
+    "class_i = 'Dunst'",
+    "class_i = 'presel_feedback'",
+    "g:e:Conky"
+];
+shadow-ignore-shaped = true;
+
+
+
+########################################
+#
+# Opacity
+#
+########################################
+
+# Transparent windows
+menu-opacity = 1;
+active-opacity = 1;
+inactive-opacity = 1;
+# frame-opacity = 0.8;
+inactive-dim = 0.15;
+inactive-opacity-override = false;
+opacity-rule = [
+   "80:class_g = 'Bspwm' && class_i = 'presel_feedback'"
+];
+alpha-step = 0.5
+
+# Fading
+fading = false;
+fade-delta = 5;
+fade-in-step = 0.04;
+fade-out-step = 0.08;
+# no-fading-openclose = true;
+
+# Other
+detect-rounded-corners = true;
+#mark-wmwin-focused = true;
+#mark-ovredir-focused = true;
+refresh-rate = 0;
+
+focus-exclude = [
+    "class_g = 'love'",
+    "class_g = 'mpv'"
+];
+
+# Window type settings
+wintypes:
+{
+  tooltip = { fade = true; shadow = false; opacity = 0.85; focus = true; };
+};
+#+END_SRC
