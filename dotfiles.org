@@ -1508,3 +1508,9 @@ wintypes:
   tooltip = { fade = true; shadow = false; opacity = 0.85; focus = true; };
 };
 #+END_SRC
+* profile
+
+#+BEGIN_SRC text :tangle ~/.profile
+XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CONFIG_HOME
+#+END_SRC
