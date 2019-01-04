@@ -1,5 +1,52 @@
 #+TITLE: dotfiles
-* msmtp
+* xorg
+** xinitrc
+
+I found an example configuration for the retina display at
+https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
+Currently I have commented out the gdk and qt settings until I read up on what
+they actually does. The xrandr command however I needed because by default the
+output of the ~xrandr -q~ said the dpi was 96 which was clearly incorrect. I
+verified that the 227 was correct by consulting the apple website for the
+macbook specs.
+
+#+NAME: xinit-hidpi
+#+BEGIN_SRC sh
+#export GDK_SCALE=2
+#export GDK_DPI_SCALE=0.95
+#export QT_SCREEN_SCALE_FACTORS=0.9
+#export QT_AUTO_SCREEN_SCALE_FACTOR=2
+#export QT_SCALE_FACTOR=2
+
+xrandr --dpi 227
+#+END_SRC
+
+I need to launch sxhkd since bspwm is relying upon that program to handle the
+keybindings. I launch the terminal as well at startup. It can be convinent at
+times when I hadn't installed rofi. Can probably be removed now.
+#+NAME: xinit-programs
+#+BEGIN_SRC sh
+sxhkd &
+urxvt &
+exec bspwm
+#+END_SRC
+
+#+BEGIN_SRC text :tangle ~/.xinitrc :noweb yes
+#! /bin/sh
+
+# customize xresources
+[[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
+
+# hidpi settings
+<<xinit-hidpi>>
+
+# start programs
+<<xinit-programs>>
+#+END_SRC
+
+** xresources
+* old
+** msmtp
 
 #+BEGIN_SRC text :tangle ~/.msmtprc
 defaults
@@ -18,7 +65,7 @@ port           587
 
 account default : personal
 #+END_SRC
-* mbsync
+** mbsync
 
 #+BEGIN_SRC text :tangle ~/.mbsyncrc
 IMAPAccount gmail
@@ -61,7 +108,7 @@ SyncState *
 
 #+END_SRC
 
-* offlineimap
+** offlineimap
 
 #+BEGIN_SRC text :tangle ~/.offlineimaprc
 [general]
@@ -141,7 +188,7 @@ notmuch new
 notmuch tag -inbox +sent from:carlsson.niklas@gmail.com
 
 #+END_SRC
-* notmuch
+** notmuch
 
 #+BEGIN_SRC text :tangle ~/.notmuch-config
 # .notmuch-config - Configuration file for the notmuch mail system
@@ -238,7 +285,7 @@ exclude_tags=deleted;spam;
 synchronize_flags=true
 
 #+END_SRC
-* xinit
+** xinit
 
 #+BEGIN_SRC text :tangle ~/.xinitrc
 #! /bin/sh
@@ -260,7 +307,7 @@ compton &
 exec bspwm
 
 #+END_SRC
-* Xresources
+** Xresources
 
 #+BEGIN_SRC text :tangle ~/.Xresources
 !! OCT-2017
@@ -385,7 +432,7 @@ URxvt.font: xft:Iosevka Term:style=regular:size=18
 URxvt.boldFont: xft:Iosevka Term:style=bold:size=18
 
 #+END_SRC
-* Pacman
+** Pacman
 
 List all installed packages:
 
@@ -564,7 +611,7 @@ pacman -Qqe
 | yay                           |
 | zsh                           |
 | zsh-completions               |
-* bspwm
+** bspwm
 
 #+BEGIN_SRC text :tangle ~/.config/bspwm/bspwmrc
 #!/usr/bin/env zsh
@@ -641,9 +688,9 @@ bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
 bspc rule -a feh state=fullscreen
 
 #+END_SRC
-* nvim
+** nvim
 
-#+BEGIN_SRC vimrc :tangle ~/.config/nvim/init.vim
+#+BEGIN_SRC vimrc :tangle ~/.config/nvim/init.vim :mkdirp yes
 " vim: foldmethod=marker
 
 " {{{1 Easy configuration
@@ -661,13 +708,9 @@ endif
 call plug#begin(expand('~/.config/nvim/plugged'))
 
 " Define plugins
-Plug 'tpope/vim-fugitive' " Integrate git
-Plug 'skywind3000/asyncrun.vim' " Dispatch commands
-Plug 'airblade/vim-gitgutter' " Git changes are seen in the gutter
 Plug 'tpope/vim-commentary' " Comments
 Plug 'tpope/vim-surround' " Change surrounding chars
 Plug 'tpope/vim-unimpaired' " Improve navigation
-Plug 'tpope/vim-repeat' " Improve dot command for plugins
 Plug 'kana/vim-textobj-user' " Enable custom text objects
 Plug 'kana/vim-textobj-indent' " Indentation text object
 Plug 'sgur/vim-textobj-parameter' " Function argument text object
@@ -710,7 +753,6 @@ map Y y$
 "" Remap t/f movement in reverse direction
 noremap \ ,
 " Change mark behavior to position rather than line
-nnoremap <silent> ' `
 " Improve search behavior
 nnoremap n nzzzv
 nnoremap N Nzzzv
@@ -736,25 +778,12 @@ nnoremap <silent> <leader>ws <C-w>s <C-w>p
 nnoremap <silent> <leader>wS <C-w>s
 nnoremap <silent> <leader>wd <C-w>c
 " Built in terminal
-" Ctrl-o to escape insert mode and go back to normal
-tnoremap <C-o> <C-\><C-n>
 nnoremap <leader>ot :term<CR>
 " Open a terminal in a popup window
-nnoremap <silent> <leader>oT :vsp <CR> <bar> :term <CR> <bar> :call PopupWindow()<CR>
-" Tabs
-nnoremap <silent> <leader>tc :tabclose<CR>
 " Quiting
 nnoremap <silent> <leader>qq :qall!<CR>
 " Disable current highlight search
 nnoremap <silent> <Esc> :noh<CR>
-" Close preview window
-nnoremap <silent> <leader>~ :pclose<CR>
-" Toggle Netrw window
-nnoremap <silent> <leader>tn :call ToggleNetrw("cwd")<CR>
-" Toggle quickfix list
-nnoremap <silent> <leader>tq :call ToggleList("Quickfix List", 'c')<CR>
-" Toggle location list
-nnoremap <silent> <leader>tl :call ToggleList("Location List", 'l')<CR>
 
 " Plugins {{{1
 " Mappings {{{2
@@ -767,11 +796,6 @@ nnoremap <silent> <leader>b[ :BB<CR>
 nnoremap <silent> <leader>b] :BF<CR>
 " Create a new empty buffer
 nnoremap <silent> <leader>bn :enew<CR>
-" Gitgutter {{{3
-nmap <leader>gs <Plug>GitGutterStageHunk
-nmap <leader>gr <Plug>GitGutterUndoHunk
-nmap <leader>g[ <Plug>GitGutterPrevHunk
-nmap <leader>g] <Plug>GitGutterNextHunk
 
 " Settings {{{2
 " vim-textobj-parameter {{{3
@@ -781,28 +805,6 @@ let g:vim_textobj_parameter_mapping = 'a'
 nmap gx <Plug>(Exchange)
 nmap gxc <Plug>(ExchangeClear)
 nmap gxx <Plug>(ExchangeLine)
-
-" Custom functions {{{1
-" Automatically remove trailing whitespaces
-fun! <SID>StripTrailingWhitespaces()
-    let l = line(".")
-    let c = col(".")
-    %s/\s\+$//e
-    call cursor(l, c)
-endfun
-autocmd FileType vim,c,cpp,java,python autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
-" Git branch statusline {{{2
-function! Current_git_branch()
-    if exists('g:loaded_fugitive')
-        let l:branch = split(fugitive#statusline(),'[()]')
-        if len(l:branch) > 1
-            let l:branch_name = remove(l:branch, 1)
-            let l:branch_last = split(l:branch_name, "\/")[-1]
-            return l:branch_last
-        endif
-    endif
-    return ""
-endfunction
 
 " Statusline {{{1
 set statusline=
@@ -820,7 +822,7 @@ set background=dark
 "       \ 'colorscheme': 'jellybeans',
 "       \ }
 #+END_SRC
-* polybar
+** polybar
 
 #+BEGIN_SRC text :tangle ~/.config/polybar/config
 ;=====================================================
@@ -1193,7 +1195,7 @@ echo "Polybar launched..."
 
 #+END_SRC
 
-* rofi
+** rofi
 #+BEGIN_SRC text :tangle ~/.config/rofi/config
 ! ------------------------------------------------------------------------------
 !                          ROFI THEME - Niklas
@@ -1244,7 +1246,7 @@ rofi.location: 0
 rofi.modi: window,run
 rofi.matching: fuzzy
 #+END_SRC
-* sxhkdrc
+** sxhkdrc
 
 #+BEGIN_SRC text :tangle ~/.config/sxhkd/sxhkdrc
 #
@@ -1383,7 +1385,7 @@ alt + bracket{left,right}
 	bspc config -d focused window_gap $((`bspc config -d focused window_gap` {-,+} 5 ))
 
 #+END_SRC
-* compton
+** compton
 
 #+BEGIN_SRC text :tangle ~/.config/compton.conf
 # backend = "glx";
@@ -1508,7 +1510,7 @@ wintypes:
   tooltip = { fade = true; shadow = false; opacity = 0.85; focus = true; };
 };
 #+END_SRC
-* profile
+** profile
 
 #+BEGIN_SRC text :tangle ~/.profile
 XDG_CONFIG_HOME="$HOME/.config"
