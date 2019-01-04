@@ -408,6 +408,9 @@ shadow-exclude = [
 # xinerama-shadow-crop = true;
 #+END_SRC
 
+It seems like compton gives emacs some kind of dark frame on the right side,
+which dissapears if I go to monocle view and back. Need to investigate that.
+
 #+BEGIN_SRC sh :tangle ~/.config/compton.conf :mkdirp yes :noweb yes
 # Shadow
 <<compton-shadow>>
