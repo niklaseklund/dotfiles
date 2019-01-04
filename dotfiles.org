@@ -382,9 +382,11 @@ opacity-rule = [
 ];
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle ~/.config/compton.conf :mkdirp yes :noweb yes
-# Shadow
-shadow = true;
+I disabled the shadows. I need to understand better how these shadows work
+before I use them.
+#+NAME: compton-shadow
+#+BEGIN_SRC sh
+shadow = false;
 shadow-radius = 7;
 shadow-offset-x = -7;
 shadow-offset-y = -7;
@@ -404,6 +406,11 @@ shadow-exclude = [
 # shadow-exclude = "n:e:Notification";
 # shadow-exclude-reg = "x10+0+0";
 # xinerama-shadow-crop = true;
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle ~/.config/compton.conf :mkdirp yes :noweb yes
+# Shadow
+<<compton-shadow>>
 
 # Opacity
 inactive-opacity = 0.8;
