@@ -152,3 +152,219 @@ URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
 
 <<xresources-urxvt>>
 #+END_SRC
+* bspwm
+** profile
+
+In the configuration section in the arch wiki one can read that:
+https://wiki.archlinux.org/index.php/bspwm
+#+BEGIN_EXAMPLE
+Important: Make sure your environment variable $XDG_CONFIG_HOME is set or your
+bspwmrc will not be found
+#+END_EXAMPLE
+
+It's therefore important to set this environmental variable.
+#+BEGIN_SRC sh :tangle ~/.profile :noweb yes
+XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CONFIG_HOME
+#+END_SRC
+** sxkhkdrc
+
+I followed the instructions from the manual and copied over the example
+configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~. The only thing that
+I have changed is to call ~rofi~ instead of ~dmenu~.
+
+#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes :noweb yes
+#
+# wm independent hotkeys
+#
+
+# terminal emulator
+super + Return
+	urxvt
+
+# program launcher
+super + @space
+	rofi -show run
+
+# make sxhkd reload its configuration files:
+super + Escape
+	pkill -USR1 -x sxhkd
+
+#
+# bspwm hotkeys
+#
+
+# quit bspwm normally
+super + alt + Escape
+	bspc quit
+
+# close and kill
+super + {_,shift + }w
+	bspc node -{c,k}
+
+# alternate between the tiled and monocle layout
+super + m
+	bspc desktop -l next
+
+# send the newest marked node to the newest preselected node
+super + y
+	bspc node newest.marked.local -n newest.!automatic.local
+
+# swap the current node and the biggest node
+super + g
+	bspc node -s biggest
+
+#
+# state/flags
+#
+
+# set the window state
+super + {t,shift + t,s,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+
+# set the node flags
+super + ctrl + {m,x,y,z}
+	bspc node -g {marked,locked,sticky,private}
+
+#
+# focus/swap
+#
+
+# focus the node in the given direction
+super + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+# focus the node for the given path jump
+super + {p,b,comma,period}
+	bspc node -f @{parent,brother,first,second}
+
+# focus the next/previous node in the current desktop
+super + {_,shift + }c
+	bspc node -f {next,prev}.local
+
+# focus the next/previous desktop in the current monitor
+super + bracket{left,right}
+	bspc desktop -f {prev,next}.local
+
+# focus the last node/desktop
+super + {grave,Tab}
+	bspc {node,desktop} -f last
+
+# focus the older or newer node in the focus history
+super + {o,i}
+	bspc wm -h off; \
+	bspc node {older,newer} -f; \
+	bspc wm -h on
+
+# focus or send to the given desktop
+super + {_,shift + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+
+#
+# preselect
+#
+
+# preselect the direction
+super + ctrl + {h,j,k,l}
+	bspc node -p {west,south,north,east}
+
+# preselect the ratio
+super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+# cancel the preselection for the focused node
+super + ctrl + space
+	bspc node -p cancel
+
+# cancel the preselection for the focused desktop
+super + ctrl + shift + space
+	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+#
+# move/resize
+#
+
+# expand a window by moving one of its side outward
+super + alt + {h,j,k,l}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+# contract a window by moving one of its side inward
+super + alt + shift + {h,j,k,l}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+# move a floating window
+super + {Left,Down,Up,Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+#+END_SRC
+
+** bspwmrc
+
+With ~bspwmrc~ it's important that the file is executable. With tangle there are
+two different ways of making a tangled file executable
+https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
+argument which will org will make sure to add the shebang and make the file
+executable.
+
+#+NAME: bspwm-monitor
+#+BEGIN_SRC sh
+bspc monitor -d I II III IV V VI VII VIII IX X
+#+END_SRC
+
+#+NAME: bspwm-multiple-monitors
+#+BEGIN_SRC sh
+# bspc monitor DP-1 I II III IV V
+# bspc monitor eDP-1 VI VII VIII IX X
+bspc monitor 0x00600002 -d I II III IV V
+bspc monitor 0x00600004 -d VI VII VIII IX X
+#+END_SRC
+
+#+NAME: bspwm-emacs
+#+BEGIN_SRC sh
+bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
+#+END_SRC
+
+I found this post about how to configure feh when using bspwm,
+http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.html.
+I tried to use xinitrc first to set the background but that approach seemed to
+have implications when running dual screens.
+#+NAME: bspwm-feh
+#+BEGIN_SRC sh
+feh --bg-scale ~/wallpapers/ghostinshell.jpg
+#+END_SRC
+
+It was recomended in the polybar wiki,
+https://github.com/jaagr/polybar/wiki, to add a launch file which could be
+called from the ~bspwmrc~.
+#+NAME: bspwm-polybar
+#+BEGIN_SRC sh
+$HOME/.config/polybar/launch.sh
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle ~/.config/bspwm/bspwmrc :shebang "#! /bin/sh" :mkdirp yes :noweb yes
+sxhkd &
+
+# <<bspwm-monitor>>
+<<bspwm-multiple-monitors>>
+
+bspc config border_width         2
+bspc config window_gap          12
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+bspc rule -a Gimp desktop='^8' state=floating follow=on
+bspc rule -a Chromium desktop='^2'
+bspc rule -a mplayer2 state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
+
+# Special apps
+<<bspwm-emacs>>
+
+# feh
+<<bspwm-feh>>
+
+# polybar
+<<bspwm-polybar>>
+#+END_SRC
