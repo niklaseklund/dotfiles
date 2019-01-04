@@ -481,3 +481,46 @@ wintypes:
   dropdown_menu = { opacity = 0.8; }
 };
 #+END_SRC
+* firefox
+
+Figure out the path to the firefox customization directory
+https://medium.com/@Aenon/firefox-hide-native-tabs-and-titlebar-f0b00bdbb88b
+
+#+BEGIN_SRC elisp
+(defun my/firefox-profile-directory ()
+  (let ((profile-directory '())
+        (firefox-path (expand-file-name "~/.mozilla/firefox/")))
+    (with-temp-buffer (shell-command (concat "ls " firefox-path) t)
+                      (goto-char (point-min))
+                      (while (not (eobp))
+                          (let ((content (string-trim (thing-at-point 'line))))
+                            (if (string-match "default" content)
+                                (setq profile-directory (concat firefox-path content))))
+                          (forward-line 1)))
+    profile-directory))
+#+END_SRC
+
+#+RESULTS:
+: my/firefox-profile-directory
+
+#+BEGIN_SRC elisp
+(concat (my/firefox-profile-directory) "/chrome/userChrome.css")
+#+END_SRC
+
+#+RESULTS:
+: /home/niklascarlsson/.mozilla/firefox/eeakdoa8.default/chrome/userChrome.css
+
+#+BEGIN_SRC sh :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes :noweb yes
+/*
+ * Do not remove the @namespace line -- it's required for correct functioning
+ */
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* set default namespace to XUL */
+
+/*
+ * Hide tab bar, navigation bar and scrollbars
+ * !important may be added to force override, but not necessary
+ */
+#TabsToolbar {visibility: collapse;}
+#navigator-toolbox {visibility: collapse;}
+#content browser {margin-right: -14px; margin-bottom: -14px;}
+#+END_SRC
