@@ -31,6 +31,14 @@ urxvt &
 exec bspwm
 #+END_SRC
 
+
+I want to be able to hide my mouse cursor automatically after a while of non-usage
+#+NAME: xinit-mouse
+#+BEGIN_SRC sh
+unclutter &
+#+END_SRC
+
+
 #+BEGIN_SRC text :tangle ~/.xinitrc :noweb yes
 #! /bin/sh
 
@@ -39,6 +47,9 @@ exec bspwm
 
 # hidpi settings
 <<xinit-hidpi>>
+
+# mouse and keyboard settings
+<<xinit-mouse>>
 
 # start programs
 <<xinit-programs>>
