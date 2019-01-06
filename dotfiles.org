@@ -28,6 +28,7 @@ times when I hadn't installed rofi. Can probably be removed now.
 #+BEGIN_SRC sh
 sxhkd &
 urxvt &
+compton &
 exec bspwm
 #+END_SRC
 
