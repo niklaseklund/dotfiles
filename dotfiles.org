@@ -524,3 +524,33 @@ https://medium.com/@Aenon/firefox-hide-native-tabs-and-titlebar-f0b00bdbb88b
 #navigator-toolbox {visibility: collapse;}
 #content browser {margin-right: -14px; margin-bottom: -14px;}
 #+END_SRC
+* shells
+** bash
+
+This is the default content that where in the rc file at start
+#+NAME: bashrc-default
+#+BEGIN_SRC sh
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+PS1='[\u@\h \W]\$ '
+#+END_SRC
+
+Mount external
+#+NAME: bashrc-mount-ssd
+#+BEGIN_SRC sh
+# mount ssd
+alias mountssd='sudo ldm -d -u niklascarlsson'
+#+END_SRC
+
+Create the file
+#+BEGIN_SRC sh :tangle ~/.bashrc :mkdirp yes :noweb yes
+<<bashrc-default>>
+
+<<bashrc-mount-ssd>>
+#+END_SRC
