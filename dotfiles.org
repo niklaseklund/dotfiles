@@ -1,7 +1,7 @@
 #+TITLE: dotfiles
 * xorg
 ** xinitrc
-
+*** HIDPI screen support
 I found an example configuration for the retina display at
 https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
 Currently I have commented out the gdk and qt settings until I read up on what
@@ -21,6 +21,7 @@ macbook specs.
 xrandr --dpi 227
 #+END_SRC
 
+*** Launch programs
 I need to launch sxhkd since bspwm is relying upon that program to handle the
 keybindings. I launch the terminal as well at startup. It can be convinent at
 times when I hadn't installed rofi. Can probably be removed now.
@@ -32,14 +33,14 @@ compton &
 exec bspwm
 #+END_SRC
 
-
+*** Automatically hide mouse
 I want to be able to hide my mouse cursor automatically after a while of non-usage
 #+NAME: xinit-mouse
 #+BEGIN_SRC sh
 unclutter &
 #+END_SRC
 
-
+*** The configuration file
 #+BEGIN_SRC text :tangle ~/.xinitrc :noweb yes
 #! /bin/sh
 
@@ -57,7 +58,7 @@ unclutter &
 #+END_SRC
 
 ** xresources
-
+*** HIDPI
 The configuration of hidpi parameters originate from
 https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
 #+NAME: xresources-hidpi
@@ -70,6 +71,7 @@ Xft.hinting: false
 Xft.lcdfilter: lcddefault
 #+END_SRC
 
+*** Colors
 The colors originate from ~hlissners~ dotfiles setup. Another source for color
 schemes might be https://terminal.sexy/.
 #+NAME: xresources-colors
@@ -129,6 +131,7 @@ Xcursor.theme: default
 Xcursor.size: 32
 #+END_SRC
 
+*** urxvt
 The configuration of urxvt originates from ~hlissners~ setup as well.
 #+NAME: xresources-urxvt
 #+BEGIN_SRC sh
@@ -157,6 +160,7 @@ URxvt.font: xft:Iosevka Term:style=regular:size=8
 URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
 #+END_SRC
 
+*** The configuration file
 #+BEGIN_SRC text :tangle ~/.Xresources :noweb yes
 <<xresources-hidpi>>
 
@@ -384,6 +388,7 @@ bspc rule -a Screenkey manage=off
 
 I have used the example configuration to start with.
 
+** Opacity rules
 I have here the example opacity rule from the arch wiki,
 https://wiki.archlinux.org/index.php/compton.
 #+NAME: compton-urxvt
@@ -394,6 +399,7 @@ opacity-rule = [
 ];
 #+END_SRC
 
+** Shadows
 I disabled the shadows. I need to understand better how these shadows work
 before I use them.
 #+NAME: compton-shadow
@@ -420,6 +426,7 @@ shadow-exclude = [
 # xinerama-shadow-crop = true;
 #+END_SRC
 
+** The configuration
 It seems like compton gives emacs some kind of dark frame on the right side,
 which dissapears if I go to monocle view and back. Need to investigate that.
 
@@ -494,7 +501,7 @@ wintypes:
 };
 #+END_SRC
 * firefox
-
+** Find the profile directory
 Figure out the path to the firefox customization directory
 https://medium.com/@Aenon/firefox-hide-native-tabs-and-titlebar-f0b00bdbb88b
 
@@ -522,6 +529,8 @@ https://medium.com/@Aenon/firefox-hide-native-tabs-and-titlebar-f0b00bdbb88b
 #+RESULTS:
 : /home/niklascarlsson/.mozilla/firefox/eeakdoa8.default/chrome/userChrome.css
 
+** The configuration
+
 #+BEGIN_SRC sh :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes :noweb yes
 /*
  * Do not remove the @namespace line -- it's required for correct functioning
@@ -538,7 +547,7 @@ https://medium.com/@Aenon/firefox-hide-native-tabs-and-titlebar-f0b00bdbb88b
 #+END_SRC
 * shells
 ** bash
-
+*** default
 This is the default content that where in the rc file at start
 #+NAME: bashrc-default
 #+BEGIN_SRC sh
@@ -553,6 +562,7 @@ alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
 #+END_SRC
 
+*** external harddrive
 Mount external
 #+NAME: bashrc-mount-ssd
 #+BEGIN_SRC sh
@@ -560,9 +570,11 @@ Mount external
 alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
 
+*** The configuration file
 Create the file
 #+BEGIN_SRC sh :tangle ~/.bashrc :mkdirp yes :noweb yes
 <<bashrc-default>>
 
 <<bashrc-mount-ssd>>
 #+END_SRC
+** zsh
