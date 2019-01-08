@@ -33,12 +33,6 @@ compton &
 exec bspwm
 #+END_SRC
 
-*** Automatically hide mouse
-I want to be able to hide my mouse cursor automatically after a while of non-usage
-#+NAME: xinit-mouse
-#+BEGIN_SRC sh
-unclutter &
-#+END_SRC
 
 *** The configuration file
 #+BEGIN_SRC text :tangle ~/.xinitrc :noweb yes
@@ -49,9 +43,6 @@ unclutter &
 
 # hidpi settings
 <<xinit-hidpi>>
-
-# mouse and keyboard settings
-<<xinit-mouse>>
 
 # start programs
 <<xinit-programs>>
@@ -356,6 +347,13 @@ called from the ~bspwmrc~.
 $HOME/.config/polybar/launch.sh
 #+END_SRC
 
+I want to be able to hide my mouse cursor automatically after a while of non-usage
+https://wiki.archlinux.org/index.php/unclutter
+#+NAME: bspwm-unclutter
+#+BEGIN_SRC sh
+unclutter &
+#+END_SRC
+
 #+BEGIN_SRC sh :tangle ~/.config/bspwm/bspwmrc :shebang "#! /bin/sh" :mkdirp yes :noweb yes
 sxhkd &
 
@@ -383,6 +381,9 @@ bspc rule -a Screenkey manage=off
 
 # polybar
 <<bspwm-polybar>>
+
+# unclutter
+<<bspwm-unclutter>>
 #+END_SRC
 * compton
 
