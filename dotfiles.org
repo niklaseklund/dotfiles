@@ -21,6 +21,19 @@ macbook specs.
 xrandr --dpi 227
 #+END_SRC
 
+*** Keyboard settings
+
+These are the settings for the keyboard.
+#+NAME:xinit-keyboard
+#+BEGIN_SRC text
+setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
+#+END_SRC
+
+I learnt about the ~setxkbmap~ at the [[https://wiki.archlinux.org/index.php/Xorg/Keyboard_configuration#Using_setxkbmap][arch wiki]], where else. Let's break down
+the line. The ~layout~ specifies ~American~ and ~Swedish~ layouts. One can
+switch between these two keyboard layouts by pressing both ~shifts~ at the same
+time. Last I swap ctrl to caps and remove capslock.
+
 *** Launch programs
 I need to launch sxhkd since bspwm is relying upon that program to handle the
 keybindings. I launch the terminal as well at startup. It can be convinent at
@@ -33,7 +46,6 @@ compton &
 exec bspwm
 #+END_SRC
 
-
 *** The configuration file
 #+BEGIN_SRC text :tangle ~/.xinitrc :noweb yes
 #! /bin/sh
@@ -43,6 +55,9 @@ exec bspwm
 
 # hidpi settings
 <<xinit-hidpi>>
+
+# keyboard settings
+<<xinit-keyboard>>
 
 # start programs
 <<xinit-programs>>
@@ -354,6 +369,18 @@ https://wiki.archlinux.org/index.php/unclutter
 unclutter &
 #+END_SRC
 
+I want to switch caps lock to ctrl when pressed in conjunction with another key,
+and escape when pressed by itself. This functionality is provided by the program
+~xcape~.
+#+NAME: bspwm-xcape
+#+BEGIN_SRC sh
+xcape &
+#+END_SRC
+
+TODO: an improvement will be to make this conditional. I want to only start
+xcape as long as the keyboardio can't be detected that it is plugged in. Cause
+in that case this modification is not needed.
+
 #+BEGIN_SRC sh :tangle ~/.config/bspwm/bspwmrc :shebang "#! /bin/sh" :mkdirp yes :noweb yes
 sxhkd &
 
@@ -384,6 +411,9 @@ bspc rule -a Screenkey manage=off
 
 # unclutter
 <<bspwm-unclutter>>
+
+# xcape
+<<bspwm-xcape>>
 #+END_SRC
 * compton
 
