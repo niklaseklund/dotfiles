@@ -199,8 +199,12 @@ I have changed the application launcher from ~dmenu~ to ~rofi~.
 #+NAME: sxhkd-rofi
 #+BEGIN_SRC sh
 super + @space
-	rofi -show run
+	rofi -show run -m -4
 #+END_SRC
+
+The ~-m~ option switches the behavior of ~rofi~ from the default which is to
+show the window in the monitor where the mouse recides. To the monitor with the
+focused window.
 
 *** Configuration file
 #+BEGIN_SRC text :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes :noweb yes
