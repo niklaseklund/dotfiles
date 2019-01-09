@@ -321,6 +321,7 @@ super + {Left,Down,Up,Right}
 
 ** bspwmrc
 
+*** Monitors and desktops
 With ~bspwmrc~ it's important that the file is executable. With tangle there are
 two different ways of making a tangled file executable
 https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
@@ -345,6 +346,7 @@ bspc monitor 0x00600004 -d VI VII VIII IX X
 bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
 #+END_SRC
 
+*** Background
 I found this post about how to configure feh when using bspwm,
 http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.html.
 I tried to use xinitrc first to set the background but that approach seemed to
@@ -354,6 +356,7 @@ have implications when running dual screens.
 feh --bg-scale ~/wallpapers/ghostinshell.jpg
 #+END_SRC
 
+*** Status bar
 It was recomended in the polybar wiki,
 https://github.com/jaagr/polybar/wiki, to add a launch file which could be
 called from the ~bspwmrc~.
@@ -362,6 +365,7 @@ called from the ~bspwmrc~.
 $HOME/.config/polybar/launch.sh
 #+END_SRC
 
+*** Mouse control
 I want to be able to hide my mouse cursor automatically after a while of non-usage
 https://wiki.archlinux.org/index.php/unclutter
 #+NAME: bspwm-unclutter
@@ -369,6 +373,7 @@ https://wiki.archlinux.org/index.php/unclutter
 unclutter &
 #+END_SRC
 
+*** Keyboard control
 I want to switch caps lock to ctrl when pressed in conjunction with another key,
 and escape when pressed by itself. This functionality is provided by the program
 ~xcape~.
@@ -381,6 +386,7 @@ TODO: an improvement will be to make this conditional. I want to only start
 xcape as long as the keyboardio can't be detected that it is plugged in. Cause
 in that case this modification is not needed.
 
+*** The configuration
 #+BEGIN_SRC sh :tangle ~/.config/bspwm/bspwmrc :shebang "#! /bin/sh" :mkdirp yes :noweb yes
 sxhkd &
 
