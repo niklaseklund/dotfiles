@@ -192,10 +192,18 @@ export XDG_CONFIG_HOME
 ** sxkhkdrc
 
 I followed the instructions from the manual and copied over the example
-configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~. The only thing that
-I have changed is to call ~rofi~ instead of ~dmenu~.
+configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
 
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes :noweb yes
+*** Rofi
+I have changed the application launcher from ~dmenu~ to ~rofi~.
+#+NAME: sxhkd-rofi
+#+BEGIN_SRC sh
+super + @space
+	rofi -show run
+#+END_SRC
+
+*** Configuration file
+#+BEGIN_SRC text :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes :noweb yes
 #
 # wm independent hotkeys
 #
@@ -204,9 +212,8 @@ I have changed is to call ~rofi~ instead of ~dmenu~.
 super + Return
 	urxvt
 
-# program launcher
-super + @space
-	rofi -show run
+# application launcher
+<<sxhkd-rofi>>
 
 # make sxhkd reload its configuration files:
 super + Escape
