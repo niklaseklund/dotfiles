@@ -1172,6 +1172,14 @@ rofi.matching: fuzzy
 
 #+END_SRC
 
+* i3lock
+
+I am using the application ~i3lock~ for locking the screen. I create an
+executable file to be able to call it from ~rofi~ passing the right parameters.
+
+#+BEGIN_SRC sh :tangle ~/bin/lock-screen :shebang "#! /bin/sh" :mkdirp yes
+i3lock -i ~/opensource/dotfiles/assets/ghostinshell.png --color=000000 -t
+#+END_SRC
 
 * shells
 ** bash
