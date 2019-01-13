@@ -1337,20 +1337,21 @@ unbind C-b
 # bind Q kill-server
 #+END_SRC
 
+Enable vi bindings for Copy mode
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # # -- COPY MODE ---------------------------
 
-# bind Enter copy-mode # enter copy mode
-# bind b list-buffers  # list paster buffers
-# bind p paste-buffer  # paste from the top pate buffer
-# bind P choose-buffer # choose which buffer to paste from
+bind Enter copy-mode # enter copy mode
+bind b list-buffers  # list paster buffers
+bind p paste-buffer  # paste from the top pate buffer
+bind P choose-buffer # choose which buffer to paste from
 
-# bind -T copy-mode-vi v send -X begin-selection
-# bind -T copy-mode-vi C-v send -X rectangle-toggle
-# bind -T copy-mode-vi y send -X copy-selection
-# bind -T copy-mode-vi Escape send -X cancel
-# bind -T copy-mode-vi H send -X start-of-line
-# bind -T copy-mode-vi L send -X end-of-line
+bind -T copy-mode-vi v send -X begin-selection
+bind -T copy-mode-vi C-v send -X rectangle-toggle
+bind -T copy-mode-vi y send -X copy-selection
+bind -T copy-mode-vi Escape send -X cancel
+bind -T copy-mode-vi H send -X start-of-line
+bind -T copy-mode-vi L send -X end-of-line
 
 #+END_SRC
 
