@@ -1565,7 +1565,7 @@ prompt_init() {
 prompt_init "$@"
 #+END_SRC
 
-**** Improvement
+**** TODO Improvement
 
 The prompt doesn't look that good when in the tty. Should I use
 something else then lambda when in such a console with a restricted font.
@@ -1577,9 +1577,11 @@ https://unix.stackexchange.com/questions/96463/detect-if-running-in-a-virtual-te
 *** environment variables
 
 https://github.com/hlissner/dotfiles/blob/master/shell/zsh/.zshenv
-I found this setting sane
+I found this setting sane. This turned out to not be such a good idea. I was
+getting a very weird looking prompt. Removing this setting solved it so that zsh
+looks good when used as main shell.
 #+BEGIN_SRC sh :tangle ~/.zshenv :mkdirp yes :comments link
 # disable global zsh config
-unsetopt GLOBAL_RCS
+# unsetopt GLOBAL_RCS
 
 #+END_SRC
