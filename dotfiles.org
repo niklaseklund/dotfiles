@@ -1396,7 +1396,7 @@ bind -T copy-mode-vi L send -X end-of-line
 ** Reload configuration
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # reload config without killing server
-bind r source-file $HOME/tmux.conf \; display-message "  Config reloaded..".
+bind r source-file $HOME/.tmux.conf \; display-message "  Config reloaded..".
 bind ^r refresh-client
 #+END_SRC
 
