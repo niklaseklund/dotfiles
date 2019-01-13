@@ -1218,11 +1218,19 @@ rofi.matching: fuzzy
 # # increase scrollback buffer size
 # set -g history-limit 10000
 
+#+END_SRC
+
+I have seen this as an issue. When having multiple terminals connected to the
+same session the window size becomes weird with a lot of dots. Let's see if this helps.
+It seems lik thi is adressing another issue.
+#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # # Rather than constraining window size to the maximum size of any client
 # # connected to the *session*, constrain window size to the maximum size of any
 # # client connected to *that window*. Much more reasonable.
 # setw -g aggressive-resize off
+#+END_SRC
 
+#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # # Tmux >= 2.1
 # # enable mouse
 # setw -g mouse on
@@ -1240,26 +1248,29 @@ rofi.matching: fuzzy
 # #set -g mouse-select-window on
 
 
+#+END_SRC
+
+** Display
+
+#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # # -- DISPLAY -----------------------------
 
-# set -g set-titles on
-# set -g set-titles-string "tmux [#H] #S:#W:#T"
+set -g set-titles on
+set -g set-titles-string "tmux [#H] #S:#W:#T"
 
-# # Zero-based indexing is fine in programming languages, but not so much in a multiplexer
-# # when zero is on the other side of the keyboard.
-# set -g base-index 1
-# setw -g pane-base-index 1
+# Zero-based indexing is fine in programming languages, but not so much in a multiplexer
+# when zero is on the other side of the keyboard.
+set -g base-index 1
+setw -g pane-base-index 1
 
-# setw -g automatic-rename on # rename window to reflect current program
-# set -g renumber-windows on  # renumber windows when a window is closed
-# # display tmux messages longer
-# set -g display-time 1500
-# set -g display-panes-time 800
+setw -g automatic-rename on # rename window to reflect current program
+set -g renumber-windows on  # renumber windows when a window is closed
+# display tmux messages longer
+set -g display-time 1500
+set -g display-panes-time 800
 
-# # focus events enabled for terminals that support them
-# set -g focus-events on
-
-
+# focus events enabled for terminals that support them
+set -g focus-events on
 #+END_SRC
 
 ** Keybindings
@@ -1291,7 +1302,7 @@ unbind C-b
 
 #+END_SRC
 
-*** Rest
+** Rest
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # ## Pane management
 # # Saner splitting commands
