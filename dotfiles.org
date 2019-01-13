@@ -1564,3 +1564,12 @@ prompt_init() {
 
 prompt_init "$@"
 #+END_SRC
+*** environment variables
+
+https://github.com/hlissner/dotfiles/blob/master/shell/zsh/.zshenv
+I found this setting sane
+#+BEGIN_SRC sh :tangle ~/.zshenv :mkdirp yes :comments link
+# disable global zsh config
+unsetopt GLOBAL_RCS
+
+#+END_SRC
