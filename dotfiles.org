@@ -1174,6 +1174,7 @@ rofi.matching: fuzzy
 
 * tmux
 
+** Start
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # # -- GENERAL -----------------------------
 
@@ -1230,24 +1231,31 @@ rofi.matching: fuzzy
 
 #+END_SRC
 
-Keybindings
+** Keybindings
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # # -- KEYBINDS ----------------------------
 
-# # set vi keys
-# setw -g mode-keys vi
+# set vi keys
+setw -g mode-keys vi
 
 # setw -g xterm-keys on
 # # address vim mode switching delay (http://superuser.com/a/252717/65504)
 # set -s escape-time 0
 # set -sg repeat-time 600
 
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # # Custom prefix
 set -g prefix C-c
 bind C-c send-prefix
 
 unbind C-b
 
+#+END_SRC
+
+*** Rest
+#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # ## Pane management
 # # Saner splitting commands
 # unbind %
