@@ -1239,8 +1239,14 @@ rofi.matching: fuzzy
 setw -g mode-keys vi
 
 # setw -g xterm-keys on
-# # address vim mode switching delay (http://superuser.com/a/252717/65504)
-# set -s escape-time 0
+#+END_SRC
+
+When I started using tmux I had a delay in zsh and in tmux there was a
+noticable delay as well. This article describes how to deal with it by seting
+the ~escape-time~ parameter.
+https://www.johnhawthorn.com/2012/09/vi-escape-delays/
+#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+set -s escape-time 0
 # set -sg repeat-time 600
 
 #+END_SRC
