@@ -1273,7 +1273,7 @@ set -g display-panes-time 800
 set -g focus-events on
 #+END_SRC
 
-** Keybindings
+** Important keybindings
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # # -- KEYBINDS ----------------------------
 
@@ -1302,9 +1302,8 @@ unbind C-b
 
 #+END_SRC
 
-** Rest
+** Pane management
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
-# ## Pane management
 # # Saner splitting commands
 # unbind %
 # unbind '"'
@@ -1317,10 +1316,6 @@ unbind C-b
 # bind + select-layout even-horizontal
 # bind - break-pane
 # bind _ join-pane
-
-# # reload config without killing server
-# bind r source-file $TMUX_HOME/tmux.conf \; display-message "  Config reloaded..".
-# bind ^r refresh-client
 
 # # Smart pane switching with awareness of vim splits
 # # See: https://github.com/christoomey/vim-tmux-navigator
@@ -1379,6 +1374,7 @@ unbind C-b
 # bind Q kill-server
 #+END_SRC
 
+** Copy mode
 Enable vi bindings for Copy mode
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # # -- COPY MODE ---------------------------
@@ -1397,15 +1393,83 @@ bind -T copy-mode-vi L send -X end-of-line
 
 #+END_SRC
 
+** Reload configuration
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
-# # -- CUSTOM ------------------------------
+# reload config without killing server
+bind r source-file $HOME/tmux.conf \; display-message "  Config reloaded..".
+bind ^r refresh-client
+#+END_SRC
 
-# if '[[ $OSTYPE == darwin* ]]' 'source $TMUX_HOME/tmux.macos.conf'
-# source "$TMUX_HOME/tmux.theme.conf"  # looks
+** Theme
+Load the theme
+#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+# -- THEME -------------------------------
 
-# # Support user overrides
-# if '[ -f ~/.tmux.conf ]' 'source ~/.tmux.conf'
+# The statusbar
+set -g status-position bottom
+set -g status-justify centre
+set -g status-bg default
+set -g status-fg colour15
+set -g status-interval 10
+set -g status-attr dim
+# set -g status-left '#[fg=colour236]_________________________'
+set -g status-left '#[fg=colour236]―――――――――――――――――――――――――'
+# set -g status-right "#[fg=colour236]#{prefix_highlight} #[fg=colour5] #S #[fg=colour236]──"
+# set -g status-right '#[fg=colour236]_________________________'
+set -g status-right '#[fg=colour236]―――――――――――――――――――――――――'
+set -g status-right-length 12
+set -g status-left-length 12
 
+# The messages
+set -g message-fg colour4
+set -g message-bg colour237
+set -g message-command-fg blue
+set -g message-command-bg black
+
+# loud or quiet?
+set-option -g visual-activity off
+set-option -g visual-bell off
+set-option -g visual-silence off
+set-window-option -g monitor-activity on
+set-option -g bell-action none
+
+# The modes
+setw -g clock-mode-colour colour135
+setw -g mode-attr bold
+setw -g mode-fg colour196
+setw -g mode-bg colour238
+
+# The panes
+set -g pane-border-fg colour235
+# set -g pane-border-bg default
+set -g pane-active-border-fg colour5
+# set -g pane-active-border-bg default
+
+setw -g window-status-current-fg colour2
+setw -g window-status-current-bg default
+# setw -g window-status-current-attr none
+setw -g window-status-current-format ' #W '
+
+setw -g window-status-fg colour236
+setw -g window-status-bg default
+setw -g window-status-attr none
+# setw -g window-status-format '#[fg=colour8] #I #[fg=default]#W '
+setw -g window-status-format ' #W '
+
+setw -g window-status-activity-bg default
+setw -g window-status-activity-fg colour240
+setw -g window-status-activity-attr none
+
+setw -g window-status-bell-attr bold
+setw -g window-status-bell-fg colour255
+setw -g window-status-bell-bg colour1
+
+
+#+END_SRC
+
+** Load plugins
+#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+# -- CUSTOM -------------------------------
 # # Plugins
 # set -g @plugin 'tmux-plugins/tpm'
 # set -g @plugin 'tmux-plugins/tmux-copycat'
