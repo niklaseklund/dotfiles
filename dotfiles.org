@@ -1143,6 +1143,35 @@ margin-bottom = 5
 ; vim:ft=dosini
 
 #+END_SRC
+** launch script
+
+*** Kill active bars
+#+BEGIN_SRC sh :tangle ~/.config/polybar/launch.sh :comments link :shebang "#! /bin/sh" :mkdirp yes
+#!/usr/bin/env bash
+
+# Terminate already running bar instances
+killall -q polybar
+
+# Wait until the processes have been shut down
+while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
+
+#+END_SRC
+
+*** Kick of the bar(s)
+I add the ~reload~ option to have the bar automatically reloaded when I change
+the configuration file.
+#+BEGIN_QUOTE
+       -r, --reload
+              Reload the application when the config file has been modified
+#+END_QUOTE
+
+#+BEGIN_SRC sh :tangle ~/.config/polybar/launch.sh :comments link :shebang "#! /bin/sh" :mkdirp yes
+# Launch example bar
+polybar -r example &
+
+echo "Bar launched..."
+#+END_SRC
+
 * rofi
 
 ~rofi~ is a an application launcher.
