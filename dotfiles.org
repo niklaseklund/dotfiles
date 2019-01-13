@@ -175,6 +175,9 @@ URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
 <<xresources-urxvt>>
 #+END_SRC
 * bspwm
+:PROPERTIES:
+:header-args: :mkdirp yes
+:END:
 ** profile
 
 In the configuration section in the arch wiki one can read that:
@@ -194,20 +197,9 @@ export XDG_CONFIG_HOME
 I followed the instructions from the manual and copied over the example
 configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
 
-*** Rofi
-I have changed the application launcher from ~dmenu~ to ~rofi~.
-#+NAME: sxhkd-rofi
-#+BEGIN_SRC sh
-super + @space
-	rofi -show run -m -4
-#+END_SRC
+*** Independent hotkeys
 
-The ~-m~ option switches the behavior of ~rofi~ from the default which is to
-show the window in the monitor where the mouse recides. To the monitor with the
-focused window.
-
-*** Configuration file
-#+BEGIN_SRC text :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes :noweb yes
+#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
 #
 # wm independent hotkeys
 #
@@ -215,14 +207,42 @@ focused window.
 # terminal emulator
 super + Return
 	urxvt
+#+END_SRC
 
-# application launcher
-<<sxhkd-rofi>>
-
+#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
 # make sxhkd reload its configuration files:
 super + Escape
 	pkill -USR1 -x sxhkd
 
+#+END_SRC
+
+I have changed the application launcher from ~dmenu~ to ~rofi~.
+#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+super + @space
+	rofi -show run -m -1
+
+#+END_SRC
+
+The ~-m~ option switches the behavior of ~rofi~ from the default which is to
+show the window in the monitor where the mouse recides.
+
+To the monitor which is in focus.
+
+#+BEGIN_EXAMPLE
+-1: the currently focused monitor.
+
+-2: the currently focused window (i.e. rofi will be displayed on top of the focused window).
+
+-3: Position at mouse (overrides the location setting to get normal context menu
+behaviour.)
+
+-4: the monitor with the focused window.
+
+-5: the monitor that shows the mouse pointer.
+#+END_EXAMPLE
+
+*** Hotkeys
+#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
 #
 # bspwm hotkeys
 #
@@ -247,6 +267,11 @@ super + y
 super + g
 	bspc node -s biggest
 
+#+END_SRC
+
+*** State flags
+
+#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
 #
 # state/flags
 #
@@ -259,6 +284,10 @@ super + {t,shift + t,s,f}
 super + ctrl + {m,x,y,z}
 	bspc node -g {marked,locked,sticky,private}
 
+#+END_SRC
+
+*** Focus and swapping
+#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
 #
 # focus/swap
 #
@@ -293,6 +322,11 @@ super + {o,i}
 super + {_,shift + }{1-9,0}
 	bspc {desktop -f,node -d} '^{1-9,10}'
 
+#+END_SRC
+
+*** Preselect
+
+#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
 #
 # preselect
 #
@@ -313,6 +347,10 @@ super + ctrl + space
 super + ctrl + shift + space
 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
+#+END_SRC
+
+*** Move/resize
+#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
 #
 # move/resize
 #
@@ -355,6 +393,86 @@ bspc monitor 0x00600004 -d VI VII VIII IX X
 #+NAME: bspwm-emacs
 #+BEGIN_SRC sh
 bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
+#+END_SRC
+
+**** Multiple monitors improved
+
+***** Finding out the monitors with xrandr
+Find the primary monitor (this is the built in one in the laptop)
+#+BEGIN_SRC sh :results output
+xrandr -q | grep primary | grep 'connected'
+#+END_SRC
+
+#+RESULTS:
+: eDP-1-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 309mm x 175mm
+
+#+BEGIN_SRC sh :results output
+xrandr -q | grep primary | grep 'connected' | cut -d' ' -f1
+#+END_SRC
+
+#+RESULTS:
+: eDP-1-1
+
+Find the other connected monitors
+#+BEGIN_SRC sh :results output
+xrandr -q | grep 'connected'
+#+END_SRC
+
+#+RESULTS:
+: DP-0 disconnected (normal left inverted right x axis y axis)
+: DP-1 disconnected (normal left inverted right x axis y axis)
+: eDP-1-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 309mm x 175mm
+: DP-1-1 disconnected (normal left inverted right x axis y axis)
+: HDMI-1-1 disconnected (normal left inverted right x axis y axis)
+: DP-1-1-8 connected 1920x1200+1920+0 (normal left inverted right x axis y axis) 518mm x 324mm
+: DP-1-1-1 connected 1920x1200+3840+0 (normal left inverted right x axis y axis) 518mm x 324mm
+
+The problem here is that I find a lot of disconnected monitors. I want to get
+rid of those
+
+In the grep manual there is an ~invert~ entry
+#+BEGIN_SRC sh :results output
+grep --help | grep invert
+#+END_SRC
+
+#+RESULTS:
+:   -v, --invert-match        select non-matching lines
+
+If I use that then
+#+BEGIN_SRC sh :results output
+xrandr -q | grep 'connected' | grep -v 'disconnected' | cut -d' ' -f1
+#+END_SRC
+
+#+RESULTS:
+: eDP-1-1
+: DP-1-1-8
+: DP-1-1-1
+
+Or use awk https://stackoverflow.com/questions/3548453/negative-matching-using-grep-match-lines-that-do-not-contain-foo
+#+BEGIN_SRC sh :results output
+xrandr -q | grep 'connected' | awk '!/disconnected/' | cut -d' ' -f1
+#+END_SRC
+
+#+RESULTS:
+: eDP-1-1
+: DP-1-1-8
+: DP-1-1-1
+***** Finding out the monitors with bspc
+
+I found this post on the matter, [[https://www.reddit.com/r/unixporn/comments/5lxecy/bspwm_with_two_monitors/][bspwm with two monitors]].
+
+This solution evenly distributes the monitors. So with a 3 monitor setup the
+workspaces becomes. In this setup there will be 3 monitors per monitor meaning 9
+desktops in total.
+#+BEGIN_SRC text
+i=0
+n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
+per=$(( 10 / n ))          # number of desktops per monitor
+for monitor in `bspc query -M`; do
+    bspc monitor $monitor -d `seq $i $(( i + per - 1 ))`
+    # seq is end-inclusive; `seq 1 $((1+2))` returns "1 2 3"
+    i=$(( i + per ))
+done
 #+END_SRC
 
 *** Background
@@ -1246,6 +1364,15 @@ unbind C-b
 
 #+END_SRC
 
+* i3lock
+
+I am using the application ~i3lock~ for locking the screen. I create an
+executable file to be able to call it from ~rofi~ passing the right parameters.
+
+#+BEGIN_SRC sh :tangle ~/bin/lock-screen :shebang "#! /bin/sh" :mkdirp yes
+i3lock -i ~/opensource/dotfiles/assets/ghostinshell.png --color=000000 -t
+#+END_SRC
+
 * shells
 ** bash
 *** default
@@ -1309,7 +1436,6 @@ if ! zgen saved; then
     zgen save
 fi
 #+END_SRC
-
 
 *** keybindings
 
