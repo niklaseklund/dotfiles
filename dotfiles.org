@@ -1279,3 +1279,86 @@ Create the file
 <<bashrc-mount-ssd>>
 #+END_SRC
 ** zsh
+
+*** zgen
+
+Following the setup details on [[https://github.com/tarjoilija/zgen][zgen wiki]]. Starting with sourcing zgen on start
+in zshrc.
+
+#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+# load zgen
+source "${HOME}/.zgen/zgen.zsh"
+#+END_SRC
+
+Further down on the github page there is an example zshrc. I have taken that
+content and slimmed it down.
+#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+# if the init scipt doesn't exist
+if ! zgen saved; then
+    echo "Creating a zgen save"
+
+    # plugins
+    zgen load zsh-users/zsh-syntax-highlighting
+    zgen load hlissner/zsh-autopair autopair.zsh develop
+    zgen load zsh-users/zsh-history-substring-search
+    zgen load zdharma/history-search-multi-word
+    zgen load zsh-users/zsh-completions src
+    zgen load zsh-users/zsh-autosuggestions
+
+    # save all to init script
+    zgen save
+fi
+#+END_SRC
+
+
+*** keybindings
+
+Enable vi-mode and set the keybindings
+I grabbed this from https://github.com/hlissner/dotfiles/tree/master/shell/zsh
+#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+## vi-mode
+bindkey -v
+
+bindkey -M viins '^n' history-substring-search-down
+bindkey -M viins '^p' history-substring-search-up
+bindkey -M viins '^s' history-incremental-pattern-search-backward
+bindkey -M viins '^u' backward-kill-line
+bindkey -M viins '^w' backward-kill-word
+bindkey -M viins '^b' backward-word
+bindkey -M viins '^f' forward-word
+bindkey -M viins '^g' push-line-or-edit
+bindkey -M viins '^a' beginning-of-line
+bindkey -M viins '^e' end-of-line
+bindkey -M viins '^d' push-line-or-edit
+
+bindkey -M vicmd '^k' kill-line
+bindkey -M vicmd 'H'  run-help
+
+# Shift + Tab
+bindkey -M viins '^[[Z' reverse-menu-complete
+#+END_SRC
+
+There is an example zshrc found in the arch wiki
+https://github.com/MrElendig/dotfiles-alice/blob/master/.zshrc
+
+I use this to get colored directories
+#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#------------------------------
+# History stuff
+#------------------------------
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+
+#------------------------------
+# Variables
+#------------------------------
+export BROWSER="firefox"
+export EDITOR="nvim"
+#+END_SRC
+
+I found this set in the arch ~bashrc~ file. Seems like a good alias to set, this
+gave me colored output of my ls commands.
+#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+alias ls='ls --color=auto'
+#+END_SRC
