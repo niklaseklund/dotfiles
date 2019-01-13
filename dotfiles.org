@@ -1439,6 +1439,12 @@ fi
 
 *** keybindings
 
+Make sure to set the timeout to a low value to avoid delays when pressing escape
+https://www.johnhawthorn.com/2012/09/vi-escape-delays/
+#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+export KEYTIMEOUT=10
+#+END_SRC
+
 Enable vi-mode and set the keybindings
 I grabbed this from https://github.com/hlissner/dotfiles/tree/master/shell/zsh
 #+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
