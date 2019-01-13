@@ -1220,14 +1220,11 @@ rofi.matching: fuzzy
 
 #+END_SRC
 
-I have seen this as an issue. When having multiple terminals connected to the
-same session the window size becomes weird with a lot of dots. Let's see if this helps.
-It seems lik thi is adressing another issue.
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
 # # Rather than constraining window size to the maximum size of any client
 # # connected to the *session*, constrain window size to the maximum size of any
 # # client connected to *that window*. Much more reasonable.
-# setw -g aggressive-resize off
+setw -g aggressive-resize off
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
@@ -1302,15 +1299,18 @@ unbind C-b
 
 #+END_SRC
 
+** Window management
+These keybindings makes more sense from a Vim perspective.
+#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+unbind %
+unbind '"'
+bind s split-window -c "#{pane_current_path}" -v
+bind v split-window -c "#{pane_current_path}" -h
+bind c new-window -c "#{pane_current_path}"
+#+END_SRC
+
 ** Pane management
 #+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
-# # Saner splitting commands
-# unbind %
-# unbind '"'
-# bind s split-window -c "#{pane_current_path}" -v
-# bind v split-window -c "#{pane_current_path}" -h
-# bind c new-window -c "#{pane_current_path}"
-
 # # break pane into a window
 # bind = select-layout even-vertical
 # bind + select-layout even-horizontal
@@ -1368,10 +1368,14 @@ unbind C-b
 # bind -r ] switch-client -n
 
 # # Disable confirmation
-# bind x kill-pane
-# bind X kill-window
-# bind q kill-session
-# bind Q kill-server
+#+END_SRC
+
+Kill commands
+#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+bind x kill-pane
+bind X kill-window
+bind q kill-session
+bind Q kill-server
 #+END_SRC
 
 ** Copy mode
