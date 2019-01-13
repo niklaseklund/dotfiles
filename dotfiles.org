@@ -713,9 +713,11 @@ https://medium.com/@Aenon/firefox-hide-native-tabs-and-titlebar-f0b00bdbb88b
 #+END_SRC
 * polybar
 
-** example
+** example configuration
 
-#+BEGIN_SRC sh :tangle ~/.config/polybar/config :mkdirp yes :noweb yes
+I choose this one to be displayed as lisp to get the right comment symbol, in
+this case the ~;~.
+#+BEGIN_SRC lisp :tangle ~/.config/polybar/config :mkdirp yes :comments link
 ;==========================================================
 ;
 ;
