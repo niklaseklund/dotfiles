@@ -1565,7 +1565,7 @@ prompt_init() {
 prompt_init "$@"
 #+END_SRC
 
-**** TODO Improvement
+**** TODO Make zsh prompt look good in tty as well
 
 The prompt doesn't look that good when in the tty. Should I use
 something else then lambda when in such a console with a restricted font.
