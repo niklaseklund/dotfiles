@@ -1564,6 +1564,16 @@ prompt_init() {
 
 prompt_init "$@"
 #+END_SRC
+
+**** Improvement
+
+The prompt doesn't look that good when in the tty. Should I use
+something else then lambda when in such a console with a restricted font.
+
+This is a solution for how to detect if the shell is running in a virtual terminal
+https://unix.stackexchange.com/questions/96463/detect-if-running-in-a-virtual-terminal
+
+
 *** environment variables
 
 https://github.com/hlissner/dotfiles/blob/master/shell/zsh/.zshenv
