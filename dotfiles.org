@@ -547,24 +547,16 @@ xcape as long as the keyboardio can't be detected that it is plugged in. Cause
 in that case this modification is not needed.
 
 * compton
+:PROPERTIES:
+:header-args: :tangle ~/.config/compton.conf :mkdirp yes :comments link
+:END:
 
 I have used the example configuration to start with.
-
-** Opacity rules
-I have here the example opacity rule from the arch wiki,
-https://wiki.archlinux.org/index.php/compton.
-#+NAME: compton-urxvt
-#+BEGIN_SRC sh
-opacity-rule = [
-  "90:class_g = 'URxvt' && focused",
-  "60:class_g = 'URxvt' && !focused"
-];
-#+END_SRC
 
 ** Shadows
 I disabled the shadows. I need to understand better how these shadows work
 before I use them.
-#+NAME: compton-shadow
+
 #+BEGIN_SRC sh
 shadow = false;
 shadow-radius = 7;
@@ -588,14 +580,11 @@ shadow-exclude = [
 # xinerama-shadow-crop = true;
 #+END_SRC
 
-** The configuration
+** Opacity and blur
 It seems like compton gives emacs some kind of dark frame on the right side,
 which dissapears if I go to monocle view and back. Need to investigate that.
 
-#+BEGIN_SRC sh :tangle ~/.config/compton.conf :mkdirp yes :noweb yes
-# Shadow
-<<compton-shadow>>
-
+#+BEGIN_SRC sh
 # Opacity
 inactive-opacity = 0.8;
 # active-opacity = 0.8;
@@ -613,9 +602,22 @@ blur-background-exclude = [
 	"window_type = 'desktop'",
 	"_GTK_FRAME_EXTENTS@:c"
 ];
-# opacity-rule = [ "80:class_g = 'URxvt'" ];
-<<compton-urxvt>>
+#+END_SRC
 
+** Application opacity rules
+I have here the example opacity rule from the arch wiki,
+https://wiki.archlinux.org/index.php/compton.
+
+#+BEGIN_SRC sh
+# opacity-rule = [ "80:class_g = 'URxvt'" ];
+opacity-rule = [
+  "90:class_g = 'URxvt' && focused",
+  "60:class_g = 'URxvt' && !focused"
+];
+#+END_SRC
+
+** Rest
+#+BEGIN_SRC sh
 # Fading
 fading = true;
 # fade-delta = 30;
@@ -662,6 +664,7 @@ wintypes:
   dropdown_menu = { opacity = 0.8; }
 };
 #+END_SRC
+
 * firefox
 ** Find the profile directory
 Figure out the path to the firefox customization directory
