@@ -2,11 +2,11 @@
 * xorg
 ** xinitrc
 :PROPERTIES:
-:header-args: :mkdirp yes
+:header-args: :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link :shebang "#! /bin/sh" :mkdirp yes
 :END:
 *** Load xresources
 
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link :shebang "#! /bin/sh"
+#+BEGIN_SRC sh
 # customize xresources
 [[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
 #+END_SRC
@@ -21,7 +21,7 @@ output of the ~xrandr -q~ said the dpi was 96 which was clearly incorrect. I
 verified that the 227 was correct by consulting the apple website for the
 macbook specs.
 
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link
+#+BEGIN_SRC sh
 # hidpi settings
 #export GDK_SCALE=2
 #export GDK_DPI_SCALE=0.95
@@ -35,7 +35,7 @@ xrandr --dpi 227
 *** Keyboard settings
 
 These are the settings for the keyboard.
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link
+#+BEGIN_SRC sh
 # keyboard settings
 setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
 #+END_SRC
@@ -51,7 +51,7 @@ I need to launch sxhkd since bspwm is relying upon that program to handle the
 keybindings. I launch the terminal as well at startup. It can be convinent at
 times when I hadn't installed rofi. Can probably be removed now.
 
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link :mkdirp yes
+#+BEGIN_SRC sh
 # start programs
 sxhkd &
 urxvt &
