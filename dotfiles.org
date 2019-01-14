@@ -60,10 +60,14 @@ exec bspwm
 #+END_SRC
 
 ** xresources
+:PROPERTIES:
+:header-args: :tangle ~/.Xresources :mkdirp yes
+:END:
+
 *** HIDPI
+
 The configuration of hidpi parameters originate from
 https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
-#+NAME: xresources-hidpi
 #+BEGIN_SRC sh
 !! hidpi
 Xft.dpi: 227
@@ -74,9 +78,9 @@ Xft.lcdfilter: lcddefault
 #+END_SRC
 
 *** Colors
+
 The colors originate from ~hlissners~ dotfiles setup. Another source for color
 schemes might be https://terminal.sexy/.
-#+NAME: xresources-colors
 #+BEGIN_SRC sh
 !! Colors
 #define blk  #141517
@@ -134,8 +138,8 @@ Xcursor.size: 32
 #+END_SRC
 
 *** urxvt
+
 The configuration of urxvt originates from ~hlissners~ setup as well.
-#+NAME: xresources-urxvt
 #+BEGIN_SRC sh
 !! urxvt
 URxvt*.background:             [96]blk
@@ -162,14 +166,6 @@ URxvt.font: xft:Iosevka Term:style=regular:size=8
 URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
 #+END_SRC
 
-*** The configuration file
-#+BEGIN_SRC text :tangle ~/.Xresources :noweb yes
-<<xresources-hidpi>>
-
-<<xresources-colors>>
-
-<<xresources-urxvt>>
-#+END_SRC
 * bspwm
 :PROPERTIES:
 :header-args: :mkdirp yes
