@@ -1187,7 +1187,10 @@ rofi.matching: fuzzy
 
 #+END_SRC
 
-* TODO tmux
+* tmux
+:PROPERTIES:
+:header-args: :tangle ~/.tmux.conf :mkdirp yes :comments link
+:END:
 
 ** General information
 
@@ -1195,7 +1198,7 @@ I am trying to grasp the notations of ~tmux~. It seems like there is three
 important words to know. ~Sessions~, ~Windows~ and ~Panes~.
 
 ** Start
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # -- GENERAL -----------------------------
 
 # set -g default-terminal screen-256color
@@ -1209,14 +1212,14 @@ important words to know. ~Sessions~, ~Windows~ and ~Panes~.
 
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # Rather than constraining window size to the maximum size of any client
 # # connected to the *session*, constrain window size to the maximum size of any
 # # client connected to *that window*. Much more reasonable.
 setw -g aggressive-resize off
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # Tmux >= 2.1
 # # enable mouse
 # setw -g mouse on
@@ -1238,7 +1241,7 @@ setw -g aggressive-resize off
 
 ** Display
 
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # -- DISPLAY -----------------------------
 
 set -g set-titles on
@@ -1260,7 +1263,7 @@ set -g focus-events on
 #+END_SRC
 
 ** Important keybindings
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # -- KEYBINDS ----------------------------
 
 # set vi keys
@@ -1273,13 +1276,13 @@ When I started using tmux I had a delay in zsh and in tmux there was a
 noticable delay as well. This article describes how to deal with it by seting
 the ~escape-time~ parameter.
 https://www.johnhawthorn.com/2012/09/vi-escape-delays/
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 set -s escape-time 0
 # set -sg repeat-time 600
 
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # Custom prefix
 set -g prefix C-c
 bind C-c send-prefix
@@ -1290,7 +1293,7 @@ unbind C-b
 
 ** Window management
 These keybindings makes more sense from a Vim perspective.
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 unbind %
 unbind '"'
 bind s split-window -c "#{pane_current_path}" -v
@@ -1299,7 +1302,7 @@ bind c new-window -c "#{pane_current_path}"
 #+END_SRC
 
 ** Pane management
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # break pane into a window
 # bind = select-layout even-vertical
 # bind + select-layout even-horizontal
@@ -1360,7 +1363,7 @@ bind c new-window -c "#{pane_current_path}"
 #+END_SRC
 
 Kill commands
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 bind x kill-pane
 bind X kill-window
 bind q kill-session
@@ -1369,7 +1372,7 @@ bind Q kill-server
 
 ** Copy mode
 Enable vi bindings for Copy mode
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # -- COPY MODE ---------------------------
 
 bind Enter copy-mode # enter copy mode
@@ -1387,7 +1390,7 @@ bind -T copy-mode-vi L send -X end-of-line
 #+END_SRC
 
 ** Reload configuration
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # reload config without killing server
 bind r source-file $HOME/.tmux.conf \; display-message "  Config reloaded..".
 bind ^r refresh-client
@@ -1395,7 +1398,7 @@ bind ^r refresh-client
 
 ** Theme
 Load the theme
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # -- THEME -------------------------------
 
 # The statusbar
@@ -1461,7 +1464,7 @@ setw -g window-status-bell-bg colour1
 #+END_SRC
 
 ** Load plugins
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # -- CUSTOM -------------------------------
 # # Plugins
 # set -g @plugin 'tmux-plugins/tpm'
