@@ -1217,7 +1217,7 @@ important words to know. ~Sessions~, ~Windows~ and ~Panes~.
 # set -g default-shell /bin/sh
 # set -s focus-events on
 # # increase scrollback buffer size
-# set -g history-limit 10000
+set -g history-limit 20000
 
 #+END_SRC
 
