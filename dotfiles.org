@@ -1540,20 +1540,23 @@ Create the file
 <<bashrc-mount-ssd>>
 #+END_SRC
 ** zsh
+:PROPERTIES:
+:header-args: :tangle ~/.zshrc :mkdirp yes :comments link
+:END:
 
 *** zgen
 
 Following the setup details on [[https://github.com/tarjoilija/zgen][zgen wiki]]. Starting with sourcing zgen on start
 in zshrc.
 
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # load zgen
 source "${HOME}/.zgen/zgen.zsh"
 #+END_SRC
 
 Further down on the github page there is an example zshrc. I have taken that
 content and slimmed it down.
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # if the init scipt doesn't exist
 if ! zgen saved; then
     echo "Creating a zgen save"
@@ -1576,13 +1579,13 @@ fi
 
 Make sure to set the timeout to a low value to avoid delays when pressing escape
 https://www.johnhawthorn.com/2012/09/vi-escape-delays/
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 export KEYTIMEOUT=10
 #+END_SRC
 
 Enable vi-mode and set the keybindings
 I grabbed this from https://github.com/hlissner/dotfiles/tree/master/shell/zsh
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 ## vi-mode
 bindkey -v
 
@@ -1609,7 +1612,7 @@ There is an example zshrc found in the arch wiki
 https://github.com/MrElendig/dotfiles-alice/blob/master/.zshrc
 
 I use this to get colored directories
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 #------------------------------
 # History stuff
 #------------------------------
@@ -1626,14 +1629,14 @@ export EDITOR="nvim"
 
 I found this set in the arch ~bashrc~ file. Seems like a good alias to set, this
 gave me colored output of my ls commands.
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 alias ls='ls --color=auto'
 #+END_SRC
 *** prompt
 
 https://github.com/hlissner/dotfiles/blob/master/shell/zsh/prompt.zsh
 
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # Loosely based off Pure <https://github.com/sindresorhus/pure>
 
 _strlen() { echo ${#${(S%%)1//$~%([BSUbfksu]|([FB]|){*})/}}; }
