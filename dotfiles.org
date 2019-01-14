@@ -167,10 +167,10 @@ URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
 #+END_SRC
 
 * bspwm
-:PROPERTIES:
-:header-args: :mkdirp yes
-:END:
 ** profile
+:PROPERTIES:
+:header-args: :tangle ~/.profile :mkdirp yes
+:END:
 
 In the configuration section in the arch wiki one can read that:
 https://wiki.archlinux.org/index.php/bspwm
@@ -180,18 +180,21 @@ bspwmrc will not be found
 #+END_EXAMPLE
 
 It's therefore important to set this environmental variable.
-#+BEGIN_SRC sh :tangle ~/.profile :noweb yes
+#+BEGIN_SRC sh
 XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CONFIG_HOME
 #+END_SRC
 ** sxkhkdrc
+:PROPERTIES:
+:header-args: :tangle ~/.config/sxhkd/sxhkdrc :comments link :mkdirp yes
+:END:
 
 I followed the instructions from the manual and copied over the example
 configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
 
 *** Independent hotkeys
 
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # wm independent hotkeys
 #
@@ -201,7 +204,7 @@ super + Return
 	urxvt
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 # make sxhkd reload its configuration files:
 super + Escape
 	pkill -USR1 -x sxhkd
@@ -209,7 +212,7 @@ super + Escape
 #+END_SRC
 
 I have changed the application launcher from ~dmenu~ to ~rofi~.
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 super + @space
 	rofi -show run -m -1
 
@@ -234,7 +237,7 @@ behaviour.)
 #+END_EXAMPLE
 
 *** Hotkeys
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # bspwm hotkeys
 #
@@ -263,7 +266,7 @@ super + g
 
 *** State flags
 
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # state/flags
 #
@@ -279,7 +282,7 @@ super + ctrl + {m,x,y,z}
 #+END_SRC
 
 *** Focus and swapping
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # focus/swap
 #
@@ -318,7 +321,7 @@ super + {_,shift + }{1-9,0}
 
 *** Preselect
 
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # preselect
 #
@@ -342,7 +345,7 @@ super + ctrl + shift + space
 #+END_SRC
 
 *** Move/resize
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # move/resize
 #
@@ -361,20 +364,31 @@ super + {Left,Down,Up,Right}
 #+END_SRC
 
 ** bspwmrc
+:PROPERTIES:
+:header-args: :tangle ~/.config/bspwm/bspwmrc :shebang "#! /bin/sh" :comments link :mkdirp yes :noweb yes
+:END:
 
-*** Monitors and desktops
 With ~bspwmrc~ it's important that the file is executable. With tangle there are
 two different ways of making a tangled file executable
 https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
 argument which will org will make sure to add the shebang and make the file
 executable.
 
-#+NAME: bspwm-monitor
+*** sxhkd
+
+The example file starts with ~sxhkd~. I am unsure if I need it both here and in
+the ~xinitrc~.
+
 #+BEGIN_SRC sh
+sxhkd &
+#+END_SRC
+
+*** Monitors and desktops
+
+#+BEGIN_SRC sh :tangle no
 bspc monitor -d I II III IV V VI VII VIII IX X
 #+END_SRC
 
-#+NAME: bspwm-multiple-monitors
 #+BEGIN_SRC sh
 # bspc monitor DP-1 I II III IV V
 # bspc monitor eDP-1 VI VII VIII IX X
@@ -382,14 +396,12 @@ bspc monitor 0x00600002 -d I II III IV V
 bspc monitor 0x00600004 -d VI VII VIII IX X
 #+END_SRC
 
-#+NAME: bspwm-emacs
-#+BEGIN_SRC sh
-bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
-#+END_SRC
-
 **** Multiple monitors improved
 
 ***** Finding out the monitors with xrandr
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 Find the primary monitor (this is the built in one in the laptop)
 #+BEGIN_SRC sh :results output
 xrandr -q | grep primary | grep 'connected'
@@ -450,13 +462,16 @@ xrandr -q | grep 'connected' | awk '!/disconnected/' | cut -d' ' -f1
 : DP-1-1-8
 : DP-1-1-1
 ***** Finding out the monitors with bspc
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 
 I found this post on the matter, [[https://www.reddit.com/r/unixporn/comments/5lxecy/bspwm_with_two_monitors/][bspwm with two monitors]].
 
 This solution evenly distributes the monitors. So with a 3 monitor setup the
 workspaces becomes. In this setup there will be 3 monitors per monitor meaning 9
 desktops in total.
-#+BEGIN_SRC text
+#+BEGIN_SRC sh
 i=0
 n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
 per=$(( 10 / n ))          # number of desktops per monitor
@@ -467,21 +482,47 @@ for monitor in `bspc query -M`; do
 done
 #+END_SRC
 
+*** bspwm look
+
+#+BEGIN_SRC sh
+bspc config border_width         2
+bspc config window_gap          12
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+#+END_SRC
+
+*** Default rules
+
+#+BEGIN_SRC sh
+bspc rule -a Gimp desktop='^8' state=floating follow=on
+bspc rule -a Chromium desktop='^2'
+bspc rule -a mplayer2 state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
+#+END_SRC
+*** Custom rules
+
+#+BEGIN_SRC sh
+bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
+#+END_SRC
+
 *** Background
 I found this post about how to configure feh when using bspwm,
 http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.html.
 I tried to use xinitrc first to set the background but that approach seemed to
 have implications when running dual screens.
-#+NAME: bspwm-feh
+
 #+BEGIN_SRC sh
-feh --bg-scale ~/wallpapers/ghostinshell.jpg
+feh --bg-scale ~/src/dotfiles/ghostinshell.jpg
 #+END_SRC
 
 *** Status bar
 It was recomended in the polybar wiki,
 https://github.com/jaagr/polybar/wiki, to add a launch file which could be
 called from the ~bspwmrc~.
-#+NAME: bspwm-polybar
+
 #+BEGIN_SRC sh
 $HOME/.config/polybar/launch.sh
 #+END_SRC
@@ -489,7 +530,6 @@ $HOME/.config/polybar/launch.sh
 *** Mouse control
 I want to be able to hide my mouse cursor automatically after a while of non-usage
 https://wiki.archlinux.org/index.php/unclutter
-#+NAME: bspwm-unclutter
 #+BEGIN_SRC sh
 unclutter &
 #+END_SRC
@@ -498,7 +538,6 @@ unclutter &
 I want to switch caps lock to ctrl when pressed in conjunction with another key,
 and escape when pressed by itself. This functionality is provided by the program
 ~xcape~.
-#+NAME: bspwm-xcape
 #+BEGIN_SRC sh
 xcape &
 #+END_SRC
@@ -507,41 +546,6 @@ TODO: an improvement will be to make this conditional. I want to only start
 xcape as long as the keyboardio can't be detected that it is plugged in. Cause
 in that case this modification is not needed.
 
-*** The configuration
-#+BEGIN_SRC sh :tangle ~/.config/bspwm/bspwmrc :shebang "#! /bin/sh" :mkdirp yes :noweb yes
-sxhkd &
-
-# <<bspwm-monitor>>
-<<bspwm-multiple-monitors>>
-
-bspc config border_width         2
-bspc config window_gap          12
-
-bspc config split_ratio          0.52
-bspc config borderless_monocle   true
-bspc config gapless_monocle      true
-
-bspc rule -a Gimp desktop='^8' state=floating follow=on
-bspc rule -a Chromium desktop='^2'
-bspc rule -a mplayer2 state=floating
-bspc rule -a Kupfer.py focus=on
-bspc rule -a Screenkey manage=off
-
-# Special apps
-<<bspwm-emacs>>
-
-# feh
-<<bspwm-feh>>
-
-# polybar
-<<bspwm-polybar>>
-
-# unclutter
-<<bspwm-unclutter>>
-
-# xcape
-<<bspwm-xcape>>
-#+END_SRC
 * compton
 
 I have used the example configuration to start with.
