@@ -666,37 +666,12 @@ wintypes:
 #+END_SRC
 
 * firefox
-** Find the profile directory
-Figure out the path to the firefox customization directory
-https://medium.com/@Aenon/firefox-hide-native-tabs-and-titlebar-f0b00bdbb88b
-
-#+BEGIN_SRC elisp
-(defun my/firefox-profile-directory ()
-  (let ((profile-directory '())
-        (firefox-path (expand-file-name "~/.mozilla/firefox/")))
-    (with-temp-buffer (shell-command (concat "ls " firefox-path) t)
-                      (goto-char (point-min))
-                      (while (not (eobp))
-                          (let ((content (string-trim (thing-at-point 'line))))
-                            (if (string-match "default" content)
-                                (setq profile-directory (concat firefox-path content))))
-                          (forward-line 1)))
-    profile-directory))
-#+END_SRC
-
-#+RESULTS:
-: my/firefox-profile-directory
-
-#+BEGIN_SRC elisp
-(concat (my/firefox-profile-directory) "/chrome/userChrome.css")
-#+END_SRC
-
-#+RESULTS:
-: /home/niklascarlsson/.mozilla/firefox/eeakdoa8.default/chrome/userChrome.css
-
 ** The configuration
+:PROPERTIES:
+:header-args: :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes :comments link
+:END:
 
-#+BEGIN_SRC sh :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes :noweb yes
+#+BEGIN_SRC sh
 /*
  * Do not remove the @namespace line -- it's required for correct functioning
  */
