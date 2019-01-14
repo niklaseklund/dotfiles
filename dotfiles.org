@@ -1172,11 +1172,14 @@ echo "Bar launched..."
 #+END_SRC
 
 * rofi
+:PROPERTIES:
+:header-args: :tangle ~/.config/rofi/config2 :mkdirp yes :comments link
+:END:
 
 ~rofi~ is a an application launcher.
 
 I have used the configuration of ~Matt Dobson~.
-#+BEGIN_SRC sh :tangle ~/.config/rofi/config
+#+BEGIN_SRC sh
 ! ------------------------------------------------------------------------------
 !                          ROFI THEME - MATT DOBSON
 ! ------------------------------------------------------------------------------
@@ -1186,7 +1189,7 @@ rofi.color-urgent: argb:00171717, #cc6666, argb:e54b5160, argb:00171717, #535c5c
 rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
 rofi.width: 1000
 rofi.lines: 15
-rofi.font: hack 12
+rofi.font: hack 18
 rofi.bw: 0
 rofi.padding: 50
 rofi.line-margin: 5
@@ -1704,7 +1707,6 @@ something else then lambda when in such a console with a restricted font.
 
 This is a solution for how to detect if the shell is running in a virtual terminal
 https://unix.stackexchange.com/questions/96463/detect-if-running-in-a-virtual-terminal
-
 
 *** environment variables
 
