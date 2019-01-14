@@ -1495,6 +1495,138 @@ setw -g window-status-bell-bg colour1
 # run '$TMUX_PLUGINS_HOME/tpm/tpm'
 
 #+END_SRC
+* (n)vim
+** neovim
+:PROPERTIES:
+:header-args: :tangle ~/.config/nvim/init.vim :mkdirp yes :comments link
+:END:
+
+#+BEGIN_SRC vimrc
+" vim: foldmethod=marker
+
+" {{{1 Easy configuration
+let color_config = 'dark' " light/dark
+
+" Vim-Plug (Plugin manager) {{{1
+" Installation {{{2
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source ~/.config/nvim/init.vim
+endif
+
+" Setup plugins {{{2
+call plug#begin(expand('~/.config/nvim/plugged'))
+
+" Define plugins
+Plug 'tpope/vim-commentary' " Comments
+Plug 'tpope/vim-surround' " Change surrounding chars
+Plug 'tpope/vim-unimpaired' " Improve navigation
+Plug 'kana/vim-textobj-user' " Enable custom text objects
+Plug 'kana/vim-textobj-indent' " Indentation text object
+Plug 'sgur/vim-textobj-parameter' " Function argument text object
+Plug 'justinmk/vim-sneak' " Snipe characters with greater precision
+Plug 'tommcdo/vim-exchange' " Provide exchange object
+Plug 'qpkorr/vim-bufkill' " Improve buffer handling
+Plug 'Konfekt/FastFold' " Improve folding performance
+call plug#end()
+
+" Vim core {{{1
+" Settings {{{2
+syntax enable " Enable syntax highlighting
+set number " Show line number
+set updatetime=100 " Decrease update time from 4s to 0.1 s, useful for gutter
+set undofile " Enables persistent undo
+set noswapfile " Disables swapfile
+set spelllang=en_us " Sets spelling language to english
+filetype plugin indent on " Enable filetype detection
+set hidden " Enable hidden buffers, buffers must not be saved
+set splitbelow splitright " Set Split behavior
+set mouse=a "Enable mouse interaction
+set clipboard+=unnamedplus " Enable clipboard paste from other sources
+set equalalways " Keep windows equal
+set foldmethod=syntax " determine fold method
+set foldlevelstart=99 " start unfolded
+set tabstop=4 shiftwidth=4 expandtab
+set ignorecase smartcase " smart case enabled
+set inccommand=nosplit " Get live visualization of substitution (Neovim exclusive)
+
+" Define leader key
+let mapleader=","
+
+" Autoread when switching buffer or Vim got the focus again
+au FocusGained,BufEnter * :checktime
+
+" Mappings {{{2
+" Harmonize Y behavior with (C, D)
+map Y y$
+"" Remap t/f movement in reverse direction
+noremap \ ,
+" Change mark behavior to position rather than line
+" Improve search behavior
+nnoremap n nzzzv
+nnoremap N Nzzzv
+" Command-line history with C-p/C-n
+cnoremap <C-p> <up>
+cnoremap <C-n> <down>
+" Macro, fast access to macro q
+nmap Q @q
+" Windows
+nnoremap <silent> <leader>wh <C-w>h
+nnoremap <silent> <leader>wj <C-w>j
+nnoremap <silent> <leader>wk <C-w>k
+nnoremap <silent> <leader>wl <C-w>l
+nnoremap <silent> <leader>wc <C-w>c
+nnoremap <silent> <leader>wo <C-w>o
+nnoremap <silent> <leader>wO <C-w>o
+nnoremap <silent> <leader>wr <C-w>r
+nnoremap <silent> <leader>wv <C-w>v
+nnoremap <silent> <leader>wV <C-w>v <C-w>p
+nnoremap <silent> <leader>w= <C-w>=
+nnoremap <silent> <leader>wp <C-w>p
+nnoremap <silent> <leader>ws <C-w>s <C-w>p
+nnoremap <silent> <leader>wS <C-w>s
+nnoremap <silent> <leader>wd <C-w>c
+" Built in terminal
+nnoremap <leader>ot :term<CR>
+" Open a terminal in a popup window
+" Quiting
+nnoremap <silent> <leader>qq :qall!<CR>
+" Disable current highlight search
+nnoremap <silent> <Esc> :noh<CR>
+
+" Plugins {{{1
+" Mappings {{{2
+" BuffKill {{{3
+" Kill current buffer
+nnoremap <silent> <leader>bk :BD!<CR>
+" Move to previous buffer
+nnoremap <silent> <leader>b[ :BB<CR>
+" Move to next buffer
+nnoremap <silent> <leader>b] :BF<CR>
+" Create a new empty buffer
+nnoremap <silent> <leader>bn :enew<CR>
+
+" Settings {{{2
+" vim-textobj-parameter {{{3
+let g:vim_textobj_parameter_mapping = 'a'
+
+" Exchange {{{3
+nmap gx <Plug>(Exchange)
+nmap gxc <Plug>(ExchangeClear)
+nmap gxx <Plug>(ExchangeLine)
+
+" Statusline {{{1
+set statusline=
+set statusline+=%#Identifier#\ %F " Use %f for shorter name
+set statusline+=%m
+set statusline+=%=
+set statusline+=%2c
+
+" Color tweaking
+set background=dark
+#+END_SRC
+
 * i3lock
 :PROPERTIS:
 :header-args: :tangle (my/tangle-os-list '("ubuntu") "~/bin/lock-screen") :shebang "#! /bin/sh" :mkdirp yes
