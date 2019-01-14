@@ -1833,3 +1833,28 @@ looks good when used as main shell.
 # unsetopt GLOBAL_RCS
 
 #+END_SRC
+* gtk
+
+Both of these configuration files has been copied from hlissers-setup. I have
+also looked at the arch wiki https://wiki.archlinux.org/index.php/GTK%2B#Examples.
+
+** gtk2
+:PROPERTIES:
+:header-args: :tangle ~/.gtkrc-2.0 :comments link :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+include "/usr/share/themes/Arc-Dark/gtk-2.0/gtkrc"
+#+END_SRC
+
+** gtk3
+:PROPERTIES:
+:header-args: :tangle ~/.config/gtk-3.0/settings.ini :comments link :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+[Settings]
+gtk-application-prefer-dark-theme = true
+gtk-theme-name = Arc-Dark
+gtk-icon-theme-name = Arc-Dark
+#+END_SRC
