@@ -1628,7 +1628,7 @@ set background=dark
 #+END_SRC
 
 * i3lock
-:PROPERTIS:
+:PROPERTIES:
 :header-args: :tangle (my/tangle-os-list '("ubuntu") "~/bin/lock-screen") :shebang "#! /bin/sh" :mkdirp yes
 :END:
 
@@ -1641,9 +1641,11 @@ i3lock -i ~/opensource/dotfiles/assets/ghostinshell.png --color=000000 -t
 
 * shells
 ** bash
+:PROPERTIES:
+:header-args: :tangle ~/.bashrc :mkdirp yes :comments link
+:END:
 *** default
 This is the default content that where in the rc file at start
-#+NAME: bashrc-default
 #+BEGIN_SRC sh
 #
 # ~/.bashrc
@@ -1658,19 +1660,11 @@ PS1='[\u@\h \W]\$ '
 
 *** external harddrive
 Mount external
-#+NAME: bashrc-mount-ssd
 #+BEGIN_SRC sh
 # mount ssd
 alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
 
-*** The configuration file
-Create the file
-#+BEGIN_SRC sh :tangle ~/.bashrc :mkdirp yes :noweb yes
-<<bashrc-default>>
-
-<<bashrc-mount-ssd>>
-#+END_SRC
 ** zsh
 :PROPERTIES:
 :header-args: :tangle ~/.zshrc :mkdirp yes :comments link
