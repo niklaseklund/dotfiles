@@ -515,7 +515,7 @@ I tried to use xinitrc first to set the background but that approach seemed to
 have implications when running dual screens.
 
 #+BEGIN_SRC sh
-feh --bg-scale ~/src/dotfiles/ghostinshell.jpg
+feh --bg-scale ~/src/dotfiles/assets/ghostinshell.jpg
 #+END_SRC
 
 *** Status bar
