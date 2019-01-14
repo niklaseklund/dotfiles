@@ -1642,7 +1642,7 @@ i3lock -i ~/opensource/dotfiles/assets/ghostinshell.png --color=000000 -t
 * shells
 ** bash
 :PROPERTIES:
-:header-args: :tangle ~/.bashrc :mkdirp yes :comments link
+:header-args: :tangle (my/tangle-os-list '("arch") "~/.bashrc") :mkdirp yes :comments link
 :END:
 *** default
 This is the default content that where in the rc file at start
