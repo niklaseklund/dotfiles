@@ -685,13 +685,17 @@ wintypes:
 #navigator-toolbox {visibility: collapse;}
 #content browser {margin-right: -14px; margin-bottom: -14px;}
 #+END_SRC
+
 * polybar
 
 ** example configuration
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/config :mkdirp yes
+:END:
 
 I choose this one to be displayed as lisp to get the right comment symbol, in
 this case the ~;~.
-#+BEGIN_SRC lisp :tangle ~/.config/polybar/config :mkdirp yes :comments link
+#+BEGIN_SRC shell
 ;==========================================================
 ;
 ;
@@ -1118,9 +1122,12 @@ margin-bottom = 5
 
 #+END_SRC
 ** launch script
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/launch.sh :comments link :shebang "#! /bin/sh" :mkdirp yes
+:END:
 
 *** Kill active bars
-#+BEGIN_SRC sh :tangle ~/.config/polybar/launch.sh :comments link :shebang "#! /bin/sh" :mkdirp yes
+#+BEGIN_SRC sh
 #!/usr/bin/env bash
 
 # Terminate already running bar instances
@@ -1139,7 +1146,7 @@ the configuration file.
               Reload the application when the config file has been modified
 #+END_QUOTE
 
-#+BEGIN_SRC sh :tangle ~/.config/polybar/launch.sh :comments link :shebang "#! /bin/sh" :mkdirp yes
+#+BEGIN_SRC sh
 # Launch example bar
 polybar -r example &
 
@@ -1180,7 +1187,7 @@ rofi.matching: fuzzy
 
 #+END_SRC
 
-* tmux
+* TODO tmux
 
 ** General information
 
