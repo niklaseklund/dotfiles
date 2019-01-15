@@ -68,7 +68,7 @@ exec bspwm
 
 The configuration of hidpi parameters originate from
 https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.Xresources")
 !! hidpi
 Xft.dpi: 227
 Xft.rgba: rgb
@@ -162,9 +162,20 @@ URxvt*.url-launcher:           firefox
 
 URxvt*.lineSpace:              0
 URxvt*.letterSpace:            0
+#+END_SRC
+
+~Arch~
+#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.Xresources")
 URxvt.font: xft:Iosevka Term:style=regular:size=8
 URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
 #+END_SRC
+
+~Ubuntu~
+#+BEGIN_SRC sh :tangle (my/tangle-os-list '("ubuntu") "~/.Xresources")
+URxvt.font: xft:Hack:style=regular:size=12
+URxvt.boldFont: xft:Hack:style=bold:size=12
+#+END_SRC
+
 ** xprofile
 :PROPERTIES:
 :header-args: :tangle (my/tangle-os-list '("ubuntu") "~/.xprofile") :comments link :mkdirp yes
