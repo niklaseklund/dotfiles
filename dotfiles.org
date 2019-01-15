@@ -2019,3 +2019,8 @@ gtk-application-prefer-dark-theme = true
 gtk-theme-name = Arc-Dark
 gtk-icon-theme-name = Arc-Dark
 #+END_SRC
+* ideas
+
+- add private/work condition?
+- tangle other local files from this file? Useful for code that should not be
+  publically available
