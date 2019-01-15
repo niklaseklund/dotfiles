@@ -1286,7 +1286,11 @@ rofi.matching: fuzzy
 I am trying to grasp the notations of ~tmux~. It seems like there is three
 important words to know. ~Sessions~, ~Windows~ and ~Panes~.
 
-** Start
+** TODO Start using relevant code from sensible
+
+The plugin [[https://github.com/tmux-plugins/tmux-sensible][tmux-sensible]] has many sane options as default. I will use many of
+them from there.
+
 #+BEGIN_SRC sh
 # # -- GENERAL -----------------------------
 
