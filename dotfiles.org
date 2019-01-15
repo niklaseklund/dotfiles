@@ -1312,7 +1312,7 @@ them from there.
 # set -g default-shell /bin/sh
 # set -s focus-events on
 # # increase scrollback buffer size
-set -g history-limit 20000
+set -g history-limit 50000
 
 #+END_SRC
 
