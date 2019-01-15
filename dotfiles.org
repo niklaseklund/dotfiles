@@ -1982,16 +1982,60 @@ something else then lambda when in such a console with a restricted font.
 
 This is a solution for how to detect if the shell is running in a virtual terminal
 https://unix.stackexchange.com/questions/96463/detect-if-running-in-a-virtual-terminal
+*** aliases
+**** Move/Copy/Remove
+#+BEGIN_SRC sh
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+#+END_SRC
+
+**** List
+
+List content. ~LC_COLLATE=C~ sorts in upper case letters before lower.
+#+BEGIN_SRC sh
+alias ln="${aliases[ln]:-ln} -v"  # verbose ln
+alias l='ls -1'
+alias ll='ls -l'
+alias la='LC_COLLATE=C ls -la'
+#+END_SRC
+
+**** Tmux
+
+https://github.com/hlissner/dotfiles/blob/master/shell/tmux/tmux.conf
+#+BEGIN_SRC sh
+alias ta='tmux attach'
+alias tl='tmux ls'
+
+if [[ -n $TMUX ]]; then # From inside tmux
+    alias tf='tmux find-window'
+    # Detach all other clients to this session
+    alias mine='tmux detach -a'
+    # Send command to other tmux window
+    tt() { tmux send-keys -t .+ C-u && tmux set-buffer "$*" && tmux paste-buffer -t .+ && tmux send-keys -t .+ Enter; }
+    # Create new session (from inside one)
+    tn() {
+        local name="${1:-`basename $PWD`}"
+        TMUX= tmux new-session -d -s "$name"
+        tmux switch-client -t "$name"
+        tmux display-message "Session #S created"
+    }
+else # From outside tmux
+    # Start grouped session so I can be in two different windows in one session
+    tdup() { tmux new-session -t "${1:-`tmux display-message -p '#S'`}"; }
+fi
+#+END_SRC
 
 *** environment variables
+:PROPERTIES:
+:header-args: :tangle ~/.zshenv :mkdirp yes :comments link
+:END:
 
-https://github.com/hlissner/dotfiles/blob/master/shell/zsh/.zshenv
-I found this setting sane. This turned out to not be such a good idea. I was
-getting a very weird looking prompt. Removing this setting solved it so that zsh
-looks good when used as main shell.
+Set the editors that I use. ~Emacs~ for the gui stuff and ~Neovim~ for the good
+old terminal.
 #+BEGIN_SRC sh :tangle ~/.zshenv :mkdirp yes :comments link
-# disable global zsh config
-# unsetopt GLOBAL_RCS
+export EDITOR=nvim
+export VISUAL=emacs
 
 #+END_SRC
 * gtk
