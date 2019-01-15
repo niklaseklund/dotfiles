@@ -1553,22 +1553,79 @@ setw -g window-status-bell-bg colour1
 #+END_SRC
 
 ** Load plugins
+
+*** Plugin manager
+~Plugin manager~
+https://github.com/tmux-plugins/tpm
 #+BEGIN_SRC sh
-# -- CUSTOM -------------------------------
-# # Plugins
-# set -g @plugin 'tmux-plugins/tpm'
-# set -g @plugin 'tmux-plugins/tmux-copycat'
-# set -g @plugin 'tmux-plugins/tmux-yank'
-# set -g @plugin 'tmux-plugins/tmux-open'
+set -g @plugin 'tmux-plugins/tpm'
+#+END_SRC
+
+| Command          | Action                      |
+|------------------+-----------------------------|
+| prefix + I       | Installs new plugins        |
+| prefix + U       | Updates plugins             |
+| prefix + alt + u | Removes/uninstalls plugins  |
+
+*** Custom plugins
+**** copy-cat
+[[https://github.com/tmux-plugins/tmux-copycat][tmux-copycat]] enables
+- regex searches
+- search result highlighting
+- predefined searches (especially if combined with tmux-yank)
+
+#+BEGIN_SRC sh
+set -g @plugin 'tmux-plugins/tmux-copycat'
+#+END_SRC
+
+**** yank
+In normal mode ~prefix + y~ copies the command line to clipboard.
+In copy mode ~y~ copies selection to clipboard.
+In copy mode ~Y~ copies and pastes it to the command line.
+#+BEGIN_SRC sh
+set -g @plugin 'tmux-plugins/tmux-yank'
+#+END_SRC
+
+#+RESULTS:
+**** open
+
+Key bindings
+#+BEGIN_QUOTE
+In tmux copy mode:
+
+    o - "open" a highlighted selection with the system default program
+    Ctrl-o - open a highlighted selection with the $EDITOR
+    Shift-s - search the highlighted selection directly inside a search engine (defaults to google).
+
+In copy mode:
+
+    highlight file.pdf and press o - file will open in the default PDF viewer.
+    highlight file.doc and press o - file will open in system default .doc file viewer.
+    highlight http://quote.com and press o - link will be opened in the default browser.
+    highlight file.txt and press Ctrl-o - file will open in $EDITOR.
+    highlight TypeError: 'undefined' is not a function and press Shift-s - the text snipped will be searched directly inside google by default
+#+END_QUOTE
+
+#+BEGIN_SRC sh
+set -g @plugin 'tmux-plugins/tmux-open'
+#+END_SRC
+
+**** others
+#+BEGIN_SRC sh
 # set -g @plugin 'tmux-plugins/tmux-prefix-highlight'
 
 # set -g @prefix_highlight_fg colour4
 # set -g @prefix_highlight_output_suffix ' #[bg=colour8] '
 
-# # Start plugin manager
-# run '$TMUX_PLUGINS_HOME/tpm/tpm'
-
 #+END_SRC
+
+*** start pluings
+Start the plugin manager
+#+BEGIN_SRC sh
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run -b '~/.tmux/plugins/tpm/tpm'
+#+END_SRC
+
 * (n)vim
 ** neovim
 :PROPERTIES:
