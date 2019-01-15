@@ -574,6 +574,11 @@ bspc rule -a Screenkey manage=off
 bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
 #+END_SRC
 
+I want peek to be floating as it's suppose to record what is underneath it.
+#+BEGIN_SRC sh
+bspc rule -a peek state=floating
+#+END_SRC
+
 *** Background
 I found this post about how to configure feh when using bspwm,
 http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.html.
@@ -609,6 +614,9 @@ xcape &
 #+END_SRC
 
 **** TODO Differentiate between internal and external keyboard
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 An improvement will be to make this conditional. I want to only start
 xcape as long as the keyboardio can't be detected that it is plugged in. Cause
 in that case this modification is not needed.
