@@ -415,7 +415,7 @@ super + {Left,Down,Up,Right}
 
 ** bspwmrc
 :PROPERTIES:
-:header-args: :tangle ~/.config/bspwm/bspwmrc :shebang "#! /bin/sh" :comments link :mkdirp yes :noweb yes
+:header-args: :tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc") :shebang "#! /bin/sh" :comments link :mkdirp yes :noweb yes
 :END:
 
 With ~bspwmrc~ it's important that the file is executable. With tangle there are
