@@ -2,11 +2,11 @@
 * xorg
 ** xinitrc
 :PROPERTIES:
-:header-args: :mkdirp yes
+:header-args: :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link :shebang "#! /bin/sh" :mkdirp yes
 :END:
 *** Load xresources
 
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link :shebang "#! /bin/sh"
+#+BEGIN_SRC sh
 # customize xresources
 [[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
 #+END_SRC
@@ -21,7 +21,7 @@ output of the ~xrandr -q~ said the dpi was 96 which was clearly incorrect. I
 verified that the 227 was correct by consulting the apple website for the
 macbook specs.
 
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link
+#+BEGIN_SRC sh
 # hidpi settings
 #export GDK_SCALE=2
 #export GDK_DPI_SCALE=0.95
@@ -35,7 +35,7 @@ xrandr --dpi 227
 *** Keyboard settings
 
 These are the settings for the keyboard.
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link
+#+BEGIN_SRC sh
 # keyboard settings
 setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
 #+END_SRC
@@ -51,7 +51,7 @@ I need to launch sxhkd since bspwm is relying upon that program to handle the
 keybindings. I launch the terminal as well at startup. It can be convinent at
 times when I hadn't installed rofi. Can probably be removed now.
 
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link :mkdirp yes
+#+BEGIN_SRC sh
 # start programs
 sxhkd &
 urxvt &
@@ -60,10 +60,14 @@ exec bspwm
 #+END_SRC
 
 ** xresources
+:PROPERTIES:
+:header-args: :tangle ~/.Xresources :mkdirp yes
+:END:
+
 *** HIDPI
+
 The configuration of hidpi parameters originate from
 https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
-#+NAME: xresources-hidpi
 #+BEGIN_SRC sh
 !! hidpi
 Xft.dpi: 227
@@ -74,9 +78,9 @@ Xft.lcdfilter: lcddefault
 #+END_SRC
 
 *** Colors
+
 The colors originate from ~hlissners~ dotfiles setup. Another source for color
 schemes might be https://terminal.sexy/.
-#+NAME: xresources-colors
 #+BEGIN_SRC sh
 !! Colors
 #define blk  #141517
@@ -134,8 +138,8 @@ Xcursor.size: 32
 #+END_SRC
 
 *** urxvt
+
 The configuration of urxvt originates from ~hlissners~ setup as well.
-#+NAME: xresources-urxvt
 #+BEGIN_SRC sh
 !! urxvt
 URxvt*.background:             [96]blk
@@ -162,19 +166,11 @@ URxvt.font: xft:Iosevka Term:style=regular:size=8
 URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
 #+END_SRC
 
-*** The configuration file
-#+BEGIN_SRC text :tangle ~/.Xresources :noweb yes
-<<xresources-hidpi>>
-
-<<xresources-colors>>
-
-<<xresources-urxvt>>
-#+END_SRC
 * bspwm
-:PROPERTIES:
-:header-args: :mkdirp yes
-:END:
 ** profile
+:PROPERTIES:
+:header-args: :tangle ~/.profile :mkdirp yes
+:END:
 
 In the configuration section in the arch wiki one can read that:
 https://wiki.archlinux.org/index.php/bspwm
@@ -184,18 +180,21 @@ bspwmrc will not be found
 #+END_EXAMPLE
 
 It's therefore important to set this environmental variable.
-#+BEGIN_SRC sh :tangle ~/.profile :noweb yes
+#+BEGIN_SRC sh
 XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CONFIG_HOME
 #+END_SRC
 ** sxkhkdrc
+:PROPERTIES:
+:header-args: :tangle ~/.config/sxhkd/sxhkdrc :comments link :mkdirp yes
+:END:
 
 I followed the instructions from the manual and copied over the example
 configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
 
 *** Independent hotkeys
 
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # wm independent hotkeys
 #
@@ -205,7 +204,7 @@ super + Return
 	urxvt
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 # make sxhkd reload its configuration files:
 super + Escape
 	pkill -USR1 -x sxhkd
@@ -213,7 +212,7 @@ super + Escape
 #+END_SRC
 
 I have changed the application launcher from ~dmenu~ to ~rofi~.
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 super + @space
 	rofi -show run -m -1
 
@@ -238,7 +237,7 @@ behaviour.)
 #+END_EXAMPLE
 
 *** Hotkeys
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # bspwm hotkeys
 #
@@ -267,7 +266,7 @@ super + g
 
 *** State flags
 
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # state/flags
 #
@@ -283,7 +282,7 @@ super + ctrl + {m,x,y,z}
 #+END_SRC
 
 *** Focus and swapping
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # focus/swap
 #
@@ -322,7 +321,7 @@ super + {_,shift + }{1-9,0}
 
 *** Preselect
 
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # preselect
 #
@@ -346,7 +345,7 @@ super + ctrl + shift + space
 #+END_SRC
 
 *** Move/resize
-#+BEGIN_SRC sh :tangle ~/.config/sxhkd/sxhkdrc :comments link
+#+BEGIN_SRC sh
 #
 # move/resize
 #
@@ -365,20 +364,31 @@ super + {Left,Down,Up,Right}
 #+END_SRC
 
 ** bspwmrc
+:PROPERTIES:
+:header-args: :tangle ~/.config/bspwm/bspwmrc :shebang "#! /bin/sh" :comments link :mkdirp yes :noweb yes
+:END:
 
-*** Monitors and desktops
 With ~bspwmrc~ it's important that the file is executable. With tangle there are
 two different ways of making a tangled file executable
 https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
 argument which will org will make sure to add the shebang and make the file
 executable.
 
-#+NAME: bspwm-monitor
+*** sxhkd
+
+The example file starts with ~sxhkd~. I am unsure if I need it both here and in
+the ~xinitrc~.
+
 #+BEGIN_SRC sh
+sxhkd &
+#+END_SRC
+
+*** Monitors and desktops
+
+#+BEGIN_SRC sh :tangle no
 bspc monitor -d I II III IV V VI VII VIII IX X
 #+END_SRC
 
-#+NAME: bspwm-multiple-monitors
 #+BEGIN_SRC sh
 # bspc monitor DP-1 I II III IV V
 # bspc monitor eDP-1 VI VII VIII IX X
@@ -386,14 +396,12 @@ bspc monitor 0x00600002 -d I II III IV V
 bspc monitor 0x00600004 -d VI VII VIII IX X
 #+END_SRC
 
-#+NAME: bspwm-emacs
-#+BEGIN_SRC sh
-bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
-#+END_SRC
-
 **** Multiple monitors improved
 
 ***** Finding out the monitors with xrandr
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 Find the primary monitor (this is the built in one in the laptop)
 #+BEGIN_SRC sh :results output
 xrandr -q | grep primary | grep 'connected'
@@ -454,13 +462,16 @@ xrandr -q | grep 'connected' | awk '!/disconnected/' | cut -d' ' -f1
 : DP-1-1-8
 : DP-1-1-1
 ***** Finding out the monitors with bspc
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 
 I found this post on the matter, [[https://www.reddit.com/r/unixporn/comments/5lxecy/bspwm_with_two_monitors/][bspwm with two monitors]].
 
 This solution evenly distributes the monitors. So with a 3 monitor setup the
 workspaces becomes. In this setup there will be 3 monitors per monitor meaning 9
 desktops in total.
-#+BEGIN_SRC text
+#+BEGIN_SRC sh
 i=0
 n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
 per=$(( 10 / n ))          # number of desktops per monitor
@@ -471,21 +482,47 @@ for monitor in `bspc query -M`; do
 done
 #+END_SRC
 
+*** bspwm look
+
+#+BEGIN_SRC sh
+bspc config border_width         2
+bspc config window_gap          12
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+#+END_SRC
+
+*** Default rules
+
+#+BEGIN_SRC sh
+bspc rule -a Gimp desktop='^8' state=floating follow=on
+bspc rule -a Chromium desktop='^2'
+bspc rule -a mplayer2 state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
+#+END_SRC
+*** Custom rules
+
+#+BEGIN_SRC sh
+bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
+#+END_SRC
+
 *** Background
 I found this post about how to configure feh when using bspwm,
 http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.html.
 I tried to use xinitrc first to set the background but that approach seemed to
 have implications when running dual screens.
-#+NAME: bspwm-feh
+
 #+BEGIN_SRC sh
-feh --bg-scale ~/wallpapers/ghostinshell.jpg
+feh --bg-scale ~/src/dotfiles/assets/ghostinshell.jpg
 #+END_SRC
 
 *** Status bar
 It was recomended in the polybar wiki,
 https://github.com/jaagr/polybar/wiki, to add a launch file which could be
 called from the ~bspwmrc~.
-#+NAME: bspwm-polybar
+
 #+BEGIN_SRC sh
 $HOME/.config/polybar/launch.sh
 #+END_SRC
@@ -493,7 +530,6 @@ $HOME/.config/polybar/launch.sh
 *** Mouse control
 I want to be able to hide my mouse cursor automatically after a while of non-usage
 https://wiki.archlinux.org/index.php/unclutter
-#+NAME: bspwm-unclutter
 #+BEGIN_SRC sh
 unclutter &
 #+END_SRC
@@ -502,7 +538,6 @@ unclutter &
 I want to switch caps lock to ctrl when pressed in conjunction with another key,
 and escape when pressed by itself. This functionality is provided by the program
 ~xcape~.
-#+NAME: bspwm-xcape
 #+BEGIN_SRC sh
 xcape &
 #+END_SRC
@@ -511,60 +546,17 @@ TODO: an improvement will be to make this conditional. I want to only start
 xcape as long as the keyboardio can't be detected that it is plugged in. Cause
 in that case this modification is not needed.
 
-*** The configuration
-#+BEGIN_SRC sh :tangle ~/.config/bspwm/bspwmrc :shebang "#! /bin/sh" :mkdirp yes :noweb yes
-sxhkd &
-
-# <<bspwm-monitor>>
-<<bspwm-multiple-monitors>>
-
-bspc config border_width         2
-bspc config window_gap          12
-
-bspc config split_ratio          0.52
-bspc config borderless_monocle   true
-bspc config gapless_monocle      true
-
-bspc rule -a Gimp desktop='^8' state=floating follow=on
-bspc rule -a Chromium desktop='^2'
-bspc rule -a mplayer2 state=floating
-bspc rule -a Kupfer.py focus=on
-bspc rule -a Screenkey manage=off
-
-# Special apps
-<<bspwm-emacs>>
-
-# feh
-<<bspwm-feh>>
-
-# polybar
-<<bspwm-polybar>>
-
-# unclutter
-<<bspwm-unclutter>>
-
-# xcape
-<<bspwm-xcape>>
-#+END_SRC
 * compton
+:PROPERTIES:
+:header-args: :tangle ~/.config/compton.conf :mkdirp yes :comments link
+:END:
 
 I have used the example configuration to start with.
-
-** Opacity rules
-I have here the example opacity rule from the arch wiki,
-https://wiki.archlinux.org/index.php/compton.
-#+NAME: compton-urxvt
-#+BEGIN_SRC sh
-opacity-rule = [
-  "90:class_g = 'URxvt' && focused",
-  "60:class_g = 'URxvt' && !focused"
-];
-#+END_SRC
 
 ** Shadows
 I disabled the shadows. I need to understand better how these shadows work
 before I use them.
-#+NAME: compton-shadow
+
 #+BEGIN_SRC sh
 shadow = false;
 shadow-radius = 7;
@@ -588,14 +580,11 @@ shadow-exclude = [
 # xinerama-shadow-crop = true;
 #+END_SRC
 
-** The configuration
+** Opacity and blur
 It seems like compton gives emacs some kind of dark frame on the right side,
 which dissapears if I go to monocle view and back. Need to investigate that.
 
-#+BEGIN_SRC sh :tangle ~/.config/compton.conf :mkdirp yes :noweb yes
-# Shadow
-<<compton-shadow>>
-
+#+BEGIN_SRC sh
 # Opacity
 inactive-opacity = 0.8;
 # active-opacity = 0.8;
@@ -613,9 +602,22 @@ blur-background-exclude = [
 	"window_type = 'desktop'",
 	"_GTK_FRAME_EXTENTS@:c"
 ];
-# opacity-rule = [ "80:class_g = 'URxvt'" ];
-<<compton-urxvt>>
+#+END_SRC
 
+** Application opacity rules
+I have here the example opacity rule from the arch wiki,
+https://wiki.archlinux.org/index.php/compton.
+
+#+BEGIN_SRC sh
+# opacity-rule = [ "80:class_g = 'URxvt'" ];
+opacity-rule = [
+  "90:class_g = 'URxvt' && focused",
+  "60:class_g = 'URxvt' && !focused"
+];
+#+END_SRC
+
+** Rest
+#+BEGIN_SRC sh
 # Fading
 fading = true;
 # fade-delta = 30;
@@ -662,38 +664,14 @@ wintypes:
   dropdown_menu = { opacity = 0.8; }
 };
 #+END_SRC
+
 * firefox
-** Find the profile directory
-Figure out the path to the firefox customization directory
-https://medium.com/@Aenon/firefox-hide-native-tabs-and-titlebar-f0b00bdbb88b
-
-#+BEGIN_SRC elisp
-(defun my/firefox-profile-directory ()
-  (let ((profile-directory '())
-        (firefox-path (expand-file-name "~/.mozilla/firefox/")))
-    (with-temp-buffer (shell-command (concat "ls " firefox-path) t)
-                      (goto-char (point-min))
-                      (while (not (eobp))
-                          (let ((content (string-trim (thing-at-point 'line))))
-                            (if (string-match "default" content)
-                                (setq profile-directory (concat firefox-path content))))
-                          (forward-line 1)))
-    profile-directory))
-#+END_SRC
-
-#+RESULTS:
-: my/firefox-profile-directory
-
-#+BEGIN_SRC elisp
-(concat (my/firefox-profile-directory) "/chrome/userChrome.css")
-#+END_SRC
-
-#+RESULTS:
-: /home/niklascarlsson/.mozilla/firefox/eeakdoa8.default/chrome/userChrome.css
-
 ** The configuration
+:PROPERTIES:
+:header-args: :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes :comments link
+:END:
 
-#+BEGIN_SRC sh :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes :noweb yes
+#+BEGIN_SRC sh
 /*
  * Do not remove the @namespace line -- it's required for correct functioning
  */
@@ -707,13 +685,17 @@ https://medium.com/@Aenon/firefox-hide-native-tabs-and-titlebar-f0b00bdbb88b
 #navigator-toolbox {visibility: collapse;}
 #content browser {margin-right: -14px; margin-bottom: -14px;}
 #+END_SRC
+
 * polybar
 
 ** example configuration
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/config :mkdirp yes
+:END:
 
 I choose this one to be displayed as lisp to get the right comment symbol, in
 this case the ~;~.
-#+BEGIN_SRC lisp :tangle ~/.config/polybar/config :mkdirp yes :comments link
+#+BEGIN_SRC shell
 ;==========================================================
 ;
 ;
@@ -1140,9 +1122,12 @@ margin-bottom = 5
 
 #+END_SRC
 ** launch script
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/launch.sh :comments link :shebang "#! /bin/sh" :mkdirp yes
+:END:
 
 *** Kill active bars
-#+BEGIN_SRC sh :tangle ~/.config/polybar/launch.sh :comments link :shebang "#! /bin/sh" :mkdirp yes
+#+BEGIN_SRC sh
 #!/usr/bin/env bash
 
 # Terminate already running bar instances
@@ -1161,7 +1146,7 @@ the configuration file.
               Reload the application when the config file has been modified
 #+END_QUOTE
 
-#+BEGIN_SRC sh :tangle ~/.config/polybar/launch.sh :comments link :shebang "#! /bin/sh" :mkdirp yes
+#+BEGIN_SRC sh
 # Launch example bar
 polybar -r example &
 
@@ -1169,11 +1154,14 @@ echo "Bar launched..."
 #+END_SRC
 
 * rofi
+:PROPERTIES:
+:header-args: :tangle ~/.config/rofi/config2 :mkdirp yes :comments link
+:END:
 
 ~rofi~ is a an application launcher.
 
 I have used the configuration of ~Matt Dobson~.
-#+BEGIN_SRC sh :tangle ~/.config/rofi/config
+#+BEGIN_SRC sh
 ! ------------------------------------------------------------------------------
 !                          ROFI THEME - MATT DOBSON
 ! ------------------------------------------------------------------------------
@@ -1183,7 +1171,7 @@ rofi.color-urgent: argb:00171717, #cc6666, argb:e54b5160, argb:00171717, #535c5c
 rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
 rofi.width: 1000
 rofi.lines: 15
-rofi.font: hack 12
+rofi.font: hack 18
 rofi.bw: 0
 rofi.padding: 50
 rofi.line-margin: 5
@@ -1200,6 +1188,9 @@ rofi.matching: fuzzy
 #+END_SRC
 
 * tmux
+:PROPERTIES:
+:header-args: :tangle ~/.tmux.conf :mkdirp yes :comments link
+:END:
 
 ** General information
 
@@ -1207,7 +1198,7 @@ I am trying to grasp the notations of ~tmux~. It seems like there is three
 important words to know. ~Sessions~, ~Windows~ and ~Panes~.
 
 ** Start
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # -- GENERAL -----------------------------
 
 # set -g default-terminal screen-256color
@@ -1221,14 +1212,14 @@ set -g history-limit 20000
 
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # Rather than constraining window size to the maximum size of any client
 # # connected to the *session*, constrain window size to the maximum size of any
 # # client connected to *that window*. Much more reasonable.
 setw -g aggressive-resize off
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # Tmux >= 2.1
 # # enable mouse
 # setw -g mouse on
@@ -1250,7 +1241,7 @@ setw -g aggressive-resize off
 
 ** Display
 
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # -- DISPLAY -----------------------------
 
 set -g set-titles on
@@ -1272,7 +1263,7 @@ set -g focus-events on
 #+END_SRC
 
 ** Important keybindings
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # -- KEYBINDS ----------------------------
 
 # set vi keys
@@ -1285,13 +1276,13 @@ When I started using tmux I had a delay in zsh and in tmux there was a
 noticable delay as well. This article describes how to deal with it by seting
 the ~escape-time~ parameter.
 https://www.johnhawthorn.com/2012/09/vi-escape-delays/
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 set -s escape-time 0
 # set -sg repeat-time 600
 
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # Custom prefix
 set -g prefix C-c
 bind C-c send-prefix
@@ -1302,7 +1293,7 @@ unbind C-b
 
 ** Window management
 These keybindings makes more sense from a Vim perspective.
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 unbind %
 unbind '"'
 bind s split-window -c "#{pane_current_path}" -v
@@ -1311,7 +1302,7 @@ bind c new-window -c "#{pane_current_path}"
 #+END_SRC
 
 ** Pane management
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # break pane into a window
 # bind = select-layout even-vertical
 # bind + select-layout even-horizontal
@@ -1372,7 +1363,7 @@ bind c new-window -c "#{pane_current_path}"
 #+END_SRC
 
 Kill commands
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 bind x kill-pane
 bind X kill-window
 bind q kill-session
@@ -1381,7 +1372,7 @@ bind Q kill-server
 
 ** Copy mode
 Enable vi bindings for Copy mode
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # # -- COPY MODE ---------------------------
 
 bind Enter copy-mode # enter copy mode
@@ -1399,7 +1390,7 @@ bind -T copy-mode-vi L send -X end-of-line
 #+END_SRC
 
 ** Reload configuration
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # reload config without killing server
 bind r source-file $HOME/.tmux.conf \; display-message "  Config reloaded..".
 bind ^r refresh-client
@@ -1407,7 +1398,7 @@ bind ^r refresh-client
 
 ** Theme
 Load the theme
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # -- THEME -------------------------------
 
 # The statusbar
@@ -1473,7 +1464,7 @@ setw -g window-status-bell-bg colour1
 #+END_SRC
 
 ** Load plugins
-#+BEGIN_SRC sh :tangle ~/.tmux.conf :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # -- CUSTOM -------------------------------
 # # Plugins
 # set -g @plugin 'tmux-plugins/tpm'
@@ -1489,20 +1480,157 @@ setw -g window-status-bell-bg colour1
 # run '$TMUX_PLUGINS_HOME/tpm/tpm'
 
 #+END_SRC
+* (n)vim
+** neovim
+:PROPERTIES:
+:header-args: :tangle ~/.config/nvim/init.vim :mkdirp yes :comments link
+:END:
+
+#+BEGIN_SRC vimrc
+" vim: foldmethod=marker
+
+" {{{1 Easy configuration
+let color_config = 'dark' " light/dark
+
+" Vim-Plug (Plugin manager) {{{1
+" Installation {{{2
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source ~/.config/nvim/init.vim
+endif
+
+" Setup plugins {{{2
+call plug#begin(expand('~/.config/nvim/plugged'))
+
+" Define plugins
+Plug 'tpope/vim-commentary' " Comments
+Plug 'tpope/vim-surround' " Change surrounding chars
+Plug 'tpope/vim-unimpaired' " Improve navigation
+Plug 'kana/vim-textobj-user' " Enable custom text objects
+Plug 'kana/vim-textobj-indent' " Indentation text object
+Plug 'sgur/vim-textobj-parameter' " Function argument text object
+Plug 'justinmk/vim-sneak' " Snipe characters with greater precision
+Plug 'tommcdo/vim-exchange' " Provide exchange object
+Plug 'qpkorr/vim-bufkill' " Improve buffer handling
+Plug 'Konfekt/FastFold' " Improve folding performance
+call plug#end()
+
+" Vim core {{{1
+" Settings {{{2
+syntax enable " Enable syntax highlighting
+set number " Show line number
+set updatetime=100 " Decrease update time from 4s to 0.1 s, useful for gutter
+set undofile " Enables persistent undo
+set noswapfile " Disables swapfile
+set spelllang=en_us " Sets spelling language to english
+filetype plugin indent on " Enable filetype detection
+set hidden " Enable hidden buffers, buffers must not be saved
+set splitbelow splitright " Set Split behavior
+set mouse=a "Enable mouse interaction
+set clipboard+=unnamedplus " Enable clipboard paste from other sources
+set equalalways " Keep windows equal
+set foldmethod=syntax " determine fold method
+set foldlevelstart=99 " start unfolded
+set tabstop=4 shiftwidth=4 expandtab
+set ignorecase smartcase " smart case enabled
+set inccommand=nosplit " Get live visualization of substitution (Neovim exclusive)
+
+" Define leader key
+let mapleader=","
+
+" Autoread when switching buffer or Vim got the focus again
+au FocusGained,BufEnter * :checktime
+
+" Mappings {{{2
+" Harmonize Y behavior with (C, D)
+map Y y$
+"" Remap t/f movement in reverse direction
+noremap \ ,
+" Change mark behavior to position rather than line
+" Improve search behavior
+nnoremap n nzzzv
+nnoremap N Nzzzv
+" Command-line history with C-p/C-n
+cnoremap <C-p> <up>
+cnoremap <C-n> <down>
+" Macro, fast access to macro q
+nmap Q @q
+" Windows
+nnoremap <silent> <leader>wh <C-w>h
+nnoremap <silent> <leader>wj <C-w>j
+nnoremap <silent> <leader>wk <C-w>k
+nnoremap <silent> <leader>wl <C-w>l
+nnoremap <silent> <leader>wc <C-w>c
+nnoremap <silent> <leader>wo <C-w>o
+nnoremap <silent> <leader>wO <C-w>o
+nnoremap <silent> <leader>wr <C-w>r
+nnoremap <silent> <leader>wv <C-w>v
+nnoremap <silent> <leader>wV <C-w>v <C-w>p
+nnoremap <silent> <leader>w= <C-w>=
+nnoremap <silent> <leader>wp <C-w>p
+nnoremap <silent> <leader>ws <C-w>s <C-w>p
+nnoremap <silent> <leader>wS <C-w>s
+nnoremap <silent> <leader>wd <C-w>c
+" Built in terminal
+nnoremap <leader>ot :term<CR>
+" Open a terminal in a popup window
+" Quiting
+nnoremap <silent> <leader>qq :qall!<CR>
+" Disable current highlight search
+nnoremap <silent> <Esc> :noh<CR>
+
+" Plugins {{{1
+" Mappings {{{2
+" BuffKill {{{3
+" Kill current buffer
+nnoremap <silent> <leader>bk :BD!<CR>
+" Move to previous buffer
+nnoremap <silent> <leader>b[ :BB<CR>
+" Move to next buffer
+nnoremap <silent> <leader>b] :BF<CR>
+" Create a new empty buffer
+nnoremap <silent> <leader>bn :enew<CR>
+
+" Settings {{{2
+" vim-textobj-parameter {{{3
+let g:vim_textobj_parameter_mapping = 'a'
+
+" Exchange {{{3
+nmap gx <Plug>(Exchange)
+nmap gxc <Plug>(ExchangeClear)
+nmap gxx <Plug>(ExchangeLine)
+
+" Statusline {{{1
+set statusline=
+set statusline+=%#Identifier#\ %F " Use %f for shorter name
+set statusline+=%m
+set statusline+=%=
+set statusline+=%2c
+
+" Color tweaking
+set background=dark
+#+END_SRC
+
 * i3lock
+:PROPERTIES:
+:header-args: :tangle (my/tangle-os-list '("ubuntu") "~/bin/lock-screen") :shebang "#! /bin/sh" :mkdirp yes
+:END:
 
 I am using the application ~i3lock~ for locking the screen. I create an
 executable file to be able to call it from ~rofi~ passing the right parameters.
 
-#+BEGIN_SRC sh :tangle ~/bin/lock-screen :shebang "#! /bin/sh" :mkdirp yes
+#+BEGIN_SRC sh
 i3lock -i ~/opensource/dotfiles/assets/ghostinshell.png --color=000000 -t
 #+END_SRC
 
 * shells
 ** bash
+:PROPERTIES:
+:header-args: :tangle (my/tangle-os-list '("arch") "~/.bashrc") :mkdirp yes :comments link
+:END:
 *** default
 This is the default content that where in the rc file at start
-#+NAME: bashrc-default
 #+BEGIN_SRC sh
 #
 # ~/.bashrc
@@ -1517,34 +1645,29 @@ PS1='[\u@\h \W]\$ '
 
 *** external harddrive
 Mount external
-#+NAME: bashrc-mount-ssd
 #+BEGIN_SRC sh
 # mount ssd
 alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
 
-*** The configuration file
-Create the file
-#+BEGIN_SRC sh :tangle ~/.bashrc :mkdirp yes :noweb yes
-<<bashrc-default>>
-
-<<bashrc-mount-ssd>>
-#+END_SRC
 ** zsh
+:PROPERTIES:
+:header-args: :tangle ~/.zshrc :mkdirp yes :comments link
+:END:
 
 *** zgen
 
 Following the setup details on [[https://github.com/tarjoilija/zgen][zgen wiki]]. Starting with sourcing zgen on start
 in zshrc.
 
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # load zgen
 source "${HOME}/.zgen/zgen.zsh"
 #+END_SRC
 
 Further down on the github page there is an example zshrc. I have taken that
 content and slimmed it down.
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # if the init scipt doesn't exist
 if ! zgen saved; then
     echo "Creating a zgen save"
@@ -1567,13 +1690,13 @@ fi
 
 Make sure to set the timeout to a low value to avoid delays when pressing escape
 https://www.johnhawthorn.com/2012/09/vi-escape-delays/
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 export KEYTIMEOUT=10
 #+END_SRC
 
 Enable vi-mode and set the keybindings
 I grabbed this from https://github.com/hlissner/dotfiles/tree/master/shell/zsh
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 ## vi-mode
 bindkey -v
 
@@ -1600,7 +1723,7 @@ There is an example zshrc found in the arch wiki
 https://github.com/MrElendig/dotfiles-alice/blob/master/.zshrc
 
 I use this to get colored directories
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 #------------------------------
 # History stuff
 #------------------------------
@@ -1617,14 +1740,14 @@ export EDITOR="nvim"
 
 I found this set in the arch ~bashrc~ file. Seems like a good alias to set, this
 gave me colored output of my ls commands.
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 alias ls='ls --color=auto'
 #+END_SRC
 *** prompt
 
 https://github.com/hlissner/dotfiles/blob/master/shell/zsh/prompt.zsh
 
-#+BEGIN_SRC sh :tangle ~/.zshrc :mkdirp yes :comments link
+#+BEGIN_SRC sh
 # Loosely based off Pure <https://github.com/sindresorhus/pure>
 
 _strlen() { echo ${#${(S%%)1//$~%([BSUbfksu]|([FB]|){*})/}}; }
@@ -1699,7 +1822,6 @@ something else then lambda when in such a console with a restricted font.
 This is a solution for how to detect if the shell is running in a virtual terminal
 https://unix.stackexchange.com/questions/96463/detect-if-running-in-a-virtual-terminal
 
-
 *** environment variables
 
 https://github.com/hlissner/dotfiles/blob/master/shell/zsh/.zshenv
@@ -1710,4 +1832,29 @@ looks good when used as main shell.
 # disable global zsh config
 # unsetopt GLOBAL_RCS
 
+#+END_SRC
+* gtk
+
+Both of these configuration files has been copied from hlissers-setup. I have
+also looked at the arch wiki https://wiki.archlinux.org/index.php/GTK%2B#Examples.
+
+** gtk2
+:PROPERTIES:
+:header-args: :tangle ~/.gtkrc-2.0 :comments link :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+include "/usr/share/themes/Arc-Dark/gtk-2.0/gtkrc"
+#+END_SRC
+
+** gtk3
+:PROPERTIES:
+:header-args: :tangle ~/.config/gtk-3.0/settings.ini :comments link :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+[Settings]
+gtk-application-prefer-dark-theme = true
+gtk-theme-name = Arc-Dark
+gtk-icon-theme-name = Arc-Dark
 #+END_SRC
