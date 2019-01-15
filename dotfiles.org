@@ -165,6 +165,40 @@ URxvt*.letterSpace:            0
 URxvt.font: xft:Iosevka Term:style=regular:size=8
 URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
 #+END_SRC
+** xprofile
+:PROPERTIES:
+:header-args: :tangle (my/tangle-os-list '("ubuntu") "~/.xprofile") :comments link :mkdirp yes
+:END:
+
+Launch the compositor compton to enable semi-trasparency.
+#+BEGIN_SRC sh
+# Start compositor
+compton &
+
+#+END_SRC
+
+Set the keyboard mapping. I enable ~Swedish~ and ~English~ and switch languages
+by pressing both of the ~shift~ keys.
+#+BEGIN_SRC sh
+# set keyboard layouts
+# setxkbmap -layout us,se -option grp:shifts_toggle
+setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_lwin
+#+END_SRC
+
+Load the Xresources file
+#+BEGIN_SRC sh
+# customize xresources
+[[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
+
+#+END_SRC
+
+Start ~xcape~ to get left ctrl to behave as escape when pressed by itself.
+#+BEGIN_SRC sh
+# Start xcape
+xcape &
+
+#+END_SRC
+
 
 * bspwm
 ** profile
