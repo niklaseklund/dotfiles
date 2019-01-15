@@ -419,15 +419,31 @@ sxhkd &
 
 *** Monitors and desktops
 
+This is the setup for monitors in the example configuration
 #+BEGIN_SRC sh :tangle no
 bspc monitor -d I II III IV V VI VII VIII IX X
 #+END_SRC
 
-#+BEGIN_SRC sh
+This is the first attempt to use multiple monitors on my macArch
+#+BEGIN_SRC sh :tangle no
 # bspc monitor DP-1 I II III IV V
 # bspc monitor eDP-1 VI VII VIII IX X
 bspc monitor 0x00600002 -d I II III IV V
 bspc monitor 0x00600004 -d VI VII VIII IX X
+#+END_SRC
+
+This is the more generic solution. It splits up the ten workspaces on the number
+of monitors that exists. In the case of three screens 3 workspaces will be
+assigned to each monitor.
+#+BEGIN_SRC sh
+i=0
+n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
+per=$(( 10 / n ))          # number of desktops per monitor
+for monitor in `bspc query -M`; do
+    bspc monitor $monitor -d `seq $i $(( i + per - 1 ))`
+    # seq is end-inclusive; `seq 1 $((1+2))` returns "1 2 3"
+    i=$(( i + per ))
+done
 #+END_SRC
 
 **** Multiple monitors improved
