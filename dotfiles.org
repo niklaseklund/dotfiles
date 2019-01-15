@@ -2024,3 +2024,4 @@ gtk-icon-theme-name = Arc-Dark
 - add private/work condition?
 - tangle other local files from this file? Useful for code that should not be
   publically available
+- mouse toggle script that I can call from rofi? https://askubuntu.com/questions/199271/x11-disable-mouse
