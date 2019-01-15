@@ -1244,7 +1244,7 @@ echo "Bar launched..."
 
 * rofi
 :PROPERTIES:
-:header-args: :tangle ~/.config/rofi/config2 :mkdirp yes :comments link
+:header-args: :tangle ~/.config/rofi/config :mkdirp yes :comments link
 :END:
 
 ~rofi~ is a an application launcher.
