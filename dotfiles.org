@@ -170,35 +170,51 @@ URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
 :header-args: :tangle (my/tangle-os-list '("ubuntu") "~/.xprofile") :comments link :mkdirp yes
 :END:
 
+*** About
+In the [[https://wiki.archlinux.org/index.php/xprofile][arch wiki]] this is said about the ~xprofile~.
+#+BEGIN_QUOTE
+An xprofile file, ~/.xprofile and /etc/xprofile, allows you to execute commands
+at the beginning of the X user session - before the window manager is started.
+#+END_QUOTE
+
+*** Xresources
 Launch the compositor compton to enable semi-trasparency.
 #+BEGIN_SRC sh
-# Start compositor
-compton &
-
+# customize xresources
+[[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
 #+END_SRC
+
+*** Wallpaper
+
+#+BEGIN_SRC sh
+feh --bg-scale ~/Pictures/Wallpapers/forest_wallpaper.jpg
+#+END_SRC
+
+*** Keyboard
 
 Set the keyboard mapping. I enable ~Swedish~ and ~English~ and switch languages
 by pressing both of the ~shift~ keys.
 #+BEGIN_SRC sh
 # set keyboard layouts
-# setxkbmap -layout us,se -option grp:shifts_toggle
 setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_lwin
 #+END_SRC
 
-Load the Xresources file
-#+BEGIN_SRC sh
-# customize xresources
-[[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
+*** Programs
 
+#+BEGIN_SRC sh
+sxhkd &
 #+END_SRC
 
-Start ~xcape~ to get left ctrl to behave as escape when pressed by itself.
 #+BEGIN_SRC sh
-# Start xcape
+# Start compositor
+compton &
+#+END_SRC
+
+#+BEGIN_SRC sh
+sleep 2
 xcape &
-
+unclutter &
 #+END_SRC
-
 
 * bspwm
 ** profile
