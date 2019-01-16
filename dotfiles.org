@@ -426,7 +426,7 @@ super + {Left,Down,Up,Right}
 
 ** bspwmrc
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc") :shebang "#! /bin/sh" :comments link :mkdirp yes :noweb yes
+:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :comments link :mkdirp yes
 :END:
 
 With ~bspwmrc~ it's important that the file is executable. With tangle there are
@@ -440,12 +440,13 @@ executable.
 The example file starts with ~sxhkd~. I am unsure if I need it both here and in
 the ~xinitrc~.
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc")
 sxhkd &
 #+END_SRC
 
 *** Monitors and desktops
 
+**** Simple hardcoded solution
 This is the setup for monitors in the example configuration
 #+BEGIN_SRC sh :tangle no
 bspc monitor -d I II III IV V VI VII VIII IX X
@@ -459,6 +460,7 @@ bspc monitor 0x00600002 -d I II III IV V
 bspc monitor 0x00600004 -d VI VII VIII IX X
 #+END_SRC
 
+**** Generic solution
 This is the more generic solution. It splits up the ten workspaces on the number
 of monitors that exists. In the case of three screens 3 workspaces will be
 assigned to each monitor.
@@ -471,6 +473,32 @@ for monitor in `bspc query -M`; do
     # seq is end-inclusive; `seq 1 $((1+2))` returns "1 2 3"
     i=$(( i + per ))
 done
+#+END_SRC
+
+**** Specific 3 monitor solution :wip:
+This solution finds the primary display and allocates five workspaces on that
+one and leaves the other screens with 1 workspace each. Maybe this is a good
+approach, I will evaluate it.
+#+BEGIN_SRC sh :tangle no
+export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
+export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
+MONITOR=${MONITOR:-${MONITORS[0]}}
+# Multiple workspaces for main monitor, but only one for others
+bspc monitor $MONITOR -d {1,2,3,4,5}
+for mon in ${MONITORS[@]/${MONITOR}}; do
+    bspc monitor $mon -d $mon/1
+done
+
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle no
+export CENTER_MONITOR=$(xrandr -q | grep " connected" | sed -n '1p' | cut -d' ' -f1)
+export LEFT_MONITOR=$(xrandr -q | grep " connected" | sed -n '2p' | cut -d' ' -f1)
+export RIGHT_MONITOR=$(xrandr -q | grep " connected" | sed -n '3p' | cut -d' ' -f1)
+
+bspc monitor $LEFT_MONITOR -d {1}
+bspc monitor $CENTER_MONITOR -d {2,3,4,5,6}
+bspc monitor $RIGHT_MONITOR -d {7}
 #+END_SRC
 
 **** Multiple monitors improved
@@ -561,7 +589,9 @@ done
 
 *** bspwm look
 
-#+BEGIN_SRC sh
+**** Default
+This comes from the default configuration
+#+BEGIN_SRC sh :tangle no
 bspc config border_width         2
 bspc config window_gap          12
 
@@ -569,6 +599,63 @@ bspc config split_ratio          0.52
 bspc config borderless_monocle   true
 bspc config gapless_monocle      true
 #+END_SRC
+
+**** hlissner setup :wip:
+These settings are from hlissner's setup
+#+BEGIN_SRC sh
+bspc config split_ratio          0.50
+bspc config gapless_monocle      true
+bspc config borderless_monocle   true
+bspc config paddingless_monocle  true
+
+bspc config pointer_modifier mod4
+bspc config pointer_action1 move
+bspc config pointer_action2 resize_side
+bspc config pointer_action3 resize_corner
+
+bspc config remove_disabled_monitors false
+bspc config remove_unplugged_monitors true
+
+bspc config border_width    0
+bspc config window_gap      12
+bspc config top_padding     0
+bspc config bottom_padding  0
+bspc config left_padding    0
+bspc config right_padding   0
+
+#+END_SRC
+
+Settings for the center monitor
+#+BEGIN_SRC sh
+# export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
+export MONITOR=$(xrandr -q | grep 'DP-1-1-8' | cut -d' ' -f1)
+
+bspc config -m $MONITOR window_gap     22
+bspc config -m $MONITOR bottom_padding 36
+bspc config -m $MONITOR top_padding    0
+bspc config -m $MONITOR left_padding   0
+bspc config -m $MONITOR right_padding  0
+#+END_SRC
+
+**** Three screen setup
+My new idea is to detect if three screen are connected and then utilize the
+middle one as the primary.
+
+Check number of screens
+#+BEGIN_SRC sh :tangle no
+xrandr -q | grep " connected" | wc -l
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+Extract the center screen and use that as monitor
+#+BEGIN_SRC sh :tangle no
+xrandr -q | grep " connected" | sed -n '2p' | cut -d' ' -f1
+#+END_SRC
+
+#+RESULTS:
+: DP-1-1-8
 
 *** Default rules
 
@@ -596,7 +683,7 @@ http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.htm
 I tried to use xinitrc first to set the background but that approach seemed to
 have implications when running dual screens.
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc")
 feh --bg-scale ~/src/dotfiles/assets/ghostinshell.jpg
 #+END_SRC
 
@@ -612,7 +699,7 @@ $HOME/.config/polybar/launch.sh
 *** Mouse control
 I want to be able to hide my mouse cursor automatically after a while of non-usage
 https://wiki.archlinux.org/index.php/unclutter
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc")
 unclutter &
 #+END_SRC
 
@@ -620,7 +707,7 @@ unclutter &
 I want to switch caps lock to ctrl when pressed in conjunction with another key,
 and escape when pressed by itself. This functionality is provided by the program
 ~xcape~.
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc")
 xcape &
 #+END_SRC
 
