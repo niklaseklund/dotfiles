@@ -1269,6 +1269,10 @@ rofi.color-window: argb:f2171717, #535c5c,         #a4a4a4
 rofi.color-normal: argb:00171717, #a4a4a4, argb:00535c5c, argb:00171717, #535c5c
 rofi.color-urgent: argb:00171717, #cc6666, argb:e54b5160, argb:00171717, #535c5c
 rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
+#+END_SRC
+
+Customize appearance in ~arch~
+#+BEGIN_SRC sh tangle (my/tangle-os-list '("arch") "~/.config/rofi/config")
 rofi.width: 1000
 rofi.lines: 15
 rofi.font: hack 18
@@ -1276,6 +1280,20 @@ rofi.bw: 0
 rofi.padding: 50
 rofi.line-margin: 5
 rofi.eh: 1
+#+END_SRC
+
+Customize appearance in ~ubuntu~
+#+BEGIN_SRC sh tangle (my/tangle-os-list '("ubuntu") "~/.config/rofi/config")
+rofi.width: 1000
+rofi.lines: 15
+rofi.font: hack 12
+rofi.bw: 0
+rofi.padding: 50
+rofi.line-margin: 5
+rofi.eh: 1
+#+END_SRC
+
+#+BEGIN_SRC sh
 rofi.sidebar-mode: true
 rofi.separator-style: none
 rofi.hide-scrollbar: true
