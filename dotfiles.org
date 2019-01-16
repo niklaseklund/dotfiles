@@ -795,7 +795,8 @@ wintypes:
 
 I choose this one to be displayed as lisp to get the right comment symbol, in
 this case the ~;~.
-#+BEGIN_SRC shell
+*** Start
+#+BEGIN_SRC sh
 ;==========================================================
 ;
 ;
@@ -825,7 +826,26 @@ primary = #ffb52a
 secondary = #e60053
 alert = #bd2c40
 
+#+END_SRC
+
+*** Main bar
+
+This is the main bar part
+https://github.com/jaagr/polybar/wiki
+#+BEGIN_QUOTE
+To allow other windows to be placed above the bar, or to avoid having the bar
+visible when in fullscreen mode, you need to use the following two parameters.
+Note that it will tell the window manager to back off so no area will be
+reserved, etc.
+#+END_QUOTE
+
+#+BEGIN_SRC sh
 [bar/example]
+wm-restack = bspwm
+override-redirect = true
+#+END_SRC
+
+#+BEGIN_SRC sh
 ;monitor = ${env:MONITOR:HDMI-1}
 width = 100%
 height = 27
@@ -874,7 +894,12 @@ tray-padding = 2
 
 cursor-click = pointer
 cursor-scroll = ns-resize
+#+END_SRC
 
+*** Modules
+
+**** xwindow
+#+BEGIN_SRC shell
 [module/xwindow]
 type = internal/xwindow
 label = %title:0:30:...%
@@ -905,6 +930,10 @@ label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
 label-unmounted = %mountpoint% not mounted
 label-unmounted-foreground = ${colors.foreground-alt}
 
+#+END_SRC
+
+**** bspwm
+#+BEGIN_SRC shell
 [module/bspwm]
 type = internal/bspwm
 
@@ -926,7 +955,10 @@ label-empty-padding = 2
 
 ; Separator in between workspaces
 ; label-separator = |
+#+END_SRC
 
+**** i3
+#+BEGIN_SRC shell
 [module/i3]
 type = internal/i3
 format = <label-state> <label-mode>
@@ -965,6 +997,10 @@ label-urgent-padding = ${module/bspwm.label-urgent-padding}
 ; label-separator = |
 
 
+#+END_SRC
+
+**** mpd
+#+BEGIN_SRC shell
 [module/mpd]
 type = internal/mpd
 format-online = <label-song>  <icon-prev> <icon-stop> <toggle> <icon-next>
@@ -994,12 +1030,19 @@ bar-fill-foreground = #9f78e1
 bar-empty = ─
 bar-empty-font = 2
 bar-empty-foreground = ${colors.foreground-alt}
+#+END_SRC
 
+**** backlight
+#+BEGIN_SRC shell
 [module/backlight-acpi]
 inherit = module/xbacklight
 type = internal/backlight
 card = intel_backlight
 
+#+END_SRC
+
+**** cpu
+#+BEGIN_SRC shell
 [module/cpu]
 type = internal/cpu
 interval = 2
@@ -1008,6 +1051,10 @@ format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #f90000
 label = %percentage:2%%
 
+#+END_SRC
+
+**** memory
+#+BEGIN_SRC shell
 [module/memory]
 type = internal/memory
 interval = 2
@@ -1016,6 +1063,10 @@ format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #4bffdc
 label = %percentage_used%%
 
+#+END_SRC
+
+**** wlan
+#+BEGIN_SRC shell
 [module/wlan]
 type = internal/network
 interface = wlp3s0
@@ -1038,6 +1089,10 @@ ramp-signal-3 = 
 ramp-signal-4 = 
 ramp-signal-foreground = ${colors.foreground-alt}
 
+#+END_SRC
+
+**** ethernet
+#+BEGIN_SRC shell
 [module/eth]
 type = internal/network
 interface = net0
@@ -1054,6 +1109,10 @@ format-disconnected =
 ;label-disconnected = %ifname% disconnected
 ;label-disconnected-foreground = ${colors.foreground-alt}
 
+#+END_SRC
+
+**** date
+#+BEGIN_SRC shell
 [module/date]
 type = internal/date
 interval = 5
@@ -1070,6 +1129,10 @@ format-underline = #0a6cf5
 
 label = %date% %time%
 
+#+END_SRC
+
+**** pulseaudio
+#+BEGIN_SRC shell
 [module/pulseaudio]
 type = internal/pulseaudio
 
@@ -1097,6 +1160,10 @@ bar-volume-empty = ─
 bar-volume-empty-font = 2
 bar-volume-empty-foreground = ${colors.foreground-alt}
 
+#+END_SRC
+
+**** alsa
+#+BEGIN_SRC shell
 [module/alsa]
 type = internal/alsa
 
@@ -1124,7 +1191,10 @@ bar-volume-fill-font = 2
 bar-volume-empty = ─
 bar-volume-empty-font = 2
 bar-volume-empty-foreground = ${colors.foreground-alt}
+#+END_SRC
 
+**** battery
+#+BEGIN_SRC shell
 [module/battery]
 type = internal/battery
 battery = BAT0
@@ -1158,6 +1228,10 @@ animation-discharging-2 = 
 animation-discharging-foreground = ${colors.foreground-alt}
 animation-discharging-framerate = 750
 
+#+END_SRC
+
+**** temperature
+#+BEGIN_SRC shell
 [module/temperature]
 type = internal/temperature
 thermal-zone = 0
@@ -1177,6 +1251,10 @@ ramp-1 = 
 ramp-2 = 
 ramp-foreground = ${colors.foreground-alt}
 
+#+END_SRC
+
+**** powermenu
+#+BEGIN_SRC shell
 [module/powermenu]
 type = custom/menu
 
@@ -1206,6 +1284,10 @@ menu-2-0-exec = sudo poweroff
 menu-2-1 = cancel
 menu-2-1-exec = menu-open-0
 
+#+END_SRC
+
+**** settings
+#+BEGIN_SRC shell
 [settings]
 screenchange-reload = true
 ;compositing-background = xor
@@ -1213,7 +1295,10 @@ screenchange-reload = true
 ;compositing-foreground = source
 ;compositing-border = over
 ;pseudo-transparency = false
+#+END_SRC
 
+**** global/wm
+#+BEGIN_SRC shell
 [global/wm]
 margin-top = 5
 margin-bottom = 5
