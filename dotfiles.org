@@ -2056,6 +2056,13 @@ export EDITOR=nvim
 export VISUAL=emacs
 
 #+END_SRC
+
+Add ~HOME/bin~ to ~PATH~ to find my local binaries. To ~prepend~ or ~append~ is
+exemplified [[https://stackoverflow.com/questions/11530090/adding-a-new-entry-to-the-path-variable-in-zsh ][here.]]
+#+BEGIN_SRC sh
+path=('/home/niklascarlsson/bin' $path) # prepend path
+#+END_SRC
+
 * gtk
 
 Both of these configuration files has been copied from hlissers-setup. I have
