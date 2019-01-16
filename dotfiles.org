@@ -921,7 +921,7 @@ alert = #bd2c40
 
 *** Main bar
 
-**** Enable true full screen mode
+**** Enable true full screen mode :wip:
 
 I found [[https://github.com/jaagr/polybar/wiki][this]] at the polybar wiki page.
 #+BEGIN_QUOTE
@@ -932,8 +932,12 @@ reserved, etc.
 #+END_QUOTE
 
 I therefore add the following settings.
+
+I am trying to deduce how to make the polybar appear on multiple monitors. Or at
+least primary one. https://github.com/jaagr/polybar/issues/763
 #+BEGIN_SRC sh
 [bar/example]
+monitor = ${env:MONITOR:}
 wm-restack = bspwm
 override-redirect = true
 #+END_SRC
@@ -1140,10 +1144,10 @@ bar-empty-foreground = ${colors.foreground-alt}
 
 **** backlight
 #+BEGIN_SRC shell
-[module/backlight-acpi]
-inherit = module/xbacklight
-type = internal/backlight
-card = intel_backlight
+# [module/backlight-acpi]
+# inherit = module/xbacklight
+# type = internal/backlight
+# card = intel_backlight
 
 #+END_SRC
 
@@ -1404,10 +1408,13 @@ screenchange-reload = true
 #+END_SRC
 
 **** global/wm
+
+Seems like these settings doesn't have that much effect after
+using the ~redirect/restack~ options? https://github.com/jaagr/polybar/issues/1174
 #+BEGIN_SRC shell
 [global/wm]
-margin-top = 5
-margin-bottom = 5
+margin-top = 0
+margin-bottom = 35
 
 ; vim:ft=dosini
 
@@ -1437,11 +1444,43 @@ the configuration file.
               Reload the application when the config file has been modified
 #+END_QUOTE
 
-#+BEGIN_SRC sh
+This is my first attempt
+#+BEGIN_SRC sh :tangle no
 # Launch example bar
 polybar -r example &
 
 echo "Bar launched..."
+#+END_SRC
+
+**** Multiple monitors :wip:
+https://github.com/jaagr/polybar/issues/763
+#+BEGIN_SRC sh :tangle no
+if type "xrandr"; then
+  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+    MONITOR=$m polybar --reload example &
+  done
+else
+  polybar --reload example &
+fi
+#+END_SRC
+
+Slimmed down version
+#+BEGIN_SRC sh :tangle no
+for m in $(polybar --list-monitors | cut -d":" -f1); do
+    MONITOR=$m polybar --reload example &
+done
+#+END_SRC
+
+**** Center monitor only
+
+#+BEGIN_SRC sh
+if type "xrandr"; then
+  for m in $(xrandr --query | grep "DP-1-1-8" | cut -d" " -f1); do
+    MONITOR=$m polybar --reload example &
+  done
+else
+  polybar --reload example &
+fi
 #+END_SRC
 
 * rofi
