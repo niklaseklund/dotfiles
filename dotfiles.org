@@ -977,7 +977,15 @@ foreground = ${colors.foreground}
 line-size = 3
 line-color = #f00
 
-border-size = 4
+#+END_SRC
+
+This setting controlls the border around the polybar. It was originally four
+creating a gap around the bar which I thougth it looks better without for now.
+#+BEGIN_SRC sh
+border-size = 0
+#+END_SRC
+
+#+BEGIN_SRC sh
 border-color = #00000000
 
 padding-left = 0
