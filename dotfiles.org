@@ -1791,18 +1791,6 @@ set statusline+=%2c
 set background=dark
 #+END_SRC
 
-* i3lock
-:PROPERTIES:
-:header-args: :tangle (my/tangle-os-list '("ubuntu") "~/bin/lock-screen") :shebang "#! /bin/sh" :mkdirp yes
-:END:
-
-I am using the application ~i3lock~ for locking the screen. I create an
-executable file to be able to call it from ~rofi~ passing the right parameters.
-
-#+BEGIN_SRC sh
-i3lock -i ~/opensource/dotfiles/assets/ghostinshell.png --color=000000 -t
-#+END_SRC
-
 * shells
 ** bash
 :PROPERTIES:
@@ -2087,6 +2075,33 @@ include "/usr/share/themes/Arc-Dark/gtk-2.0/gtkrc"
 gtk-application-prefer-dark-theme = true
 gtk-theme-name = Arc-Dark
 gtk-icon-theme-name = Arc-Dark
+#+END_SRC
+* binaries
+
+I found a good post on the topic of where to put my [[https://unix.stackexchange.com/questions/36871/where-should-a-local-executable-be-placed][local user specific executables]].
+#+BEGIN_QUOTE
+    $HOME/bin Local binaries
+    $HOME/etc Host-specific system configuration for local binaries
+    $HOME/games Local game binaries
+    $HOME/include Local C header files
+    $HOME/lib Local libraries
+    $HOME/lib64 Local 64-bit libraries
+    $HOME/man Local online manuals
+    $HOME/sbin Local system binaries
+    $HOME/share Local architecture-independent hierarchy
+    $HOME/src Local source code
+#+END_QUOTE
+
+** i3lock
+:PROPERTIES:
+:header-args: :tangle (my/tangle-os-list '("ubuntu") "~/bin/lock-screen") :shebang "#! /bin/sh" :mkdirp yes
+:END:
+
+I am using the application ~i3lock~ for locking the screen. I create an
+executable file to be able to call it from ~rofi~ passing the right parameters.
+
+#+BEGIN_SRC sh
+i3lock -i ~/Pictures/forest_wallpaper.png --color=000000 -t
 #+END_SRC
 * ideas
 
