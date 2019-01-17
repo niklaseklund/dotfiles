@@ -696,6 +696,35 @@ WM_CLASS(STRING) = "peek", "Peek"
 #+BEGIN_SRC sh
 bspc rule -a Peek state=floating
 #+END_SRC
+*** Window issues
+
+I have had an issue with the ~Emacs~ window that the box is rendered larger than
+actual ~Emacs~. The issue seems to be this
+https://wiki.archlinux.org/index.php/bspwm#Window_box_larger_than_the_actual_application.
+
+#+BEGIN_EXAMPLE
+M-x emacs-version
+#+END_EXAMPLE
+
+States that ~Emacs~ is built with ~GTK+~ so it might be worth seeing if this can
+be fixed.
+
+Had no effect what I could see but I am also unsure how this is loaded?
+It might actually have had effect after I rebooted the computer. I need to
+evaluate this more.
+#+BEGIN_SRC sh :tangle ~/.config/gtk-3.0/gtk.css :shebang :comments
+.window-frame, .window-frame:backdrop {
+  box-shadow: 0 0 0 black;
+  border-style: none;
+  margin: 0;
+  border-radius: 0;
+}
+
+.titlebar {
+  border-radius: 0;
+}
+#+END_SRC
+
 *** Background
 I found this post about how to configure feh when using bspwm,
 http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.html.
