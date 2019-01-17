@@ -676,7 +676,7 @@ bspc rule -a Screenkey manage=off
 
 **** Emacs
 #+BEGIN_SRC sh
-bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
+bspc rule -a Emacs split_ratio=0.5 border=off state=tiled
 #+END_SRC
 
 **** Peek
