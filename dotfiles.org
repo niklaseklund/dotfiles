@@ -637,7 +637,15 @@ Settings for the center monitor
 export MONITOR=$(xrandr -q | grep 'DP-1-1-8' | cut -d' ' -f1)
 
 bspc config -m $MONITOR window_gap     22
-bspc config -m $MONITOR bottom_padding 36
+#+END_SRC
+
+This sets the padding value. If it's matched to the ~height~ value in ~polybar~
+config the bar will be shown even if the window is in a full screen mode.
+#+BEGIN_SRC sh
+bspc config -m $MONITOR bottom_padding 27
+#+END_SRC
+
+#+BEGIN_SRC sh
 bspc config -m $MONITOR top_padding    0
 bspc config -m $MONITOR left_padding   0
 bspc config -m $MONITOR right_padding  0
