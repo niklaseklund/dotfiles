@@ -668,15 +668,34 @@ bspc rule -a Screenkey manage=off
 #+END_SRC
 *** Custom rules
 
+**** Emacs
 #+BEGIN_SRC sh
 bspc rule -a Emacs split_ratio=0.5 border=off state=fullscreen
 #+END_SRC
 
+**** Peek
 I want peek to be floating as it's suppose to record what is underneath it.
-#+BEGIN_SRC sh
+This code did however not work
+#+BEGIN_SRC sh :tangle no
 bspc rule -a peek state=floating
 #+END_SRC
 
+But consulting the [[https://wiki.archlinux.org/index.php/bspwm#Rules][arch wiki]] I found that I need to make sure I provide the
+right class name. To figure that out run the following command and click on the
+window of the application you want to add a rule for.
+#+BEGIN_SRC sh :tangle no
+# run it in the terminal not here
+xprop | grep WM_CLASS                                                                                                                                                                  ~
+#+END_SRC
+
+The output when clicking on the top of the ~Peek~ window is
+#+BEGIN_EXAMPLE
+WM_CLASS(STRING) = "peek", "Peek"
+#+END_EXAMPLE
+
+#+BEGIN_SRC sh
+bspc rule -a Peek state=floating
+#+END_SRC
 *** Background
 I found this post about how to configure feh when using bspwm,
 http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.html.
