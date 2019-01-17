@@ -625,6 +625,12 @@ bspc config right_padding   0
 
 #+END_SRC
 
+To make it possible to use youtube in fullscreen tiled mode
+[[https://www.reddit.com/r/bspwm/comments/a4ju19/youtube_video_in_fullscreen_tiled_mode/][a thread about the issue]]
+#+BEGIN_SRC sh
+bspc config ignore_ewmh_fullscreen all
+#+END_SRC
+
 Settings for the center monitor
 #+BEGIN_SRC sh
 # export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
