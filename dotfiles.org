@@ -2374,6 +2374,13 @@ https://github.com/zsh-users/zsh-autosuggestions/issues/229
 #+BEGIN_SRC sh
 export TERM=xterm-256color
 #+END_SRC
+*** settings
+
+This setting controls the hightlightstyle
+#+BEGIN_SRC sh
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
+#+END_SRC
+
 
 * gtk
 
