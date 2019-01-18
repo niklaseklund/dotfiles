@@ -1630,7 +1630,17 @@ them from there.
 #+BEGIN_SRC sh
 # # -- GENERAL -----------------------------
 
-# set -g default-terminal screen-256color
+#+END_SRC
+
+I haven't checked what the setting does but it is suggested to be set here for
+the issue I am trying to solve namnely to have the autosuggestions shown in a
+highlighted way. Currently everything looks like a command.
+https://github.com/zsh-users/zsh-autosuggestions/issues/229
+#+BEGIN_SRC sh
+set -g default-terminal screen-256color
+#+END_SRC
+
+#+BEGIN_SRC sh
 # set -g default-command $SHELL
 # # Prevent double-execution of profile, $SHELL needs to be explicitly in profile
 # # though
@@ -2356,6 +2366,13 @@ Add ~HOME/bin~ to ~PATH~ to find my local binaries. To ~prepend~ or ~append~ is
 exemplified [[https://stackoverflow.com/questions/11530090/adding-a-new-entry-to-the-path-variable-in-zsh ][here.]]
 #+BEGIN_SRC sh
 path=('/home/niklascarlsson/bin' $path) # prepend path
+#+END_SRC
+
+
+Solve issue with zsh-autosuggestions highlight
+https://github.com/zsh-users/zsh-autosuggestions/issues/229
+#+BEGIN_SRC sh
+export TERM=xterm-256color
 #+END_SRC
 
 * gtk
