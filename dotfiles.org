@@ -2381,7 +2381,15 @@ This setting controls the hightlightstyle
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
 #+END_SRC
 
+*** local configuration
 
+Load a local ~zshrc~ file if it exists. The benefit is that local settings could
+be stored here. For example aliases that are work specific that should not be
+publicly available.
+
+#+BEGIN_SRC sh
+[[ -f ~/.zshrc_local ]] && source "${HOME}/.zshrc_local"
+#+END_SRC
 * gtk
 
 Both of these configuration files has been copied from hlissers-setup. I have
