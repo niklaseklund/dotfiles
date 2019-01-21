@@ -1,5 +1,14 @@
 #+TITLE: dotfiles
-* xorg
+* Xorg
+
+#+BEGIN_QUOTE
+Xorg (commonly referred as simply X) is the most popular display server among
+Linux users. Its ubiquity has led to making it an ever-present requisite for GUI
+applications, resulting in massive adoption from most distributions.
+#+END_QUOTE
+
+These are the dotfiles related to ~X~.
+
 ** xinitrc
 :PROPERTIES:
 :header-args: :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link :shebang "#! /bin/sh" :mkdirp yes
