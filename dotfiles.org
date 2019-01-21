@@ -923,7 +923,7 @@ wintypes:
 };
 #+END_SRC
 
-* firefox
+* Firefox
 ** The configuration
 :PROPERTIES:
 :header-args: :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes :comments link
@@ -944,7 +944,7 @@ wintypes:
 #content browser {margin-right: -14px; margin-bottom: -14px;}
 #+END_SRC
 
-* polybar
+* Polybar
 ** configuration
 :PROPERTIES:
 :header-args: :tangle ~/.config/polybar/config :mkdirp yes
@@ -1569,7 +1569,7 @@ else
 fi
 #+END_SRC
 
-* rofi
+* Rofi
 :PROPERTIES:
 :header-args: :tangle ~/.config/rofi/config :mkdirp yes :comments link
 :END:
@@ -2117,8 +2117,8 @@ set statusline+=%2c
 set background=dark
 #+END_SRC
 
-* shells
-** bash
+* Command-line shells
+** Bash
 :PROPERTIES:
 :header-args: :tangle (my/tangle-os-list '("arch") "~/.bashrc") :mkdirp yes :comments link
 :END:
@@ -2143,7 +2143,7 @@ Mount external
 alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
 
-** zsh
+** Zsh
 :PROPERTIES:
 :header-args: :tangle ~/.zshrc :mkdirp yes :comments link
 :END:
@@ -2399,12 +2399,12 @@ publicly available.
 #+BEGIN_SRC sh
 [[ -f ~/.zshrc_local ]] && source "${HOME}/.zshrc_local"
 #+END_SRC
-* gtk
+* GTK+
 
 Both of these configuration files has been copied from hlissers-setup. I have
 also looked at the arch wiki https://wiki.archlinux.org/index.php/GTK%2B#Examples.
 
-** gtk2
+** GTK+ 2.x
 :PROPERTIES:
 :header-args: :tangle ~/.gtkrc-2.0 :comments link :mkdirp yes
 :END:
@@ -2413,7 +2413,7 @@ also looked at the arch wiki https://wiki.archlinux.org/index.php/GTK%2B#Example
 include "/usr/share/themes/Arc-Dark/gtk-2.0/gtkrc"
 #+END_SRC
 
-** gtk3
+** GTK+ 3.x
 :PROPERTIES:
 :header-args: :tangle ~/.config/gtk-3.0/settings.ini :comments link :mkdirp yes
 :END:
@@ -2424,7 +2424,7 @@ gtk-application-prefer-dark-theme = true
 gtk-theme-name = Arc-Dark
 gtk-icon-theme-name = Arc-Dark
 #+END_SRC
-* binaries
+* Binaries
 
 I found a good post on the topic of where to put my [[https://unix.stackexchange.com/questions/36871/where-should-a-local-executable-be-placed][local user specific executables]].
 #+BEGIN_QUOTE
