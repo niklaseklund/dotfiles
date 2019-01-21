@@ -2533,6 +2533,54 @@ gtk-application-prefer-dark-theme = true
 gtk-theme-name = Arc-Dark
 gtk-icon-theme-name = Arc-Dark
 #+END_SRC
+* mail
+** msbsync
+:PROPERTIES:
+:header-args: :tangle ~/.mbsyncrc
+:END:
+
+On the [[https://wiki.archlinux.org/index.php/isync#Configuring][Arch Wiki]] there is an example configuration file. I have just modified
+the password and user section to my needs.
+
+This file behaves a little bit strange though. I tried to separate the content
+but when it tangled with some empty lines ~isync~ wasn't happy. That is why I
+decided to keep it as a big block.
+#+BEGIN_SRC sh
+IMAPAccount gmail
+# Address to connect to
+Host imap.gmail.com
+User carlsson.niklas@gmail.com
+# PassCmd "pass email/gmail.com"
+#
+# Use SSL
+SSLType IMAPS
+# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+#CertificateFile ~/.cert/imap.gmail.com.pem
+#CertificateFile ~/.cert/Equifax_Secure_CA.pem
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Subfolders Verbatim
+# The trailing "/" is important
+Path ~/.mail/gmail/
+Inbox ~/.mail/gmail/Inbox
+
+Channel gmail
+Master :gmail-remote:
+Slave :gmail-local:
+# Exclude everything under the internal [Gmail] folder, except the interesting folders
+Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
+# Or include everything
+#Patterns *
+# Automatically create missing mailboxes, both locally and on the server
+Create Both
+# Save the synchronization state files in the relevant directory
+SyncState *
+#+END_SRC
+
 * Binaries
 
 I found a good post on the topic of where to put my [[https://unix.stackexchange.com/questions/36871/where-should-a-local-executable-be-placed][local user specific executables]].
