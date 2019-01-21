@@ -1750,13 +1750,21 @@ bind c new-window -c "#{pane_current_path}"
 #+END_SRC
 
 ** Pane management
-#+BEGIN_SRC sh
-# # break pane into a window
-# bind = select-layout even-vertical
-# bind + select-layout even-horizontal
-# bind - break-pane
-# bind _ join-pane
 
+Windows in tmux can be thougth of as tabs. So breaking a pane to a window
+basically takes, what I would call a window and makes it into a tab.
+
+#+BEGIN_SRC sh
+# break pane into a window
+bind = select-layout even-vertical
+bind + select-layout even-horizontal
+bind - break-pane
+bind _ join-pane
+#+END_SRC
+
+These are some clever commands, but I haven't had the time to look more into it
+so I will have it disabled in the meantime.
+#+BEGIN_SRC sh
 # # Smart pane switching with awareness of vim splits
 # # See: https://github.com/christoomey/vim-tmux-navigator
 # is_vim='echo "#{pane_current_command}" | grep -iqE "(^|\/)g?(view|n?vim?x?)(diff)?$"'
@@ -1768,48 +1776,55 @@ bind c new-window -c "#{pane_current_path}"
 # bind C-w last-pane
 # bind C-n next-window
 # bind C-p previous-window
-
-# # Pane resizing
-# bind C-h resize-pane -L 6
-# bind C-j resize-pane -D 6
-# bind C-k resize-pane -U 6
-# bind C-l resize-pane -R 6
-# bind -n M-h resize-pane -L 6
-# bind -n M-j resize-pane -D 6
-# bind -n M-k resize-pane -U 6
-# bind -n M-l resize-pane -R 6
-
-# # Swap panes directionally
-# bind h select-pane -L
-# bind j select-pane -D
-# bind k select-pane -U
-# bind l select-pane -R
-# bind H run '$TMUX_HOME/scripts/swap-pane left'
-# bind J run '$TMUX_HOME/scripts/swap-pane down'
-# bind K run '$TMUX_HOME/scripts/swap-pane up'
-# bind L run '$TMUX_HOME/scripts/swap-pane right'
-# bind M run '$TMUX_HOME/scripts/swap-pane master'
-
-# bind o resize-pane -Z
-# bind S choose-session
-# bind W choose-window
-# bind / choose-session
-# bind . choose-window
-
-# bind n run 'TMUX= tmux new-session -t "$(basename \"$PWD\")" -d \; switch-client -t "$(basename \"$PWD\")"'
-# bind N run 'TMUX= tmux new-session -t "$(tmux display-message -p #S)" -s "$(tmux display-message -p #S-clone)" -d \; switch-client -n \; display-message "session #S cloned"'
-
-# # bind = select-layout tiled
-# bind | select-layout even-horizontal
-# bind _ select-layout even-vertical
-
-# # switch between sessions
-# bind -r [ switch-client -p
-# bind -r ] switch-client -n
-
-# # Disable confirmation
 #+END_SRC
 
+Resizing and pane switching with Vi-ish bindings.
+#+BEGIN_SRC sh
+# Pane resizing
+bind C-h resize-pane -L 6
+bind C-j resize-pane -D 6
+bind C-k resize-pane -U 6
+bind C-l resize-pane -R 6
+bind -n M-h resize-pane -L 6
+bind -n M-j resize-pane -D 6
+bind -n M-k resize-pane -U 6
+bind -n M-l resize-pane -R 6
+
+# Swap panes directionally
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+bind H run '$TMUX_HOME/scripts/swap-pane left'
+bind J run '$TMUX_HOME/scripts/swap-pane down'
+bind K run '$TMUX_HOME/scripts/swap-pane up'
+bind L run '$TMUX_HOME/scripts/swap-pane right'
+bind M run '$TMUX_HOME/scripts/swap-pane master'
+
+bind o resize-pane -Z
+bind S choose-session
+bind W choose-window
+bind / choose-session
+bind . choose-window
+
+bind n run 'TMUX= tmux new-session -t "$(basename \"$PWD\")" -d \; switch-client -t "$(basename \"$PWD\")"'
+bind N run 'TMUX= tmux new-session -t "$(tmux display-message -p #S)" -s "$(tmux display-message -p #S-clone)" -d \; switch-client -n \; display-message "session #S cloned"'
+
+# bind = select-layout tiled
+bind | select-layout even-horizontal
+bind _ select-layout even-vertical
+
+#+END_SRC
+
+Clever way of rebinding the ~prefix ]/[~ to navigate between active sessions.
+#+BEGIN_SRC sh
+# switch between sessions
+bind -r [ switch-client -p
+bind -r ] switch-client -n
+#+END_SRC
+
+Killing
+#+BEGIN_SRC sh
 Kill commands
 #+BEGIN_SRC sh
 bind x kill-pane
