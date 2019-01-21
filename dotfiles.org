@@ -2581,6 +2581,46 @@ Create Both
 SyncState *
 #+END_SRC
 
+** msmtp
+:PROPERTIES:
+:header-args: :tangle ~/.msmtprc :tangle-mode (identity #o600)
+:END:
+
+I use ~msmtp~ for sending my emails [[https://wiki.archlinux.org/index.php/msmtp][more information in arch wiki]]. One important
+aspect of the configuration file is that it needs to have the right permission.
+This can be found in the link above, it should have permission ~600~.
+
+#+BEGIN_QUOTE
+The user configuration file must be explicitly readable/writeable by its owner
+or msmtp will fail:
+#+END_QUOTE
+
+This is something that ~:tangle-mode~ handles, which I found information about
+in the [[https://orgmode.org/manual/tangle_002dmode.html][org-manual.]]
+
+Here is the default configuration found at the arch wiki, just with my gmail
+account instead of the default one.
+#+BEGIN_SRC conf
+# Set default values for all following accounts.
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile        ~/.msmtp.log
+
+# Gmail
+account        gmail
+host           smtp.gmail.com
+port           587
+from           carlsson.niklas@gmail.com
+user           carlsson.niklas@gmail.com
+#+END_SRC
+
+#+BEGIN_SRC conf
+# Set a default account
+account default : gmail
+#+END_SRC
+
 * Binaries
 
 I found a good post on the topic of where to put my [[https://unix.stackexchange.com/questions/36871/where-should-a-local-executable-be-placed][local user specific executables]].
