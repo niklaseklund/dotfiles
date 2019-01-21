@@ -1921,8 +1921,6 @@ bind -r ] switch-client -n
 
 Killing
 #+BEGIN_SRC sh
-Kill commands
-#+BEGIN_SRC sh
 bind x kill-pane
 bind X kill-window
 bind q kill-session
