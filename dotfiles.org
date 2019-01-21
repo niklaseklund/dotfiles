@@ -454,8 +454,104 @@ sxhkd &
 #+END_SRC
 
 *** Monitors and desktops
+**** Setup displays with randr
 
-**** Simple hardcoded solution
+I will start by setting up the correct monitor to be primary using ~randr~. The
+benefit of that is that I later can just refer to the primary monitor, for
+example to only put the polybar on the primary. Or use other type of bars for
+the ones that ain't primary.
+
+First step is to define the name of the primary. If there are no screens
+connected then the internal screen will automatically be set to primary which
+means that I don't need to do antyhing more.
+
+This is my primary monitor for my ~ubuntu~ setup
+#+BEGIN_SRC sh :tangle (my/tangle-os-list '("ubuntu") "~/.config/bspwm/bspwmrc")
+EXTERNAL_MONITOR="DP-1-1-8"
+#+END_SRC
+
+Setup for external monitors. I found inspiration on how to find out wether the
+external monitor is among the items in the list [[https://stackoverflow.com/questions/8063228/how-do-i-check-if-a-variable-exists-in-a-list-in-bash][here]]
+#+BEGIN_SRC sh
+MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
+if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
+    # if external monitor is connected set it to primary
+    xrandr --output $EXTERNAL_MONITOR --primary
+fi
+#+END_SRC
+**** TODO Distribute workspaces on the different displays
+
+With bspwm I can have different amount of workspaces on different displays. The
+workspaces are not connected either which is a nice feature making it possible
+to change workspace on one screen whilst keeping the other workspaces unchanged.
+
+***** Uniform distribution
+
+Each display gets the same amount of workspaces.
+
+***** Primary distribution
+
+The primary display get's more workspaces whilst the others have one each.
+
+**** first solution
+***** randr
+
+#+BEGIN_SRC sh :tangle no
+xrandr --output DP-1-1-8 --primary
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle no
+xrandr -q | grep DP-1-1-8
+#+END_SRC
+
+#+RESULTS:
+
+Trying to improve setting primary
+#+BEGIN_SRC sh :tangle no
+MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
+echo $MONITORS
+if [[ $MONITORS == *DP* ]];
+then
+    echo "Connected"
+else
+    echo "Not connected"
+fi
+#+END_SRC
+
+#+RESULTS:
+| eDP-1-1 |           |
+| Not     | connected |
+
+#+BEGIN_SRC sh :tangle no :results output
+EXTERNAL_CONNECTED=$(xrandr -q | grep DP-1-1-8 | wc -l)
+
+echo $EXTERNAL_CONNECTED
+if [ $EXTERNAL_CONNECTED -eq "0"]; then
+echo "External not connnected"
+else
+echo "External connnected"
+fi
+#+END_SRC
+
+#+RESULTS:
+: 0
+: External connnected
+
+#+BEGIN_SRC sh :tangle no :results output
+INTERNAL_CONNECTED=$(xrandr -q | grep "eDP-1-1" | wc -l)
+echo $INTERNAL_CONNECTED
+if [ $INTERNAL_CONNECTED -eq "0"]; then
+echo "Internal not connnected"
+else
+echo "Internal connnected"
+fi
+#+END_SRC
+
+#+RESULTS:
+: 1
+: Internal connnected
+
+***** Simple hardcoded solution
 This is the setup for monitors in the example configuration
 #+BEGIN_SRC sh :tangle no
 bspc monitor -d I II III IV V VI VII VIII IX X
