@@ -20,7 +20,7 @@ These are the dotfiles related to ~X~.
 [[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
 #+END_SRC
 
-*** HIDPI screen support
+*** TODO HIDPI screen support
 
 I found an example configuration for the retina display at
 https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
@@ -29,6 +29,9 @@ they actually does. The xrandr command however I needed because by default the
 output of the ~xrandr -q~ said the dpi was 96 which was clearly incorrect. I
 verified that the 227 was correct by consulting the apple website for the
 macbook specs.
+
+Some more information on the matter:
+https://wiki.archlinux.org/index.php/HiDPI#GDK_3_(GTK+_3)
 
 #+BEGIN_SRC sh
 # hidpi settings
@@ -54,7 +57,7 @@ the line. The ~layout~ specifies ~American~ and ~Swedish~ layouts. One can
 switch between these two keyboard layouts by pressing both ~shifts~ at
 time. Last I swap ctrl to caps and remove capslock.
 
-*** Launch programs
+**** Launch programs
 
 I need to launch sxhkd since bspwm is relying upon that program to handle the
 keybindings. I launch the terminal as well at startup. It can be convinent at
@@ -453,7 +456,7 @@ the ~xinitrc~.
 sxhkd &
 #+END_SRC
 
-*** Monitors and desktops
+*** TODO Monitors and desktops
 **** Setup displays with randr
 
 I will start by setting up the correct monitor to be primary using ~randr~. The
@@ -565,7 +568,7 @@ bspc monitor 0x00600002 -d I II III IV V
 bspc monitor 0x00600004 -d VI VII VIII IX X
 #+END_SRC
 
-**** Generic solution
+***** Generic solution
 This is the more generic solution. It splits up the ten workspaces on the number
 of monitors that exists. In the case of three screens 3 workspaces will be
 assigned to each monitor.
@@ -580,7 +583,7 @@ for monitor in `bspc query -M`; do
 done
 #+END_SRC
 
-**** Specific 3 monitor solution :wip:
+***** Specific 3 monitor solution                                                          :wip:
 This solution finds the primary display and allocates five workspaces on that
 one and leaves the other screens with 1 workspace each. Maybe this is a good
 approach, I will evaluate it.
@@ -606,9 +609,9 @@ bspc monitor $CENTER_MONITOR -d {2,3,4,5,6}
 bspc monitor $RIGHT_MONITOR -d {7}
 #+END_SRC
 
-**** Multiple monitors improved
+***** Multiple monitors improved
 
-***** Finding out the monitors with xrandr
+****** Finding out the monitors with xrandr
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -671,7 +674,7 @@ xrandr -q | grep 'connected' | awk '!/disconnected/' | cut -d' ' -f1
 : eDP-1-1
 : DP-1-1-8
 : DP-1-1-1
-***** Finding out the monitors with bspc
+****** Finding out the monitors with bspc
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -815,7 +818,8 @@ WM_CLASS(STRING) = "peek", "Peek"
 #+BEGIN_SRC sh
 bspc rule -a Peek state=floating
 #+END_SRC
-*** Window issues
+
+*** TODO Window issues
 
 I have had an issue with the ~Emacs~ window that the box is rendered larger than
 actual ~Emacs~. The issue seems to be this
@@ -862,6 +866,11 @@ called from the ~bspwmrc~.
 #+BEGIN_SRC sh
 $HOME/.config/polybar/launch.sh
 #+END_SRC
+
+*** TODO Drop down scrach terminal
+
+The ~scratchpad~ might be a useful feature
+https://wiki.archlinux.org/index.php/bspwm#Scratchpad
 
 *** Mouse control
 I want to be able to hide my mouse cursor automatically after a while of non-usage
@@ -969,6 +978,11 @@ opacity-rule = [
   "60:class_g = 'URxvt' && !focused"
 ];
 #+END_SRC
+
+** TODO Different alpha value for inactive windows
+
+I want to have the alpha value lowered for the other windows, not the active
+one. This will make it easier to know which window currently has the focus.
 
 ** Rest
 #+BEGIN_SRC sh
