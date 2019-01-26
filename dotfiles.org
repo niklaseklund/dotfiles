@@ -1137,7 +1137,7 @@ I am unsure how to handle the comments in this file. Since they are using the
 ~;~ symbol I need to figure out a good way if I want to add ~:comments link~
 header argument. However this could be a future improvement.
 
-*** Start
+*** Banner
 
 This part is untouched from the example file provided by ~polybar~.
 
@@ -1160,6 +1160,14 @@ This part is untouched from the example file provided by ~polybar~.
 ;
 ;==========================================================
 
+#+END_SRC
+
+*** TODO Colors
+
+These are the colors from the default configuration. One improvement would be to
+utilize the colors from the ~Xresources~ so that the pallettes are more in sync.
+
+#+BEGIN_SRC sh
 [colors]
 ;background = ${xrdb:color0:#222}
 background = #222
@@ -1170,8 +1178,11 @@ foreground-alt = #555
 primary = #ffb52a
 secondary = #e60053
 alert = #bd2c40
-
 #+END_SRC
+*** TODO Fonts
+
+I want to make use of custom fonts and have some symbols denoting the desktop.
+That would look prettier than the current setup.
 
 *** Main bar
 
