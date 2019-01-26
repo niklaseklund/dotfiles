@@ -877,8 +877,9 @@ States that ~Emacs~ is built with ~GTK+~ so it might be worth seeing if this can
 be fixed.
 
 Had no effect what I could see but I am also unsure how this is loaded?
-It might actually have had effect after I rebooted the computer. I need to
-evaluate this more.
+It might actually have had effect after I rebooted the computer. Unfortunately I
+don't think that it worked.
+
 #+BEGIN_SRC sh :tangle ~/.config/gtk-3.0/gtk.css :shebang :comments
 .window-frame, .window-frame:backdrop {
   box-shadow: 0 0 0 black;
