@@ -953,6 +953,11 @@ xinput -list | grep "Keyboard"
 #+RESULTS:
 : ⎜   ↳ USB Keyboard                            	id=11	[slave  pointer  (2)]
 :     ↳ USB Keyboard                            	id=12	[slave  keyboard (3)]
+** TODO scratchpad
+
+In the [[https://wiki.archlinux.org/index.php/bspwm#Scratchpad][ArchWiki]] there is a section on creating a sratchpad in bspwm. I also
+found [[https://www.reddit.com/r/bspwm/comments/85hr4c/making_a_scratchpaddropdown_terminal_in_bspwm/][this reddit post]] regarding the sratchpad. This is something that I want to
+look into when I have time for it.
 
 * compton
 :PROPERTIES:
