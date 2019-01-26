@@ -80,15 +80,24 @@ compton &
 exec bspwm
 #+END_SRC
 
-** xresources
+** Xresources
 :PROPERTIES:
 :header-args: :tangle ~/.Xresources :mkdirp yes
 :END:
 
-*** HIDPI
+[[https://wiki.archlinux.org/index.php/x_resources#Usage][Xresources in ArchWiki]]
+#+BEGIN_QUOTE
+Xresources is a user-level configuration dotfile, typically located at
+~/.Xresources. It can be used to set X resources, which are configuration
+parameters for X client applications.
+#+END_QUOTE
 
-The configuration of hidpi parameters originate from
-https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
+*** TODO HIDPI
+
+The configuration of hidpi parameters originate from the blogpost
+[[https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/][installing-arch-linux-on-a-macbook-with-retina-hidpi]], but the [[https://wiki.archlinux.org/index.php/HiDPI#X_Resources][ArchWiki]] also has
+some hints for what to configure these values to.
+
 #+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.Xresources")
 !! hidpi
 Xft.dpi: 227
@@ -98,10 +107,14 @@ Xft.hinting: false
 Xft.lcdfilter: lcddefault
 #+END_SRC
 
-*** Colors
+*** TODO Colors
 
 The colors originate from ~hlissners~ dotfiles setup. Another source for color
-schemes might be https://terminal.sexy/.
+schemes might be
+
+I found these colors in [[https://github.com/hlissner/dotfiles/blob/master/base/arch-desktop/Xresources][hlissner/dotfiles]], and thought they would make a good
+start. For changes in the future the [[https://terminal.sexy/][terminal.sexy]] has some color schemes that
+can be directly exported to Xresources format.
 #+BEGIN_SRC sh
 !! Colors
 #define blk  #141517
@@ -160,7 +173,7 @@ Xcursor.size: 32
 
 *** urxvt
 
-The configuration of urxvt originates from ~hlissners~ setup as well.
+These settings originates from the the same link as the above block.
 #+BEGIN_SRC sh
 !! urxvt
 URxvt*.background:             [96]blk
@@ -184,6 +197,10 @@ URxvt*.url-launcher:           firefox
 URxvt*.lineSpace:              0
 URxvt*.letterSpace:            0
 #+END_SRC
+
+*** Fonts
+
+Choosing fonts are never easy. These are my current setup.
 
 ~Arch~
 #+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.Xresources")
