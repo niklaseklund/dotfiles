@@ -326,6 +326,8 @@ super + Escape
 
 #+END_SRC
 
+**** Application launcher
+
 I have changed the application launcher from ~dmenu~ to ~rofi~.
 #+BEGIN_SRC sh
 super + @space
@@ -336,8 +338,8 @@ super + @space
 The ~-m~ option switches the behavior of ~rofi~ from the default which is to
 show the window in the monitor where the mouse recides.
 
-To the monitor which is in focus.
-
+To the monitor which is in focus. I found this setting in the
+[[https://github.com/DaveDavenport/rofi/blob/1ab3e571eca1768d437246ca6ec09f44432b0e20/doc/rofi.1.markdown][rofi manpages]]
 #+BEGIN_EXAMPLE
 -1: the currently focused monitor.
 
