@@ -1,6 +1,7 @@
 #+TITLE: dotfiles
 * Xorg
 
+[[https://wiki.archlinux.org/index.php/xorg][Xorg in ArchWiki]]
 #+BEGIN_QUOTE
 Xorg (commonly referred as simply X) is the most popular display server among
 Linux users. Its ubiquity has led to making it an ever-present requisite for GUI
@@ -13,8 +14,16 @@ These are the dotfiles related to ~X~.
 :PROPERTIES:
 :header-args: :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link :shebang "#! /bin/sh" :mkdirp yes
 :END:
+
+For my Arch Linux setup I don't have a login manager. Hence I let the ~xinitrc~
+be the configuration file where I specify the settings and programs to launch
+upon startup.
+
+
 *** Load xresources
 
+Loading the Xresources file which contains the configuration parameters for some
+X client applications like the terminal emulator ~urxvt~.
 #+BEGIN_SRC sh
 # customize xresources
 [[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
@@ -57,7 +66,7 @@ the line. The ~layout~ specifies ~American~ and ~Swedish~ layouts. One can
 switch between these two keyboard layouts by pressing both ~shifts~ at
 time. Last I swap ctrl to caps and remove capslock.
 
-**** Launch programs
+*** Launch programs
 
 I need to launch sxhkd since bspwm is relying upon that program to handle the
 keybindings. I launch the terminal as well at startup. It can be convinent at
