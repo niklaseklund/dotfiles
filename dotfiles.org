@@ -76,6 +76,7 @@ times when I hadn't installed rofi. Can probably be removed now.
 # start programs
 sxhkd &
 urxvt &
+redshift &
 compton &
 exec bspwm
 #+END_SRC
