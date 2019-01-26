@@ -2751,7 +2751,8 @@ IMAPAccount gmail
 # Address to connect to
 Host imap.gmail.com
 User carlsson.niklas@gmail.com
-# PassCmd "pass email/gmail.com"
+PassCmd "pass email/gmail.com"
+# Pass your_password, if you don't have the pass application
 #
 # Use SSL
 SSLType IMAPS
@@ -2928,6 +2929,23 @@ host           smtp.gmail.com
 port           587
 from           carlsson.niklas@gmail.com
 user           carlsson.niklas@gmail.com
+#+END_SRC
+
+Now I have [[https://www.passwordstore.org/][Pass the standard unix password manager]] setup so I can call that
+directly:
+#+BEGIN_SRC conf
+passwordeval "pass email/gmail.com"
+#+END_SRC
+
+If you don't have the password-store, but have setup gpg then one can use:
+#+BEGIN_SRC conf :tangle no
+passwordeval   "gpg --use-agent --quiet --for-your-eyes-only --no-tty --decrypt path_to_gpg_file_with_password
+#+END_SRC
+
+This is the solution if you don't have set up neither ~pass~ nor ~gpg~. You need
+to store the password in plain text.
+#+BEGIN_SRC conf :tangle no
+password       my_password
 #+END_SRC
 
 #+BEGIN_SRC conf
