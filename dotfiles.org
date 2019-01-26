@@ -220,14 +220,27 @@ URxvt.boldFont: xft:Hack:style=bold:size=12
 :END:
 
 *** About
-In the [[https://wiki.archlinux.org/index.php/xprofile][arch wiki]] this is said about the ~xprofile~.
+
+In the [[https://wiki.archlinux.org/index.php/xprofile][ArchWiki]] this is said about the ~xprofile~.
 #+BEGIN_QUOTE
 An xprofile file, ~/.xprofile and /etc/xprofile, allows you to execute commands
 at the beginning of the X user session - before the window manager is started.
 #+END_QUOTE
 
+When configuring ~bspwm~ for ~Ubuntu~ the [[https://github.com/windelicato/dotfiles/wiki/bspwm-for-dummies][bspwm-for-dummies]] guide explicitly
+said that if you have a display manager, like the one in Ubuntu, then you
+shouldn't use the ~xinitrc~. So instead I am using the ~xprofile~ to configure
+what applications and settings to configure upon startup.
+
+**** TODO Improvement
+
+One improvement here would be to use xprofile if I have a display manager or
+not. In the case when I don't have one I can source the xprofile from the
+xinitrc. I should consider this in the future. Maybe after switching to
+Ubuntu18.
+
 *** Xresources
-Launch the compositor compton to enable semi-trasparency.
+
 #+BEGIN_SRC sh
 # customize xresources
 [[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
@@ -250,15 +263,18 @@ setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_l
 
 *** Programs
 
+Launch the hotkey daemon.
 #+BEGIN_SRC sh
 sxhkd &
 #+END_SRC
 
+Launch the compositor compton to enable semi-trasparency.
 #+BEGIN_SRC sh
 # Start compositor
 compton &
 #+END_SRC
 
+Wait some before launching before launching the other, non-critical, applications
 #+BEGIN_SRC sh
 sleep 2
 xcape &
