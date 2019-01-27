@@ -501,8 +501,9 @@ the ~xinitrc~.
 sxhkd &
 #+END_SRC
 
-*** TODO Monitors and desktops
-**** Setup displays with randr
+*** Monitors and desktops
+**** [X] Set the primary monitor
+CLOSED: [2019-01-27 Sun 13:38]
 
 I will start by setting up the correct monitor to be primary using ~randr~. The
 benefit of that is that I later can just refer to the primary monitor, for
@@ -516,6 +517,11 @@ means that I don't need to do antyhing more.
 This is my primary monitor for my ~ubuntu~ setup
 #+BEGIN_SRC sh :tangle (my/tangle-os-list '("ubuntu") "~/.config/bspwm/bspwmrc")
 EXTERNAL_MONITOR="DP-1-1-8"
+#+END_SRC
+
+This is my primary monitor for my ~arch~ setup
+#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc")
+EXTERNAL_MONITOR="DP-2"
 #+END_SRC
 
 Setup for external monitors. I found inspiration on how to find out wether the
