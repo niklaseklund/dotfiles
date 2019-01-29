@@ -26,7 +26,7 @@ Loading the Xresources file which contains the configuration parameters for some
 X client applications like the terminal emulator ~urxvt~.
 #+BEGIN_SRC sh
 # customize xresources
-[[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
+[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
 #+END_SRC
 
 *** TODO HIDPI screen support
