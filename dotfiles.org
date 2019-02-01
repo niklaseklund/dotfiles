@@ -2739,6 +2739,18 @@ This setting controls the hightlightstyle
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
 #+END_SRC
 
+*** TODO remove duplicates history
+
+Avoiding duplicate entries in history, [[https://github.com/junegunn/fzf/issues/600][I found the information here]]. However I
+will leave it disabled for the meantime. I sometimes found the history quite
+good to have in case I need to backtrack what I have done in the terminal.
+
+A better solution should be to avoid fzf display duplicates when accessing it
+through ~C-r~.
+#+BEGIN_SRC sh
+# setopt HIST_IGNORE_ALL_DUPS
+#+END_SRC
+
 *** local configuration
 
 Load a local ~zshrc~ file if it exists. The benefit is that local settings could
