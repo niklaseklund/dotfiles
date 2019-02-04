@@ -2739,16 +2739,15 @@ This setting controls the hightlightstyle
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
 #+END_SRC
 
-*** TODO remove duplicates history
+*** DONE remove duplicates history in zsh
+CLOSED: [2019-02-04 mån 10:28]
 
 Avoiding duplicate entries in history, [[https://github.com/junegunn/fzf/issues/600][I found the information here]]. However I
 will leave it disabled for the meantime. I sometimes found the history quite
 good to have in case I need to backtrack what I have done in the terminal.
 
-A better solution should be to avoid fzf display duplicates when accessing it
-through ~C-r~.
-#+BEGIN_SRC sh
-# setopt HIST_IGNORE_ALL_DUPS
+#+BEGIN_SRC sh :tangle no
+setopt HIST_IGNORE_ALL_DUPS
 #+END_SRC
 
 *** local configuration
@@ -2760,6 +2759,33 @@ publicly available.
 #+BEGIN_SRC sh
 [[ -f ~/.zshrc_local ]] && source "${HOME}/.zshrc_local"
 #+END_SRC
+*** DONE do not show duplicates in fzf history
+CLOSED: [2019-02-04 mån 10:30]
+
+A better for the history problem is to override the default behaviour of fzf
+when viewing the history. There is a solution in this issue,
+https://github.com/junegunn/fzf/pull/1287.
+
+#+BEGIN_SRC sh
+# CTRL-R - Paste the selected command from history into the command line
+fzf-history-widget() {
+  local selected num
+  setopt localoptions noglobsubst noposixbuiltins pipefail 2> /dev/null
+  selected=( $(fc -rl 1 | sort -uk2,1000 | sort -nr |
+    FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} $FZF_DEFAULT_OPTS -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)) )
+  local ret=$?
+  if [ -n "$selected" ]; then
+    num=$selected[1]
+    if [ -n "$num" ]; then
+      zle vi-fetch-history -n $num
+    fi
+  fi
+  zle redisplay
+  typeset -f zle-line-init >/dev/null && zle zle-line-init
+  return $ret
+}
+#+END_SRC
+
 * GTK+
 
 Both of these configuration files has been copied from hlissers-setup. I have
