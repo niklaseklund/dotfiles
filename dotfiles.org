@@ -2750,6 +2750,23 @@ good to have in case I need to backtrack what I have done in the terminal.
 setopt HIST_IGNORE_ALL_DUPS
 #+END_SRC
 
+*** DONE Improve z with fzf
+CLOSED: [2019-02-04 mån 16:15]
+
+The plugin ~z~ to ~zsh~ makes navigating to known locations easier. However as
+the list of directories grows there might be multiple ones that share similar
+names. By combining ~fzf~ and ~z~ it's possible to fuzzy find among the
+directories.
+
+This unbinds ~z~ and redefines it as this function.
+#+BEGIN_SRC sh
+unalias z 2> /dev/null
+z() {
+  [ $# -gt 0 ] && _z "$*" && return
+  cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
+}
+#+END_SRC
+
 *** local configuration
 
 Load a local ~zshrc~ file if it exists. The benefit is that local settings could
