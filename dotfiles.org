@@ -324,7 +324,12 @@ super + Return
 # make sxhkd reload its configuration files:
 super + Escape
 	pkill -USR1 -x sxhkd
+#+END_SRC
 
+Add a shortcut for launching a floating org-capture window
+#+BEGIN_SRC sh
+mod4 + ctrl + shift + grave
+	bspc rule -a 'Emacs' -o state=floating && org-capture
 #+END_SRC
 
 **** Application launcher
@@ -833,6 +838,7 @@ xrandr -q | grep " connected" | sed -n '2p' | cut -d' ' -f1
 *** Default rules
 
 #+BEGIN_SRC sh
+bspc rule -a 'Emacs:org*' state=floating
 bspc rule -a Gimp desktop='^8' state=floating follow=on
 bspc rule -a Chromium desktop='^2'
 bspc rule -a mplayer2 state=floating
