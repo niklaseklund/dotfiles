@@ -65,6 +65,13 @@ I learnt about the ~setxkbmap~ at the [[https://wiki.archlinux.org/index.php/Xor
 the line. The ~layout~ specifies ~American~ and ~Swedish~ layouts. One can
 switch between these two keyboard layouts by pressing both ~shifts~ at
 time. Last I swap ctrl to caps and remove capslock.
+*** Pywall
+
+#+BEGIN_SRC sh
+# Add this to your .xinitrc or whatever file starts programs on startup.
+# -R restores the last colorscheme that was in use.
+wal -R
+#+END_SRC
 
 *** Launch programs
 
@@ -912,7 +919,7 @@ http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.htm
 I tried to use xinitrc first to set the background but that approach seemed to
 have implications when running dual screens.
 
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc")
+#+BEGIN_SRC sh :tangle no
 feh --bg-scale ~/src/dotfiles/assets/ghostinshell.jpg
 #+END_SRC
 
@@ -923,6 +930,21 @@ called from the ~bspwmrc~.
 
 #+BEGIN_SRC sh
 $HOME/.config/polybar/launch.sh
+#+END_SRC
+
+*** Pywal color
+#+BEGIN_SRC sh
+# source the colors.
+. "${HOME}/.cache/wal/colors.sh"
+
+# Set the border colors.
+# bspc config normal_border_color "$color1"
+# bspc config active_border_color "$color2"
+# bspc config focused_border_color "$color15"
+# Use the line below if you are on bspwm >= 0.9.4
+bspc config presel_feedback_color "$color1"
+# Use the line below if you are on bspwm < 0.9.4
+#bspc config presel_border_color "$color1"
 #+END_SRC
 
 *** TODO Drop down scrach terminal
@@ -1213,6 +1235,26 @@ primary = #ffb52a
 secondary = #e60053
 alert = #bd2c40
 #+END_SRC
+
+Interpret the values like this
+#+BEGIN_QUOTE
+key = ${xrdb:KEY:fallback value}
+#+END_QUOTE
+
+
+Colors from pywall
+https://github.com/dylanaraps/pywal/wiki/Customization#polybar
+#+BEGIN_SRC sh
+[colors]
+background = ${xrdb:color0:#222}
+background-alt = ${xrdb:color9:#444}
+foreground = ${xrdb:color7:#222}
+foreground-alt = ${xrdb:color7:#222}
+primary = ${xrdb:color1:#222}
+secondary = ${xrdb:color2:#222}
+alert = ${xrdb:color3:#222}
+#+END_SRC
+
 *** TODO Fonts
 
 I want to make use of custom fonts and have some symbols denoting the desktop.
@@ -1809,7 +1851,7 @@ also to access my passwords through the password-store.
 
 The configuration here is something that I have copied from ~Matt Dobson~.
 Unfortunately I don't remember where I found his config.
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 ! ------------------------------------------------------------------------------
 !                          ROFI THEME
 ! ------------------------------------------------------------------------------
@@ -1817,6 +1859,12 @@ rofi.color-window: argb:f2171717, #535c5c,         #a4a4a4
 rofi.color-normal: argb:00171717, #a4a4a4, argb:00535c5c, argb:00171717, #535c5c
 rofi.color-urgent: argb:00171717, #cc6666, argb:e54b5160, argb:00171717, #535c5c
 rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
+#+END_SRC
+
+Pywall instead
+#+BEGIN_SRC sh
+# Dark theme.
+rofi.theme: ~/.cache/wal/colors-rofi-dark.rasi
 #+END_SRC
 
 Customize appearance for ~Arch~
@@ -2374,6 +2422,7 @@ Plug 'justinmk/vim-sneak' " Snipe characters with greater precision
 Plug 'tommcdo/vim-exchange' " Provide exchange object
 Plug 'qpkorr/vim-bufkill' " Improve buffer handling
 Plug 'Konfekt/FastFold' " Improve folding performance
+Plug 'dylanaraps/wal.vim' " Pywall colorscheme
 call plug#end()
 
 " Vim core {{{1
@@ -2470,6 +2519,7 @@ set statusline+=%2c
 
 " Color tweaking
 set background=dark
+colorscheme wal
 #+END_SRC
 
 * Command-line shells
@@ -2781,6 +2831,12 @@ publicly available.
 
 #+BEGIN_SRC sh
 [[ -f ~/.zshrc_local ]] && source "${HOME}/.zshrc_local"
+
+# https://github.com/dylanaraps/pywal/wiki/Getting-Started
+# Import colorscheme from 'wal' asynchronously
+# &   # Run the process in the background.
+# ( ) # Hide shell job control messages.
+(cat ~/.cache/wal/sequences &)
 #+END_SRC
 *** DONE do not show duplicates in fzf history
 CLOSED: [2019-02-04 mån 10:30]
