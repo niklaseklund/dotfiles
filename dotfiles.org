@@ -12,7 +12,7 @@ These are the dotfiles related to ~X~.
 
 ** xinitrc
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os-list '("arch") "~/.xinitrc") :comments link :shebang "#! /bin/sh" :mkdirp yes
+:header-args: :tangle (my/tangle-os '(arch) "~/.xinitrc") :comments link :shebang "#! /bin/sh" :mkdirp yes
 :END:
 
 For my Arch Linux setup I don't have a login manager. Hence I let the ~xinitrc~
@@ -106,7 +106,7 @@ The configuration of hidpi parameters originate from the blogpost
 [[https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/][installing-arch-linux-on-a-macbook-with-retina-hidpi]], but the [[https://wiki.archlinux.org/index.php/HiDPI#X_Resources][ArchWiki]] also has
 some hints for what to configure these values to.
 
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.Xresources")
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 !! hidpi
 Xft.dpi: 227
 Xft.rgba: rgb
@@ -211,20 +211,20 @@ URxvt*.letterSpace:            0
 Choosing fonts are never easy. These are my current setup.
 
 ~Arch~
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.Xresources")
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 URxvt.font: xft:Iosevka Term:style=regular:size=8
 URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
 #+END_SRC
 
 ~Ubuntu~
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("ubuntu") "~/.Xresources")
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 URxvt.font: xft:Hack:style=regular:size=12
 URxvt.boldFont: xft:Hack:style=bold:size=12
 #+END_SRC
 
 ** xprofile
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os-list '("ubuntu") "~/.xprofile") :comments link :mkdirp yes
+:header-args: :tangle (my/tangle-os '(ubuntu) "~/.xprofile") :comments link :mkdirp yes
 :END:
 
 *** About
@@ -509,7 +509,7 @@ executable.
 The example file starts with ~sxhkd~. I am unsure if I need it both here and in
 the ~xinitrc~.
 
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc")
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 sxhkd &
 #+END_SRC
 
@@ -527,12 +527,13 @@ connected then the internal screen will automatically be set to primary which
 means that I don't need to do antyhing more.
 
 This is my primary monitor for my ~ubuntu~ setup
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("ubuntu") "~/.config/bspwm/bspwmrc")
-EXTERNAL_MONITOR="DP-1-1-8"
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+EXTERNAL_MONITOR1="DP-0.8"
+EXTERNAL_MONITOR2="DP-1-1-8"
 #+END_SRC
 
 This is my primary monitor for my ~arch~ setup
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc")
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 EXTERNAL_MONITOR="DP-2"
 #+END_SRC
 
@@ -793,7 +794,6 @@ bspc config top_padding     0
 bspc config bottom_padding  0
 bspc config left_padding    0
 bspc config right_padding   0
-
 #+END_SRC
 
 To make it possible to use youtube in fullscreen tiled mode
@@ -804,8 +804,7 @@ bspc config ignore_ewmh_fullscreen all
 
 Settings for the center monitor
 #+BEGIN_SRC sh
-# export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
-export MONITOR=$(xrandr -q | grep 'DP-1-1-8' | cut -d' ' -f1)
+export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
 
 bspc config -m $MONITOR window_gap     22
 #+END_SRC
@@ -955,7 +954,7 @@ https://wiki.archlinux.org/index.php/bspwm#Scratchpad
 *** Mouse control
 I want to be able to hide my mouse cursor automatically after a while of non-usage
 https://wiki.archlinux.org/index.php/unclutter
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc")
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 unclutter &
 #+END_SRC
 
@@ -963,7 +962,7 @@ unclutter &
 I want to switch caps lock to ctrl when pressed in conjunction with another key,
 and escape when pressed by itself. This functionality is provided by the program
 ~xcape~.
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.config/bspwm/bspwmrc")
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 xcape &
 #+END_SRC
 
@@ -1831,7 +1830,8 @@ done
 
 #+BEGIN_SRC sh
 if type "xrandr"; then
-  for m in $(xrandr --query | grep "DP-1-1-8" | cut -d" " -f1); do
+  for m in $(xrandr --query | grep "primary" | cut -d" " -f1); do
+  # for m in $(xrandr --query | grep "DP-1-1-8" | cut -d" " -f1); do
     MONITOR=$m polybar --reload example &
   done
 else
@@ -1868,7 +1868,7 @@ rofi.theme: ~/.cache/wal/colors-rofi-dark.rasi
 #+END_SRC
 
 Customize appearance for ~Arch~
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("arch") "~/.config/rofi/config")
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 rofi.width: 1000
 rofi.lines: 15
 rofi.font: hack 18
@@ -1879,7 +1879,7 @@ rofi.eh: 1
 #+END_SRC
 
 Customize appearance for ~Ubuntu~
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("ubuntu") "~/.config/rofi/config")
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 rofi.width: 1000
 rofi.lines: 15
 rofi.font: hack 12
@@ -2525,7 +2525,7 @@ colorscheme wal
 * Command-line shells
 ** Bash
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os-list '("arch") "~/.bashrc") :mkdirp yes :comments link
+:header-args: :tangle (my/tangle-os '(arch) "~/.bashrc") :mkdirp yes :comments link
 :END:
 *** default
 This is the default content that where in the rc file at start
@@ -3199,8 +3199,9 @@ screen=0
 ** agent
 
 This is my setup for ~ubuntu~:
-#+BEGIN_SRC sh :tangle (my/tangle-os-list '("ubuntu") "~/.gnupg/gpg-agent.conf") :mkdirp yes
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu) "~/.gnupg/gpg-agent.conf") :mkdirp yes
 pinentry-program /usr/bin/pinentry-gtk-2
+default-cache-ttl 3600
 #+END_SRC
 
 * music
@@ -3372,7 +3373,7 @@ I found a good post on the topic of where to put my [[https://unix.stackexchange
 
 ** i3lock
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os-list '("ubuntu") "~/bin/lock-screen") :shebang "#! /bin/sh" :mkdirp yes
+:header-args: :tangle (my/tangle-os '(ubuntu) "~/bin/lock-screen") :shebang "#! /bin/sh" :mkdirp yes
 :END:
 
 I am using the application ~i3lock~ for locking the screen. I create an
