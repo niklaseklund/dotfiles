@@ -1222,7 +1222,7 @@ This part is untouched from the example file provided by ~polybar~.
 These are the colors from the default configuration. One improvement would be to
 utilize the colors from the ~Xresources~ so that the pallettes are more in sync.
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 [colors]
 ;background = ${xrdb:color0:#222}
 background = #222
