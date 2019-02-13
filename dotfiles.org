@@ -254,10 +254,12 @@ Ubuntu18.
 [[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
 #+END_SRC
 
-*** Wallpaper
+*** Pywall
 
 #+BEGIN_SRC sh
-feh --bg-scale ~/Pictures/Wallpapers/forest_wallpaper.jpg
+# Add this to your .xinitrc or whatever file starts programs on startup.
+# -R restores the last colorscheme that was in use.
+~/.local/bin/wal -R
 #+END_SRC
 
 *** Keyboard
