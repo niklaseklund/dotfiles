@@ -1319,11 +1319,19 @@ bottom = 1
 #+END_SRC
 
 **** Unnamed 2
+
 #+BEGIN_SRC sh
 background = ${colors.background}
 foreground = ${colors.foreground}
+#+END_SRC
 
-line-size = 3
+Setting the line-size to zero makes the colored lines under the numbers
+disappear. I personally like this minimalistic approach better.
+#+BEGIN_SRC sh
+line-size = 0
+#+END_SRC
+
+#+BEGIN_SRC sh
 line-color = #f00
 
 #+END_SRC
