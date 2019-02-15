@@ -2881,7 +2881,32 @@ fzf-history-widget() {
   return $ret
 }
 #+END_SRC
+*** fuzzy find and open
 
+I found this function in the [[https://github.com/junegunn/fzf/wiki/Examples#opening-files][fzf example section]]. This aligns with the
+functionality that I have in ~eshell~, making it more frictionless to move in
+between.
+#+BEGIN_SRC sh
+# ff [FUZZY PATTERN] - Open the selected file with the default editor
+#   - Bypass fuzzy finder if there's only one match (--select-1)
+#   - Exit if there's no match (--exit-0)
+ff() {
+  local files
+  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+}
+#+END_SRC
+
+This makes it possible to fuzzy find and cd to selected directory
+#+BEGIN_SRC sh
+# fd - cd to selected directory
+fd() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  cd "$dir"
+}
+#+END_SRC
 * GTK+
 
 Both of these configuration files has been copied from hlissers-setup. I have
