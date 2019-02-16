@@ -2855,6 +2855,12 @@ publicly available.
 # ( ) # Hide shell job control messages.
 (cat ~/.cache/wal/sequences &)
 #+END_SRC
+
+I want to source the colors.sh in order to get the colors into FZF_DEFAULT_OPTS
+#+BEGIN_SRC sh
+source ~/.cache/wal/colors.sh
+#+END_SRC
+
 *** DONE do not show duplicates in fzf history
 CLOSED: [2019-02-04 mån 10:30]
 
@@ -3522,7 +3528,6 @@ spotify.password = $(pass web/spotify)
 
 
 #+END_SRC
-
 
 * Binaries
 
