@@ -2812,6 +2812,11 @@ This setting controls the hightlightstyle
 #+BEGIN_SRC sh
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
 #+END_SRC
+*** fzf
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+source /usr/share/fzf/key-bindings.zsh
+#+END_SRC
 
 *** DONE remove duplicates history in zsh
 CLOSED: [2019-02-04 mån 10:28]
