@@ -297,18 +297,19 @@ unclutter &
 :header-args: :tangle ~/.profile :mkdirp yes
 :END:
 
-In the configuration section in the arch wiki one can read that:
-https://wiki.archlinux.org/index.php/bspwm
+In the [[https://wiki.archlinux.org/index.php/bspwm][configuration section for bspwm in the ArchWiki]] it is stated that:
 #+BEGIN_EXAMPLE
 Important: Make sure your environment variable $XDG_CONFIG_HOME is set or your
 bspwmrc will not be found
 #+END_EXAMPLE
 
-It's therefore important to set this environmental variable.
+It's therefore important to set this environmental variable, which I do in
+~profile~.
 #+BEGIN_SRC sh
 XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CONFIG_HOME
 #+END_SRC
+
 ** sxkhkdrc
 :PROPERTIES:
 :header-args: :tangle ~/.config/sxhkd/sxhkdrc :comments link :mkdirp yes
@@ -1886,9 +1887,9 @@ rofi.theme: ~/.cache/wal/colors-rofi-dark.rasi
 
 Customize appearance for ~Arch~
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-rofi.width: 1000
-rofi.lines: 15
-rofi.font: hack 18
+rofi.width: 1500
+rofi.lines: 10
+rofi.font: hack 15
 rofi.bw: 0
 rofi.padding: 50
 rofi.line-margin: 5
