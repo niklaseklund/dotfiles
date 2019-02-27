@@ -1856,6 +1856,16 @@ else
   polybar --reload example &
 fi
 #+END_SRC
+*** Customization :wip:
+
+Use nmcli to show if a vpn connection is active.
+
+#+BEGIN_SRC sh :results output
+nmcli connection show --active | grep "vpn"
+#+END_SRC
+
+#+RESULTS:
+: ovpn-se-tcp  233979ee-175d-426c-9b78-445411050714  vpn   wlp3s0
 
 * Rofi
 ** The application launcher
