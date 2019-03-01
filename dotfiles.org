@@ -1358,6 +1358,8 @@ label = %title:0:30:...%
 [module/xkeyboard]
 type = internal/xkeyboard
 blacklist-0 = num lock
+blacklist-1 = caps lock
+blacklist-2 = scroll lock
 
 format-prefix = " "
 format-prefix-foreground = ${colors.foreground-alt}
