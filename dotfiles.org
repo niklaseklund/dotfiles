@@ -305,7 +305,7 @@ bspwmrc will not be found
 
 It's therefore important to set this environmental variable, which I do in
 ~profile~.
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CONFIG_HOME
 #+END_SRC
