@@ -2389,7 +2389,7 @@ run -b '~/.tmux/plugins/tpm/tpm'
 * (n)vim
 ** neovim
 :PROPERTIES:
-:header-args: :tangle ~/.config/nvim/init.vim :mkdirp yes :comments link
+:header-args: :tangle ~/.config/nvim/init.vim :mkdirp yes
 :END:
 
 #+BEGIN_SRC vimrc
