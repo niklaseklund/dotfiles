@@ -312,7 +312,7 @@ export XDG_CONFIG_HOME
 
 ** sxkhkdrc
 :PROPERTIES:
-:header-args: :tangle ~/.config/sxhkd/sxhkdrc :comments link :mkdirp yes
+:header-args: :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes
 :END:
 
 I followed the instructions from the manual and copied over the example
@@ -505,7 +505,7 @@ super + {Left,Down,Up,Right}
 
 ** bspwmrc
 :PROPERTIES:
-:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :comments link :mkdirp yes
+:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :mkdirp yes
 :END:
 
 With ~bspwmrc~ it's important that the file is executable. With tangle there are
