@@ -3143,7 +3143,7 @@ account default : gmail
 
 * redshift
 :PROPERTIES:
-:header-args: :tangle ~/.config/redshift/redshift.conf :mkdirp yes
+:header-args: :tangle (my/tangle-os '(arch) "~/.config/redshift/redshift.conf") :mkdirp yes
 :END:
 
 I found the default configuration here:
