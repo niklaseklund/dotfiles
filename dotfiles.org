@@ -2971,6 +2971,9 @@ Create Both
 SyncState *
 #+END_SRC
 ** notmuch
+:PROPERTIES:
+:header-args: :tangle ~/.notmuch-config
+:END:
 
 ~notmuch~ is an indexer providing a cli and ~Emacs~ interface. This
 configuration is the default gnerated config file.
@@ -2981,7 +2984,7 @@ Notmuch is a mail indexer. Essentially, is a very thin front end on top of
 xapian.
 #+END_QUOTE
 
-#+BEGIN_SRC sh :tangle ~/.notmuch-config
+#+BEGIN_SRC sh
 # .notmuch-config - Configuration file for the notmuch mail system
 #
 # For more information about notmuch, see https://notmuchmail.org
@@ -2995,8 +2998,17 @@ xapian.
 # configured here named ".notmuch".
 #
 [database]
-path=/home/niklascarlsson/.mail
+#+END_SRC
 
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+path=/home/niklascarlsson/.mail
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+path=/home/nikcar/.mail
+#+END_SRC
+
+#+BEGIN_SRC sh
 # User configuration
 #
 # Here is where you can let notmuch know how you would like to be
