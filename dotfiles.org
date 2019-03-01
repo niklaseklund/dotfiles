@@ -771,18 +771,6 @@ done
 
 *** bspwm look
 
-**** Default
-This comes from the default configuration
-#+BEGIN_SRC sh :tangle no
-bspc config border_width         2
-bspc config window_gap          12
-
-bspc config split_ratio          0.52
-bspc config borderless_monocle   true
-bspc config gapless_monocle      true
-#+END_SRC
-
-**** hlissner setup :wip:
 These settings are from hlissner's setup
 #+BEGIN_SRC sh
 bspc config split_ratio          0.50
@@ -812,7 +800,7 @@ To make it possible to use youtube in fullscreen tiled mode
 bspc config ignore_ewmh_fullscreen all
 #+END_SRC
 
-Settings for the center monitor
+Settings for the primary monitor
 #+BEGIN_SRC sh
 export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
 
@@ -830,26 +818,6 @@ bspc config -m $MONITOR top_padding    0
 bspc config -m $MONITOR left_padding   0
 bspc config -m $MONITOR right_padding  0
 #+END_SRC
-
-**** Three screen setup
-My new idea is to detect if three screen are connected and then utilize the
-middle one as the primary.
-
-Check number of screens
-#+BEGIN_SRC sh :tangle no
-xrandr -q | grep " connected" | wc -l
-#+END_SRC
-
-#+RESULTS:
-: 3
-
-Extract the center screen and use that as monitor
-#+BEGIN_SRC sh :tangle no
-xrandr -q | grep " connected" | sed -n '2p' | cut -d' ' -f1
-#+END_SRC
-
-#+RESULTS:
-: DP-1-1-8
 
 *** Default rules
 
