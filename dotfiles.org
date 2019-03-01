@@ -3232,8 +3232,7 @@ screen=0
 
 This is my setup for ~ubuntu~:
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu) "~/.gnupg/gpg-agent.conf") :mkdirp yes
-pinentry-program /usr/bin/pinentry-gtk-2
-default-cache-ttl 3600
+default-cache-ttl 7200
 #+END_SRC
 
 * music
