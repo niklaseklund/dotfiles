@@ -3513,7 +3513,7 @@ spotify.password = $(pass web/spotify)
 
 #+END_SRC
 
-* Binaries
+* Scripts
 
 I found a good post on the topic of where to put my [[https://unix.stackexchange.com/questions/36871/where-should-a-local-executable-be-placed][local user specific executables]].
 #+BEGIN_QUOTE
@@ -3529,17 +3529,18 @@ I found a good post on the topic of where to put my [[https://unix.stackexchange
     $HOME/src Local source code
 #+END_QUOTE
 
-** i3lock
-:PROPERTIES:
-:header-args: :tangle (my/tangle-os '(ubuntu) "~/bin/lock-screen") :shebang "#! /bin/sh" :mkdirp yes
-:END:
-
-I am using the application ~i3lock~ for locking the screen. I create an
-executable file to be able to call it from ~rofi~ passing the right parameters.
-
-#+BEGIN_SRC sh
-i3lock -i ~/Pictures/forest_wallpaper.png --color=000000 -t
+** Music player :tmux:tizonia:
+#+BEGIN_SRC sh :tangle ~/.local/bin/music-tmux :shebang "#! /bin/zsh"
+tmux new-session \; \
+    send-keys 'ncpamixer' C-m \; \
+    send-keys LL \; \
+    split-window -v \; \
+    split-window -v \; \
+    select-layout even-vertical \; \
+    send-keys 'cava' C-m \; \
+    select-pane -U \;
 #+END_SRC
+
 * ideas
 
 - add private/work condition?
