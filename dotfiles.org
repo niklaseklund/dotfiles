@@ -2839,7 +2839,10 @@ publicly available.
 
 #+BEGIN_SRC sh
 [[ -f ~/.zshrc_local ]] && source "${HOME}/.zshrc_local"
+#+END_SRC
 
+Import colorscheme asynchronously for wal
+#+BEGIN_SRC sh
 # https://github.com/dylanaraps/pywal/wiki/Getting-Started
 # Import colorscheme from 'wal' asynchronously
 # &   # Run the process in the background.
