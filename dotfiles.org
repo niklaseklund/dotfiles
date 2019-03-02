@@ -2899,6 +2899,14 @@ fd() {
   cd "$dir"
 }
 #+END_SRC
+*** mounting
+
+Dealing with the sd card reader
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+alias mountsdcard="sudo mount $(lsblk -l -o PATH,MODEL,SIZE | grep -A1 "SD_Card_Reader" | sed -n 2p | cut -d' ' -f1) /mnt/sdcard"
+alias unmountsdcard="sudo umount /mnt/sdcard"
+#+END_SRC
+
 * GTK+
 
 Both of these configuration files has been copied from hlissers-setup. I have
