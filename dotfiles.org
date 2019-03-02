@@ -859,6 +859,11 @@ WM_CLASS(STRING) = "peek", "Peek"
 #+BEGIN_SRC sh
 bspc rule -a Peek state=floating
 #+END_SRC
+**** Zathura
+
+#+BEGIN_SRC sh
+bspc rule -a Zathura state=tiled
+#+END_SRC
 
 *** TODO Window issues
 
@@ -3534,6 +3539,29 @@ spotify.password = $(pass web/spotify)
 
 #+END_SRC
 
+* zathura
+:PROPERTIES:
+:header-args: :tangle ~/.config/zathura/zathurarc :mkdir p
+:END:
+
+I got some inspiration from the [[https://wiki.archlinux.org/index.php/Zathura][the arch wiki]] and the video from Luke Smith
+[[https://www.youtube.com/watch?v=V_Iz4zdyRM4&t=315s][zathura: a vim based minimalist pdf reader]]
+
+Enable copy to clipboard
+#+BEGIN_SRC sh
+set selection-clipboard clipboard
+#+END_SRC
+
+Control the paddings
+#+BEGIN_SRC sh
+set statusbar-h-padding 0
+set statusbar-v-padding 0
+set page-padding 1
+#+END_SRC
+
+** TODO Sync with pywal colors
+Found some inspiration here to sync zathura with pywal
+https://www.reddit.com/r/unixporn/comments/8giij5/guide_defining_program_colors_through_xresources/
 * Scripts
 
 I found a good post on the topic of where to put my [[https://unix.stackexchange.com/questions/36871/where-should-a-local-executable-be-placed][local user specific executables]].
