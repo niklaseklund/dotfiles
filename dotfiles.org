@@ -373,7 +373,7 @@ behaviour.)
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 super +ctrl + l
-    lock-fancy -n -p
+    lock -n -p
 #+END_SRC
 
 *** Hotkeys
