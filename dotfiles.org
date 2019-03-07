@@ -372,7 +372,7 @@ behaviour.)
 **** Lock
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-super +ctrl + l
+@F2
     lock -n -p
 #+END_SRC
 
