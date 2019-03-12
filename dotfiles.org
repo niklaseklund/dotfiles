@@ -3110,6 +3110,15 @@ ff() {
 }
 #+END_SRC
 
+include those hidden files as well
+#+BEGIN_SRC sh
+fh() {
+  local files
+  IFS=$'\n' files=($(find . | fzf-tmux --query="$1" --multi --select-1 --exit-0))
+  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+}
+#+END_SRC
+
 This makes it possible to fuzzy find and cd to selected directory
 #+BEGIN_SRC sh
 # fd - cd to selected directory
