@@ -330,6 +330,15 @@ super + Return
 	urxvt
 #+END_SRC
 
+A dropdown terminal can come in handy, [[https://github.com/noctuid/tdrop][tdrop]] provides that. The parameters are
+the following, a for autodection of the window manager, m for monitor awareness,
+s for creating a session named scratch and urxvt is the program that launches.
+#+BEGIN_SRC sh
+# dropdown terminal
+super + grave
+    tdrop -ma -s scratch urxvt
+#+END_SRC
+
 #+BEGIN_SRC sh
 # make sxhkd reload its configuration files:
 super + Escape
