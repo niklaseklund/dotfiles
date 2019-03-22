@@ -2755,11 +2755,12 @@ alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
 
 ** Zsh
+*** zshrc
 :PROPERTIES:
 :header-args: :tangle ~/.zshrc :mkdirp yes :comments link
 :END:
 
-*** zgen
+**** zgen
 
 Following the setup details on [[https://github.com/tarjoilija/zgen][zgen wiki]]. Starting with sourcing zgen on start
 in zshrc.
@@ -2790,7 +2791,7 @@ if ! zgen saved; then
 fi
 #+END_SRC
 
-*** keybindings
+**** keybindings
 
 Make sure to set the timeout to a low value to avoid delays when pressing escape
 https://www.johnhawthorn.com/2012/09/vi-escape-delays/
@@ -2847,7 +2848,7 @@ gave me colored output of my ls commands.
 #+BEGIN_SRC sh
 alias ls='ls --color=auto'
 #+END_SRC
-*** prompt
+**** prompt
 
 https://github.com/hlissner/dotfiles/blob/master/shell/zsh/prompt.zsh
 
@@ -2918,22 +2919,22 @@ prompt_init() {
 prompt_init "$@"
 #+END_SRC
 
-**** TODO Make zsh prompt look good in tty as well
+***** TODO Make zsh prompt look good in tty as well
 
 The prompt doesn't look that good when in the tty. Should I use
 something else then lambda when in such a console with a restricted font.
 
 This is a solution for how to detect if the shell is running in a virtual terminal
 https://unix.stackexchange.com/questions/96463/detect-if-running-in-a-virtual-terminal
-*** aliases
-**** Move/Copy/Remove
+**** aliases
+***** Move/Copy/Remove
 #+BEGIN_SRC sh
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 #+END_SRC
 
-**** List
+***** List
 
 List content. ~LC_COLLATE=C~ sorts in upper case letters before lower.
 #+BEGIN_SRC sh
@@ -2943,7 +2944,7 @@ alias ll='ls -l'
 alias la='LC_COLLATE=C ls -la'
 #+END_SRC
 
-**** Tmux
+***** Tmux
 
 https://github.com/hlissner/dotfiles/blob/master/shell/tmux/tmux.conf
 #+BEGIN_SRC sh
@@ -2968,45 +2969,20 @@ else # From outside tmux
     tdup() { tmux new-session -t "${1:-`tmux display-message -p '#S'`}"; }
 fi
 #+END_SRC
-**** bat
+***** bat
 
 [[https://github.com/sharkdp/bat][Bat is the new cat]]
 #+BEGIN_SRC sh
 alias cat="bat"
 #+END_SRC
 
-*** environment variables
-:PROPERTIES:
-:header-args: :tangle ~/.zshenv :mkdirp yes :comments link
-:END:
-
-Set the editors that I use. ~Emacs~ for the gui stuff and ~Neovim~ for the good
-old terminal.
-#+BEGIN_SRC sh :tangle ~/.zshenv :mkdirp yes :comments link
-export EDITOR=nvim
-export VISUAL=emacs
-
-#+END_SRC
-
-Add ~HOME/bin~ to ~PATH~ to find my local binaries. To ~prepend~ or ~append~ is
-exemplified [[https://stackoverflow.com/questions/11530090/adding-a-new-entry-to-the-path-variable-in-zsh ][here.]]
-#+BEGIN_SRC sh
-path=('/home/niklascarlsson/bin' $path) # prepend path
-#+END_SRC
-
-
-Solve issue with zsh-autosuggestions highlight
-https://github.com/zsh-users/zsh-autosuggestions/issues/229
-#+BEGIN_SRC sh
-export TERM=xterm-256color
-#+END_SRC
-*** settings
+**** settings
 
 This setting controls the hightlightstyle
 #+BEGIN_SRC sh
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
 #+END_SRC
-*** fzf
+**** fzf
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 source /usr/share/fzf/key-bindings.zsh
@@ -3016,7 +2992,7 @@ source /usr/share/fzf/key-bindings.zsh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 #+END_SRC
 
-*** DONE remove duplicates history in zsh
+**** DONE remove duplicates history in zsh
 CLOSED: [2019-02-04 mån 10:28]
 
 Avoiding duplicate entries in history, [[https://github.com/junegunn/fzf/issues/600][I found the information here]]. However I
@@ -3027,7 +3003,7 @@ good to have in case I need to backtrack what I have done in the terminal.
 setopt HIST_IGNORE_ALL_DUPS
 #+END_SRC
 
-*** DONE Improve z with fzf
+**** DONE Improve z with fzf
 CLOSED: [2019-02-04 mån 16:15]
 
 The plugin ~z~ to ~zsh~ makes navigating to known locations easier. However as
@@ -3044,7 +3020,7 @@ z() {
 }
 #+END_SRC
 
-*** local configuration
+**** local configuration
 
 Load a local ~zshrc~ file if it exists. The benefit is that local settings could
 be stored here. For example aliases that are work specific that should not be
@@ -3068,7 +3044,7 @@ I want to source the colors.sh in order to get the colors into FZF_DEFAULT_OPTS
 source ~/.cache/wal/colors.sh
 #+END_SRC
 
-*** DONE do not show duplicates in fzf history
+**** DONE do not show duplicates in fzf history
 CLOSED: [2019-02-04 mån 10:30]
 
 A better for the history problem is to override the default behaviour of fzf
@@ -3094,7 +3070,7 @@ fzf-history-widget() {
   return $ret
 }
 #+END_SRC
-*** fuzzy find and open
+**** fuzzy find and open
 
 I found this function in the [[https://github.com/junegunn/fzf/wiki/Examples#opening-files][fzf example section]]. This aligns with the
 functionality that I have in ~eshell~, making it more frictionless to move in
@@ -3129,12 +3105,50 @@ fd() {
   cd "$dir"
 }
 #+END_SRC
-*** mounting
+**** mounting
 
 Dealing with the sd card reader
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 alias mountsdcard="sudo mount $(lsblk -l -o PATH,MODEL,SIZE | grep -A1 "SD_Card_Reader" | sed -n 2p | cut -d' ' -f1) /mnt/sdcard"
 alias unmountsdcard="sudo umount /mnt/sdcard"
+#+END_SRC
+*** zshenv
+:PROPERTIES:
+:header-args: :tangle ~/.zshenv :mkdirp yes :comments link
+:END:
+
+Set the editors that I use. ~Emacs~ for the gui stuff and ~Neovim~ for the good
+old terminal.
+#+BEGIN_SRC sh
+export EDITOR=nvim
+export VISUAL=emacs
+
+#+END_SRC
+
+Add ~HOME/bin~ to ~PATH~ to find my local binaries. To ~prepend~ or ~append~ is
+exemplified [[https://stackoverflow.com/questions/11530090/adding-a-new-entry-to-the-path-variable-in-zsh ][here.]]
+#+BEGIN_SRC sh
+path=('/home/niklascarlsson/bin' $path) # prepend path
+#+END_SRC
+
+
+Solve issue with zsh-autosuggestions highlight
+https://github.com/zsh-users/zsh-autosuggestions/issues/229
+#+BEGIN_SRC sh
+export TERM=xterm-256color
+#+END_SRC
+
+Following the installation notes on [[https://github.com/pyenv/pyenv][pyenv]] one needs to setup the following paths
+#+BEGIN_SRC sh
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+#+END_SRC
+
+as well as initialize the pyenv environment which should preferably be done last
+#+BEGIN_SRC sh
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
 #+END_SRC
 
 * GTK+
