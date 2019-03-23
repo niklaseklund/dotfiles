@@ -4013,6 +4013,7 @@ spotify.password = $(pass web/spotify)
 
 *** SoundCloud
 
+I got the token by following the link at the tizonia project's homepage.
 #+BEGIN_SRC sh
 # SoundCloud configuration
 # -------------------------------------------------------------------------
@@ -4024,7 +4025,7 @@ spotify.password = $(pass web/spotify)
 # details.
 #
 # soundcloud.oauth_token = X-XXXXXX-XXXXXXXX-XXXXXXXXXXXXXX
-
+soundcloud.oauth_token = $(pass web/soundcloud | grep OAuth | cut -d ":" -f2)
 #+END_SRC
 
 *** Dirble
