@@ -3818,7 +3818,8 @@ I found a good post on the topic of where to put my [[https://unix.stackexchange
 #+END_QUOTE
 
 ** Music player :tmux:tizonia:
-#+BEGIN_SRC sh :tangle ~/.local/bin/music-tmux :shebang "#! /bin/zsh"
+
+#+BEGIN_SRC sh :tangle ~/bin/music-tmux :shebang "#! /bin/zsh"
 tmux new-session \; \
     send-keys 'ncpamixer' C-m \; \
     send-keys LL \; \
@@ -3829,6 +3830,35 @@ tmux new-session \; \
     select-pane -U \;
 #+END_SRC
 
+** Vpn utility :vpn:
+:PROPERTIES:
+:header-args: :tangle ~/bin/vpn-toggle :shebang "#! /bin/zsh"
+:END:
+
+The purpose of this script should be to toggle a vpn connection between active
+and inactive.
+
+The third column contains the type of connection. To not be fooled by a name
+of a connection that might contain the word vpn I extract this column and grep
+for vpn.
+#+BEGIN_SRC sh
+connection=$(nmcli connection show --active | awk '{print $3}' | grep vpn)
+#+END_SRC
+
+If a connection is detected set it to down otherwise start it.
+#+BEGIN_SRC sh
+if [ "$connection" = "vpn" ]; then
+    # active
+    active_connection=$(nmcli connection show --active | grep vpn | awk '{print $1}')
+    nmcli connection down $active_connection >/dev/null 2>&1
+else
+    # inactive
+    printf $(pass network/ovpn)'\n' | nmcli connection up ovpn-se-tcp --ask >/dev/null 2>&1
+fi
+#+END_SRC
+
+~Note:~ an idea for the future might be to utilize a rofi popup to select which
+vpn connection to use when activating. Currently one is hardcoded.
 * ideas
 
 - add private/work condition?
