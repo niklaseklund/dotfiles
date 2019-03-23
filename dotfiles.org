@@ -50,7 +50,8 @@ export GDK_DPI_SCALE=0.5
 #export QT_AUTO_SCREEN_SCALE_FACTOR=2
 #export QT_SCALE_FACTOR=2
 
-xrandr --dpi 227
+xrandr --output eDP-1 --dpi 227
+xrandr --output DP-2 --right-of eDP-1 --scale 1.5x1.5 --auto
 #+END_SRC
 
 *** Keyboard settings
