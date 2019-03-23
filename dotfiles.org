@@ -1975,6 +1975,11 @@ Symbol to use:
 :header-args: :tangle ~/.config/polybar/config :mkdirp yes
 :END:
 
+Ideas:
+- how to make sure that the centered module is actually centered. It seems to
+  move depending on the size of the right/left module. I would prefer having it
+  centered straight in the middle.
+
 #+BEGIN_SRC sh
 ;==========================================================
 ;
