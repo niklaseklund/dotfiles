@@ -797,7 +797,17 @@ bspc config remove_disabled_monitors false
 bspc config remove_unplugged_monitors true
 
 bspc config border_width    0
-bspc config window_gap      12
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+bspc config window_gap      50
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+bspc config window_gap      25
+#+END_SRC
+
+#+BEGIN_SRC sh
 bspc config top_padding     0
 bspc config bottom_padding  0
 bspc config left_padding    0
@@ -814,13 +824,24 @@ Settings for the primary monitor
 #+BEGIN_SRC sh
 export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
 
-bspc config -m $MONITOR window_gap     22
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+bspc config -m $MONITOR window_gap     120
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+bspc config -m $MONITOR window_gap     60
 #+END_SRC
 
 This sets the padding value. If it's matched to the ~height~ value in ~polybar~
 config the bar will be shown even if the window is in a full screen mode.
-#+BEGIN_SRC sh
-bspc config -m $MONITOR bottom_padding 27
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+bspc config -m $MONITOR bottom_padding 60
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+bspc config -m $MONITOR bottom_padding 30
 #+END_SRC
 
 #+BEGIN_SRC sh
@@ -2017,9 +2038,21 @@ override-redirect = true
 
 ;monitor = ${env:MONITOR:HDMI-1}
 width = 100%
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 height = 40
 offset-x = 0
 offset-y = 10
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+height = 20
+offset-x = 0
+offset-y = 5
+#+END_SRC
+
+#+BEGIN_SRC sh
 ;offset-x = 1%
 ;offset-y = 1%
 
@@ -2045,10 +2078,14 @@ padding-right = 4
 
 module-margin-left = 1
 module-margin-right = 2
+#+END_SRC
 
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 dpi-x = 192
 dpi-y = 192
+#+END_SRC
 
+#+BEGIN_SRC sh
 font-0 = fixed:pixelsize=8;1
 font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
 font-2 = siji:pixelsize=8;1
@@ -2302,7 +2339,17 @@ screenchange-reload = true
 
 [global/wm]
 margin-top = 0
-margin-bottom = 40
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+margin-bottom = 60
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+margin-bottom = 30
+#+END_SRC
+
+#+BEGIN_SRC sh
 ; vim:ft=dosini
 
 #+END_SRC
