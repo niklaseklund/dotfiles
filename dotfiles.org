@@ -2425,11 +2425,12 @@ fi
 source ~/.cache/wal/colors.sh
 
 if [ "$(systemctl is-active bluetooth.service)" = "active" ]; then
-    # active
-    echo "%{F${color7}}"
+    # if active
+    echo "%{F${color7}}"
+    # if connected 
 else
     # inactive
-    echo "%{F${color2}}"
+    echo "%{F${color2}}"
 fi
 #+END_SRC
 
