@@ -521,6 +521,26 @@ super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
 #+END_SRC
 
+Resize the gaps in tiled layout. Found inspiration [[https://github.com/desyncr/bspwmrc/blob/master/sxhkdrc ][here]]
+#+BEGIN_SRC sh
+#
+# gaps
+#
+
+# change window gap at run time
+super + plus
+    bspc config -d focused window_gap $((`bspc config -d focused window_gap` + 5 ))
+
+# Restore original gap
+super + equal
+    bspc config top_padding 6; bspc config -d focused window_gap 15
+
+# decrease gap
+super + minus
+    bspc config -d focused window_gap $((`bspc config -d focused window_gap` - 5 ))
+#+END_SRC
+
+
 ** bspwmrc
 :PROPERTIES:
 :header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :mkdirp yes
