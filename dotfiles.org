@@ -385,6 +385,14 @@ behaviour.)
 @F2
     lock -n -p
 #+END_SRC
+**** Password
+
+Quickly search through my passwords
+
+#+BEGIN_SRC sh
+super + backslash
+    rofi-pass -m -1
+#+END_SRC
 
 *** Hotkeys
 #+BEGIN_SRC sh
