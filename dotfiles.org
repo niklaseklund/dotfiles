@@ -2120,7 +2120,7 @@ font-2 = siji:pixelsize=8;1
 
 font-3 = "Material Icons:style=Regular:size=8"
 
-modules-left = pulseaudio
+modules-left = pulseaudio app-mail
 modules-center = bspwm
 modules-right = xkeyboard app-bluetooth app-vpn wlan battery date
 
@@ -2141,6 +2141,11 @@ tray-padding = 2
 
 cursor-click = pointer
 cursor-scroll = ns-resize
+
+[module/app-mail]
+type = custom/script
+exec = ~/.config/polybar/modules/app-mail.sh
+interval = 10
 
 [module/app-bluetooth]
 type = custom/script
@@ -2495,6 +2500,19 @@ if [ "$connection" = "vpn" ]; then
 else
     # inactive
     echo "%{F${color2}}"
+fi
+#+END_SRC
+*** mail
+
+#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-mail.sh :shebang "#! /bin/sh" :mkdirp yes
+source ~/.cache/wal/colors.sh
+
+unread=$(notmuch search tag:unread | wc -l)
+
+if [ "$unread" -eq "0" ]; then
+    echo "%{F${color2}}"
+else
+    echo "%{F${color2}}$unread"
 fi
 #+END_SRC
 * Rofi
