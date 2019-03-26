@@ -2452,14 +2452,33 @@ fi
 #+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-bluetooth.sh :shebang "#! /bin/sh" :mkdirp yes
 source ~/.cache/wal/colors.sh
 
-if [ "$(systemctl is-active bluetooth.service)" = "active" ]; then
-    # if active
-    echo "%{F${color7}}"
-    # if connected 
-else
-    # inactive
-    echo "%{F${color2}}"
+# Determine if bluetooth is active
+active=$(systemctl is-active bluetooth.service)
+
+# Determine if bluetooth is connected
+connected="no"
+if [ "$active" = "active" ]; then
+    devices=$(echo -e 'paired-devices' | bluetoothctl)
+    for device in $devices; do
+        if [[ $device == [0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F] ]] ; then
+            # Value of field Connected
+            is_connected=$(echo -e 'info ' $i '\n' | bluetoothctl | grep 'Connected' | cut -d' ' -f2)
+            if [[ "$is_connected" == "yes" ]]; then
+               connected="yes"
+            fi
+        fi
+    done
 fi
+
+# Set the color and icon
+if [ "$connected" = "yes" ]; then
+    echo "%{F${color7}}"
+elif [ "$active" = "active" ]; then
+    echo "%{F${color7}}"
+else
+    echo "%{F${color2}}"
+fi
+
 #+END_SRC
 
 *** vpn
