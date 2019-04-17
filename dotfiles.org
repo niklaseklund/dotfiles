@@ -4459,6 +4459,45 @@ echo $y
 #+RESULTS:
 : 3xxxxxxxxx
 
+* systemd
+** mbsync
+*** timer
+
+#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.timer :mkdir -p :tangle-mode (identity #o644)
+[Unit]
+Description=Mailbox synchronization timer
+
+[Timer]
+OnBootSec=2m
+OnUnitActiveSec=5m
+Unit=mbsync.service
+
+[Install]
+WantedBy=timers.target
+#+END_SRC
+*** service
+
+#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.service :tangle-mode (identity #o644)
+[Unit]
+Description=Mailbox synchronization service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/mbsync -Va
+ExecStartPost=/usr/bin/notmuch new
+
+#+END_SRC
+*** start
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+Start the service
+#+BEGIN_SRC sh
+sudo systemctl --user enable mbsync.timer
+sudo systemctl --user start mbsync.timer
+#+END_SRC
+
 * ideas
 
 - add private/work condition?
