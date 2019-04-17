@@ -351,6 +351,12 @@ mod4 + ctrl + shift + grave
 	bspc rule -a 'Emacs' -o state=floating && org-capture
 #+END_SRC
 
+Add a shortcut for Emacs anywhere. Make it always appear tiled at the bottom
+#+BEGIN_SRC sh
+mod4 + apostrophe
+    emacsclient -e nil && bspc rule -a 'Emacs' -o split_ratio=0.7 state=tiled split_dir=south && emacs-anywhere
+#+END_SRC
+
 **** Application launcher
 
 I have changed the application launcher from ~dmenu~ to ~rofi~.
@@ -4341,6 +4347,94 @@ fi
 
 ~Note:~ an idea for the future might be to utilize a rofi popup to select which
 vpn connection to use when activating. Currently one is hardcoded.
+** Emacs anywhere
+
+#+BEGIN_SRC sh :tangle ~/bin/emacs-anywhere :shebang "#!/bin/bash"
+# Start by only supporting Firefox
+# 1) Get the name of the calling application
+WINDOW=$( xdotool getactivewindow )
+# APP_NAME=$( xprop -id $WINDOW WM_CLASS | grep -oE '[^ ]+$' )
+APP_NAME=$( xprop -id $WINDOW WM_CLASS)
+echo $APP_NAME >> ~/tmp/selection.txt
+x=$( echo $APP_NAME | awk -F ',' '{print $2}' )
+echo $x >> ~/tmp/selection.txt
+x2=$(echo "$x" | tr -d '"')
+echo $x2 >> ~/tmp/selection.txt
+
+# 2) Make comparison
+if [[ "$x2" == *"Firefox"* ]]; then
+    # Do nothing continue
+    :
+else
+    exit 1;
+fi
+
+# Add a check if the content of the copy is the same before and after I have
+# copied. Cause in that case there is nothing in the current text box and I
+# should ignore previously copied text.
+
+# Clear the clipboard to copies when encountering empty selections
+# TODO: use visual selection clipboard instead, I use that less often to
+# avoid tempering with the primary clipboard. Should be done with the home+end
+# keybinding
+
+# Solution1: use selection clipboard
+# echo -n | xclip -selection c
+
+# Solution2: use selection primary (default)
+echo -n | xclip
+
+# Solution1:
+# Clear modifiers is needed to get rid of the super modifer that I press to
+# activate this script
+# xdotool key --clearmodifiers ctrl+a ctrl+c
+
+# Solution2:
+# Clear modifiers is needed to get rid of the super modifer that I press to
+# using a selection seems to be easier to detect if it's empty or not, or not
+xdotool key --clearmodifiers Shift+Home Shift+End
+xdotool key --clearmodifiers ctrl+a
+
+# Solution1:
+# content=$(xclip -selection c -o)
+
+# Solution2:
+content=$(xclip -o)
+
+
+# I encountered issues that the xdotool sometimes makes the super key stuck
+# after I use the clearmodifiers flag. To mitigate that I found this issue on
+# github: https://github.com/jordansissel/xdotool/issues/43
+
+sleep 0.2 && xdotool keyup Super_L Super_R
+
+export EA_CLIPBOARD=$content
+
+# Call emacs-anywhere
+# TODO: Add a check to make sure it's not a nested call, it seems to hang then
+$HOME/opensource/emacs-anywhere/bin/run
+#+END_SRC
+** Right pad strings in zsh
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+Found an example [[https://github.com/yamadapc/zshguide/blob/master/chapter5.md][here]]
+
+#+BEGIN_SRC shell
+#! /bin/zsh
+
+Take a string of a number
+y='3'
+
+# Right pad the number with x
+y=${(r:10::x:)y}
+echo $y
+#+END_SRC
+
+#+RESULTS:
+: 3xxxxxxxxx
+
 * ideas
 
 - add private/work condition?
