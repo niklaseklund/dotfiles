@@ -124,7 +124,7 @@ schemes might be
 I found these colors in [[https://github.com/hlissner/dotfiles/blob/master/base/arch-desktop/Xresources][hlissner/dotfiles]], and thought they would make a good
 start. For changes in the future the [[https://terminal.sexy/][terminal.sexy]] has some color schemes that
 can be directly exported to Xresources format.
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 !! Colors
 #define blk  #141517
 #define bblk #969896
