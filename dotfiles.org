@@ -287,7 +287,6 @@ compton &
 
 Wait some before launching before launching the other, non-critical, applications
 #+BEGIN_SRC sh
-sleep 2
 xcape &
 unclutter &
 #+END_SRC
