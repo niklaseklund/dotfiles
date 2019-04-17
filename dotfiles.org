@@ -337,7 +337,7 @@ s for creating a session named scratch and urxvt is the program that launches.
 #+BEGIN_SRC sh
 # dropdown terminal
 super + grave
-    tdrop -y 0 -ma -s scratch urxvt
+    tdrop -ma -s scratch urxvt
 #+END_SRC
 
 #+BEGIN_SRC sh
