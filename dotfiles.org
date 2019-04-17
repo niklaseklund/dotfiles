@@ -4300,6 +4300,18 @@ tmux new-session \; \
     send-keys 'cava' C-m \; \
     select-pane -U \;
 #+END_SRC
+** glitch-lock
+
+Glitch locking the screen utilizing ~videoglitch~
+
+#+BEGIN_SRC sh :tangle ~/bin/glitcher~ :shebang "#! /bin/zsh"
+OUTPUT='/tmp/i3lock.png'
+scrot -z $OUTPUT
+convert $OUTPUT -scale '50%' $OUTPUT
+videoglitch -c gm $OUTPUT $OUTPUT
+convert $OUTPUT -scale '200%' $OUTPUT
+i3lock -i $OUTPUT -t
+#+END_SRC
 
 ** Vpn utility :vpn:
 :PROPERTIES:
