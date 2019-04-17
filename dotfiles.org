@@ -1108,11 +1108,34 @@ blur-background-exclude = [
 I have here the example opacity rule from the arch wiki,
 https://wiki.archlinux.org/index.php/compton.
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline no
 # opacity-rule = [ "80:class_g = 'URxvt'" ];
 opacity-rule = [
   "90:class_g = 'URxvt' && focused",
-  "60:class_g = 'URxvt' && !focused"
+  "60:class_g = 'URxvt' && !focused",
+#+END_SRC
+
+Making rofi a little bit transparent too
+#+BEGIN_SRC sh :padline no
+  "80:class_g = 'Rofi'"
+#+END_SRC
+
+One improvement for bspwm is also making the preselected areas transparent, the
+default opaque look is a bit distracting.
+#+BEGIN_SRC sh :padline no
+  "40:class_g = 'Bspwm' && class_i = 'presel_feedback'",
+#+END_SRC
+
+It's also possible to make a program transparent depending on it's content. For
+example the global org-capture window is launched with a title of ~org-capture~.
+This can be seen by using the utility function ~xprop~ and clicking on the
+window. So if the program is Emacs and the wm_name is org-capture then make it
+transparent.
+#+BEGIN_SRC sh :padline no
+  "40:class_g = 'Emacs' && WM_NAME@:s = 'org-capture'",
+#+END_SRC
+
+#+BEGIN_SRC sh :padline no
 ];
 #+END_SRC
 
