@@ -219,8 +219,8 @@ URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
 
 ~Ubuntu~
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-URxvt.font: xft:Hack:style=regular:size=12
-URxvt.boldFont: xft:Hack:style=bold:size=12
+URxvt.font: xft:Roboto Mono:style=regular:size=12
+URxvt.boldFont: xft:Roboto Mono:style=bold:size=12
 #+END_SRC
 
 ** xprofile
