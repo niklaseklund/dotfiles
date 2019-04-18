@@ -2333,7 +2333,7 @@ format-volume = <ramp-volume> <bar-volume>
 label-volume-foreground = ${root.foreground}
 
 label-muted = 
-format-muted = <ramp-volume> <bar-volume>
+format-muted = <label-muted> <bar-volume>
 label-muted-foreground = #666
 
 bar-volume-width = 10
