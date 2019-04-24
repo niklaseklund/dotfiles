@@ -4485,7 +4485,7 @@ Description=Mailbox synchronization service
 Type=oneshot
 ExecStart=/usr/bin/mbsync -Va
 ExecStartPost=/usr/bin/notmuch new
-
+ExecStartPre=/home/niklascarlsson/bin/notmuch-pre
 #+END_SRC
 *** start
 :PROPERTIES:
@@ -4497,7 +4497,15 @@ Start the service
 sudo systemctl --user enable mbsync.timer
 sudo systemctl --user start mbsync.timer
 #+END_SRC
+*** utility
 
+#+BEGIN_SRC sh :tangle ~/bin/notmuch-pre :shebang "#!/bin/bash"
+# Improvement: add a smart function for deletion in Emacs to avoid deleting
+# mails that have been flagged
+
+# Remove mails that has been taged as deleted
+notmuch search --output=files --format=text0 tag:deleted | xargs -0 rm
+#+END_SRC
 * ideas
 
 - add private/work condition?
