@@ -3646,7 +3646,7 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 as well as initialize the pyenv environment which should preferably be done last
 #+BEGIN_SRC sh
 if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
+  eval "$(pyenv init - --no-rehash)"
 fi
 #+END_SRC
 
