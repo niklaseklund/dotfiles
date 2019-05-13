@@ -4458,6 +4458,48 @@ echo $y
 
 #+RESULTS:
 : 3xxxxxxxxx
+** Monitor brightness
+
+Use xrandr and Python to adjust the monitor brightness.
+
+Improvements
+- make it so that the function can operate on the monitor that currently has the
+  focus in bspwm. Making this a feature that not only works on the external screen.
+
+#+BEGIN_SRC python :tangle ~/bin/monitor-brightness.py :shebang "#!/usr/bin/env python"
+import subprocess
+import sys
+
+
+def adjust_brightness(adjustment_value):
+    # Get a list of connected monitors and their brightness levels
+    connected_monitors = subprocess.check_output(
+        "xrandr -q | grep ' connected' | cut -d' ' -f1",
+        shell=True,
+        universal_newlines=True).strip().split()
+    current_brightness = subprocess.check_output(
+        "xrandr --verbose | grep 'Brightness' | cut -d' ' -f2",
+        shell=True,
+        universal_newlines=True).strip().split()
+
+    # Find sought after monitor
+    monitor = 'eDP-1-1'
+    for idx, m in enumerate(connected_monitors):
+        if m == monitor:
+            # TODO add signed float as input so that the user and choose to
+            # decrement or increment and make sure the output value is bound between
+            # 0 and 1
+            new_brightness = min(float(current_brightness[idx]) +
+                                 adjustment_value, 1.0)
+            command = "xrandr --output {0} --brightness {1:.1f}".format(
+                monitor, new_brightness)
+            subprocess.call(command, shell=True)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        adjust_brightness(float(sys.argv[1]))
+#+END_SRC
 
 * systemd
 ** mbsync
