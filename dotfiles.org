@@ -362,27 +362,9 @@ mod4 + apostrophe
 I have changed the application launcher from ~dmenu~ to ~rofi~.
 #+BEGIN_SRC sh
 super + @space
-	rofi -show run -m -1
+	rofi -show run
 
 #+END_SRC
-
-The ~-m~ option switches the behavior of ~rofi~ from the default which is to
-show the window in the monitor where the mouse recides.
-
-To the monitor which is in focus. I found this setting in the
-[[https://github.com/DaveDavenport/rofi/blob/1ab3e571eca1768d437246ca6ec09f44432b0e20/doc/rofi.1.markdown][rofi manpages]]
-#+BEGIN_EXAMPLE
--1: the currently focused monitor.
-
--2: the currently focused window (i.e. rofi will be displayed on top of the focused window).
-
--3: Position at mouse (overrides the location setting to get normal context menu
-behaviour.)
-
--4: the monitor with the focused window.
-
--5: the monitor that shows the mouse pointer.
-#+END_EXAMPLE
 
 **** Lock
 
@@ -396,7 +378,7 @@ Quickly search through my passwords
 
 #+BEGIN_SRC sh
 super + backslash
-    rofi-pass -m -1
+    rofi-pass
 #+END_SRC
 
 *** Hotkeys
@@ -2592,6 +2574,31 @@ rofi.bw: 0
 rofi.padding: 50
 rofi.line-margin: 5
 rofi.eh: 1
+#+END_SRC
+
+
+The ~-m~ option switches the behavior of ~rofi~ from the default which is to
+show the window in the monitor where the mouse recides.
+
+To the monitor which is in focus. I found this setting in the
+[[https://github.com/DaveDavenport/rofi/blob/1ab3e571eca1768d437246ca6ec09f44432b0e20/doc/rofi.1.markdown][rofi manpages]]
+#+BEGIN_EXAMPLE
+-1: the currently focused monitor.
+
+-2: the currently focused window (i.e. rofi will be displayed on top of the focused window).
+
+-3: Position at mouse (overrides the location setting to get normal context menu
+behaviour.)
+
+-4: the monitor with the focused window.
+
+-5: the monitor that shows the mouse pointer.
+#+END_EXAMPLE
+
+I want to set this globally to -1. That setting makes most sense to me. It will
+be the display that I have currently focus on.
+#+BEGIN_SRC sh
+rofi.m: -1
 #+END_SRC
 
 #+BEGIN_SRC sh
