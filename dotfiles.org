@@ -1090,11 +1090,16 @@ blur-background-exclude = [
 I have here the example opacity rule from the arch wiki,
 https://wiki.archlinux.org/index.php/compton.
 
+In the ~man~ pages there is information about how to further customize the
+rules. By adding a ~*=~ one can make a wildcard match and a ~!~ prefix will
+negate the match. Currently there are three different rules for URxvt. One that
+applies for a scratch buffer, one that applys for windows that isn't named
+scratch and for the windows that are not in focus.
 #+BEGIN_SRC sh :padline no
-# opacity-rule = [ "80:class_g = 'URxvt'" ];
 opacity-rule = [
-  "90:class_g = 'URxvt' && focused",
-  "60:class_g = 'URxvt' && !focused",
+  "90:class_g = 'URxvt' && WM_NAME@:s *= 'scratch'",
+  "60:class_g = 'URxvt' && !focused && WM_NAME@:s !*= 'scratch'",
+  "75:class_g = 'URxvt' && focused && WM_NAME@:s !*= 'scratch'",
 #+END_SRC
 
 Making rofi a little bit transparent too
