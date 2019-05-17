@@ -1104,7 +1104,7 @@ opacity-rule = [
 
 Making rofi a little bit transparent too
 #+BEGIN_SRC sh :padline no
-  "80:class_g = 'Rofi'"
+  "80:class_g = 'Rofi'",
 #+END_SRC
 
 One improvement for bspwm is also making the preselected areas transparent, the
