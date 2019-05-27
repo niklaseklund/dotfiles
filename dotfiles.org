@@ -4559,14 +4559,28 @@ sudo systemctl --user enable mbsync.timer
 sudo systemctl --user start mbsync.timer
 #+END_SRC
 *** utility
+:PROPERTIES:
+:header-args: :tangle ~/bin/notmuch-pre :shebang "#!/bin/bash"
+:END:
 
-#+BEGIN_SRC sh :tangle ~/bin/notmuch-pre :shebang "#!/bin/bash"
-# Improvement: add a smart function for deletion in Emacs to avoid deleting
-# mails that have been flagged
-
-# Remove mails that has been taged as deleted
-notmuch search --output=files --format=text0 tag:deleted | xargs -0 --no-run-if-empty rm
+Remove mails that has been taged as deleted the --no-run -if-empty prevents the
+rm to run if no files are piped otherwise the command will fail due to lack of
+input arguments.
+#+BEGIN_SRC sh
+notmuch search --output=files --format=text0 tag:deleted | xargs -0 --no-run-if-empty /bin/rm
 #+END_SRC
+
+If the above fails due to index filed taged with deleted doesn't exist this will
+remove the tag making sure that the above statement doesn't keep failing.
+#+BEGIN_SRC sh
+if [ $? -ne 0 ]; then
+    notmuch tag -deleted tag:deleted
+fi
+#+END_SRC
+
+~Improvement:~ add a smart function for deletion in Emacs to avoid
+deleting mails that have been flagged.
+
 * ideas
 
 - add private/work condition?
