@@ -573,8 +573,20 @@ super + minus
     bspc config -d focused window_gap $((`bspc config -d focused window_gap` - 5 ))
 #+END_SRC
 
+*** Brightness
 
-** bspwmrc
+I want to be able to control the brightness of the screen. To my help I have
+[[https://haikarainen.github.io/light/][light]].
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#
+# Brightness
+#
+XF86MonBrightnessDown
+	light -U 5
+XF86MonBrightnessUp
+	light -A 5
+#+END_SRC
+
 :PROPERTIES:
 :header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :mkdirp yes
 :END:
