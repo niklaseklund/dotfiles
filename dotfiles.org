@@ -732,7 +732,7 @@ assigned to each monitor.
 #+BEGIN_SRC sh
 # Different strategy if there is only one screen
 if [ "$(bspc query -M | wc -l)" -eq "1" ]; then
-    bspc monitor $(bspc query -M) -d $(seq 0 4)
+    bspc monitor $(bspc query -M) -d $(seq 1 5)
 else
     i=0
     n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
