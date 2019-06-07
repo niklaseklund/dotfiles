@@ -1512,7 +1512,7 @@ cursor-scroll = ns-resize
 
 [module/pad]
 type = custom/text
-content = "          "
+content = "            "
 
 [module/app-mail]
 type = custom/script
