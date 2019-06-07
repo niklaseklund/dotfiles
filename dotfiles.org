@@ -32,7 +32,8 @@ X client applications like the terminal emulator ~urxvt~.
 [[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
 #+END_SRC
 
-*** TODO HIDPI screen support
+*** DONE HIDPI screen support
+CLOSED: [2019-06-07 Fri 17:32]
 
 I found an example configuration for the retina display at
 https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
@@ -55,14 +56,20 @@ export GDK_DPI_SCALE=0.5
 
 #+END_SRC
 
-Currently I scale up the non hidpi external monitor. A better approach is
-probably what is suggested at the
-[[https://wiki.archlinux.org/index.php/HiDPI#Multiple_external_monitors][arch wiki]], namely scale down the hidpi screen. Since this only applies when I
-have the computer connected to the external monitor I am not using the built in
-screen primarly so scaling it down should be a better strategy.
+Previously I scaled up the non hidpi external monitor. A better approach was
+what was suggested at the [[https://wiki.archlinux.org/index.php/HiDPI#Multiple_external_monitors][arch wiki]], namely scale down the hidpi screen. Since
+this only applies when I have the computer connected to the external monitor I
+am not using the built in screen primarly so scaling it down should be a better
+strategy.
+
 #+BEGIN_SRC sh
-xrandr --output eDP-1 --dpi 227
-xrandr --output DP-2 --right-of eDP-1 --scale 1.5x1.5 --auto
+# Setup screen scaling/resolutions
+if [ "$(xrandr -q | grep ' connected' -c)" -eq "1" ]; then
+    xrandr --output eDP-1 --dpi 227
+else
+    xrandr --output eDP-1 --dpi 227 --scale 0.75x0.75
+    xrandr --output DP-2 --right-of eDP-1 --auto
+fi
 #+END_SRC
 
 *** Keyboard settings
