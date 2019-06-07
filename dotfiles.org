@@ -28,6 +28,8 @@ X client applications like the terminal emulator ~urxvt~.
 #+BEGIN_SRC sh
 # customize xresources
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
+# set wallpaper
+[[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
 #+END_SRC
 
 *** TODO HIDPI screen support
@@ -69,7 +71,7 @@ switch between these two keyboard layouts by pressing both ~shifts~ at
 time. Last I swap ctrl to caps and remove capslock.
 *** Pywall
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 # Add this to your .xinitrc or whatever file starts programs on startup.
 # -R restores the last colorscheme that was in use.
 wal -R
@@ -125,7 +127,7 @@ schemes might be
 I found these colors in [[https://github.com/hlissner/dotfiles/blob/master/base/arch-desktop/Xresources][hlissner/dotfiles]], and thought they would make a good
 start. For changes in the future the [[https://terminal.sexy/][terminal.sexy]] has some color schemes that
 can be directly exported to Xresources format.
-#+BEGIN_SRC sh :tangle no
+#+BEGIN_SRC sh
 !! Colors
 #define blk  #141517
 #define bblk #969896
@@ -259,9 +261,14 @@ Ubuntu18.
 *** Pywall
 
 #+BEGIN_SRC sh
+# set wallpaper
+[[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle no
 # Add this to your .xinitrc or whatever file starts programs on startup.
 # -R restores the last colorscheme that was in use.
-~/.local/bin/wal -R
+wal -R
 #+END_SRC
 
 *** Keyboard
@@ -962,7 +969,7 @@ $HOME/.config/polybar/launch.sh
 #+END_SRC
 
 *** Pywal color
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 # source the colors.
 . "${HOME}/.cache/wal/colors.sh"
 
@@ -1096,17 +1103,17 @@ rules. By adding a ~*=~ one can make a wildcard match and a ~!~ prefix will
 negate the match. Currently there are three different rules for URxvt. One that
 applies for a scratch buffer, one that applys for windows that isn't named
 scratch and for the windows that are not in focus.
-#+BEGIN_SRC sh :padline no
-opacity-rule = [
-  "90:class_g = 'URxvt' && WM_NAME@:s *= 'scratch'",
-  "60:class_g = 'URxvt' && !focused && WM_NAME@:s !*= 'scratch'",
-  "75:class_g = 'URxvt' && focused && WM_NAME@:s !*= 'scratch'",
-#+END_SRC
+ #+BEGIN_SRC sh :padline no
+ opacity-rule = [
+   "90:class_g = 'URxvt' && WM_NAME@:s *= 'scratch'",
+   "80:class_g = 'URxvt' && !focused && WM_NAME@:s !*= 'scratch'",
+   "90:class_g = 'URxvt' && focused && WM_NAME@:s !*= 'scratch'",
+ #+END_SRC
 
-Making rofi a little bit transparent too
-#+BEGIN_SRC sh :padline no
-  "80:class_g = 'Rofi'",
-#+END_SRC
+ Making rofi a little bit transparent too
+ #+BEGIN_SRC sh :padline no
+   "100:class_g = 'Rofi'",
+ #+END_SRC
 
 One improvement for bspwm is also making the preselected areas transparent, the
 default opaque look is a bit distracting.
@@ -1330,7 +1337,7 @@ secondary = #e60053
 alert = #bd2c40
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle no
+#+BEGIN_SRC sh
 [colors]
 bg = ${xrdb:background}
 fg = ${xrdb:foreground}
@@ -1360,7 +1367,7 @@ alert = ${colors.red}
 
 Colors from pywall
 https://github.com/dylanaraps/pywal/wiki/Customization#polybar
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 [colors]
 background = ${xrdb:color0:#222}
 background-alt = ${xrdb:color9:#444}
@@ -2472,7 +2479,7 @@ fi
 *** bluetooth
 
 #+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-bluetooth.sh :shebang "#! /bin/sh" :mkdirp yes
-source ~/.cache/wal/colors.sh
+# source ~/.cache/wal/colors.sh
 
 # Determine if bluetooth is active
 active=$(systemctl is-active bluetooth.service)
@@ -2544,7 +2551,7 @@ also to access my passwords through the password-store.
 
 The configuration here is something that I have copied from ~Matt Dobson~.
 Unfortunately I don't remember where I found his config.
-#+BEGIN_SRC sh :tangle no
+#+BEGIN_SRC sh
 ! ------------------------------------------------------------------------------
 !                          ROFI THEME
 ! ------------------------------------------------------------------------------
@@ -2555,7 +2562,7 @@ rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
 #+END_SRC
 
 Pywall instead
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 # Dark theme.
 rofi.theme: ~/.cache/wal/colors-rofi-dark.rasi
 #+END_SRC
@@ -3543,7 +3550,7 @@ publicly available.
 #+END_SRC
 
 Import colorscheme asynchronously for wal
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 # https://github.com/dylanaraps/pywal/wiki/Getting-Started
 # Import colorscheme from 'wal' asynchronously
 # &   # Run the process in the background.
@@ -3552,7 +3559,7 @@ Import colorscheme asynchronously for wal
 #+END_SRC
 
 I want to source the colors.sh in order to get the colors into FZF_DEFAULT_OPTS
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 source ~/.cache/wal/colors.sh
 #+END_SRC
 
