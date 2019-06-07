@@ -216,8 +216,8 @@ Choosing fonts are never easy. These are my current setup.
 
 ~Arch~
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-URxvt.font: xft:Iosevka Term:style=regular:size=8
-URxvt.boldFont: xft:Iosevka Term:style=bold:size=8
+URxvt.font: xft:Iosevka Term:style=regular:size=6
+URxvt.boldFont: xft:Iosevka Term:style=bold:size=6
 #+END_SRC
 
 ~Ubuntu~
