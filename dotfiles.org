@@ -905,7 +905,7 @@ export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-bspc config -m $MONITOR window_gap     120
+bspc config -m $MONITOR window_gap     50
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
