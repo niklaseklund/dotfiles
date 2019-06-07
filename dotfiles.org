@@ -2074,6 +2074,10 @@ rofi.matching: fuzzy
 
 #+END_SRC
 
+*** TODO Sync the colors used to Xresources
+
+I should probably use the same colors for concistency
+
 ** The pass integration
 
 There is an extension to rofi for handling passwords, [[https://github.com/carnager/rofi-pass][rofi-pass]]. I have used the
