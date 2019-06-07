@@ -1347,6 +1347,7 @@ Ideas:
   move depending on the size of the right/left module. I would prefer having it
   centered straight in the middle.
 
+*** Colors
 #+BEGIN_SRC sh
 ;==========================================================
 ;
@@ -1376,6 +1377,33 @@ primary = ${xrdb:color1:#222}
 secondary = ${xrdb:color2:#222}
 alert = ${xrdb:color3:#222}
 
+bg = ${xrdb:background}
+fg = ${xrdb:foreground}
+black = ${xrdb:color0}
+bblack = ${xrdb:color8}
+red = ${xrdb:color1}
+bred = ${xrdb:color9}
+green = ${xrdb:color2}
+bgreen = ${xrdb:color10}
+yellow = ${xrdb:color3}
+byellow = ${xrdb:color11}
+blue = ${xrdb:color4}
+bblue = ${xrdb:color12}
+magenta = ${xrdb:color5}
+bmagenta = ${xrdb:color13}
+cyan = ${xrdb:color6}
+bcyan = ${xrdb:color14}
+white = ${xrdb:color7}
+bwhite = ${xrdb:color15}
+
+bg-alt = #0F1013
+fg-alt = #25282a
+icons = #555856
+
+#+END_SRC
+
+*** Main bar
+#+BEGIN_SRC sh
 [bar/main]
 monitor = ${env:MONITOR:}
 wm-restack = bspwm
@@ -3821,6 +3849,21 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         adjust_brightness(float(sys.argv[1]))
 #+END_SRC
+** Inject xcolors
+
+#+BEGIN_SRC sh :tangle ~/bin/inject-xcolors :shebang "#!/usr/bin/env bash"
+xcolor() {
+    xrdb -query | awk "/^\*\.$1:/ {print \$2}" | sed -E 's/^[^#]+//'
+}
+
+COLOR_FG=$(xcolor foreground)
+COLOR_BG=$(xcolor background)
+for ((i=0;i<=15;i++)); do
+    eval "COLOR_$i=\$(xcolor color$i)"
+done
+
+#+END_SRC
+
 
 * systemd
 ** mbsync
