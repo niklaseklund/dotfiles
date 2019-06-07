@@ -4061,3 +4061,13 @@ deleting mails that have been flagged.
 - tangle other local files from this file? Useful for code that should not be
   publically available
 - mouse toggle script that I can call from rofi? https://askubuntu.com/questions/199271/x11-disable-mouse
+
+** hdpi and non hdpi screen solution
+
+Fix the following:
+- replace value in pref.json for firefox setting user_pref("layout.css.devPixelsPerPx", "1");
+- replace dpi values in Xresources and Polybar
+- replace font size in Xresources, Polybar and Rofi
+- replace font size in Emacs
+- tweak the resolution for darktable to match external monitor setup, I will not
+  use it with laptop screen that much
