@@ -2082,7 +2082,7 @@ primary = ${xrdb:color1:#222}
 secondary = ${xrdb:color2:#222}
 alert = ${xrdb:color3:#222}
 
-[bar/example]
+[bar/main]
 monitor = ${env:MONITOR:}
 wm-restack = bspwm
 override-redirect = true
@@ -2469,10 +2469,10 @@ done
 if type "xrandr"; then
   for m in $(xrandr --query | grep "primary" | cut -d" " -f1); do
   # for m in $(xrandr --query | grep "DP-1-1-8" | cut -d" " -f1); do
-    MONITOR=$m polybar --reload example &
+    MONITOR=$m polybar --reload main &
   done
 else
-  polybar --reload example &
+  polybar --reload main &
 fi
 #+END_SRC
 ** custom modules
