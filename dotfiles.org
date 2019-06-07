@@ -1448,21 +1448,43 @@ border-color = #00000000
 padding-left = 4
 padding-right = 4
 
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+module-margin-left = 1
+module-margin-right = 1
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 module-margin-left = 1
 module-margin-right = 2
 #+END_SRC
 
+*** Resolution
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+dpi-x = 227
+dpi-y = 227
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 dpi-x = 192
 dpi-y = 192
 #+END_SRC
 
-#+BEGIN_SRC sh
-font-0 = fixed:pixelsize=8;1
+*** Fonts
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+font-0 = "Roboto Mono:style=Regular:size=6"
+font-1 = unifont:fontformat=truetype:size=6:antialias=false;0
+font-2 = siji:pixelsize=8;1
+font-3 = "Material Icons:style=Regular:size=6"
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+font-0 = "Roboto Mono:style=Regular:size=8"
 font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
 font-2 = siji:pixelsize=8;1
-
 font-3 = "Material Icons:style=Regular:size=8"
+#+END_SRC
 
 modules-left = pulseaudio app-mail
 modules-center = bspwm
