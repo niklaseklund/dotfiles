@@ -255,7 +255,7 @@ Ubuntu18.
 
 #+BEGIN_SRC sh
 # customize xresources
-[[ -f ~/.Xresources ]] && xrdb  ~/.Xresources
+[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
 #+END_SRC
 
 *** Pywall
