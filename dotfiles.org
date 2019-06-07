@@ -1476,8 +1476,8 @@ dpi-y = 192
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 font-0 = "Roboto Mono:style=Regular:size=6"
 font-1 = unifont:fontformat=truetype:size=6:antialias=false;0
-font-2 = siji:pixelsize=8;1
-font-3 = "Material Icons:style=Regular:size=6"
+font-2 = "Material Icons:style=Regular:size=6"
+font-3 = "Wuncon Siji:style=Regular:pixelsize=8;1"
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
@@ -1489,12 +1489,15 @@ font-3 = "Material Icons:style=Regular:size=8"
 
 *** Modules setup
 #+BEGIN_SRC sh
-modules-left = pulseaudio app-mail pad
+modules-left = cpu memory pad pulseaudio app-mail app-pad-volume pad-left
 modules-center = bspwm
-modules-right = xkeyboard app-bluetooth app-vpn wlan battery date
+modules-right = battery app-bluetooth app-vpn wlan pad date
 #+END_SRC
 
 *** Modules
+
+**** Misc features
+
 #+BEGIN_SRC sh
 tray-position = right
 tray-padding = 2
@@ -1509,26 +1512,53 @@ tray-padding = 2
 
 cursor-click = pointer
 cursor-scroll = ns-resize
+#+END_SRC
 
+**** Padding
+
+#+BEGIN_SRC sh
 [module/pad]
 type = custom/text
-content = "            "
+content = "   "
+content-foreground = ${colors.fg-alt}
 
+[module/pad-left]
+type = custom/text
+content = "        "
+
+[module/app-pad-volume]
+type = custom/script
+exec = ~/.config/polybar/modules/app-pad-volume.sh
+interval = 1
+
+#+END_SRC
+
+**** mail
+#+BEGIN_SRC sh
 [module/app-mail]
 type = custom/script
 exec = ~/.config/polybar/modules/app-mail.sh
 interval = 10
+#+END_SRC
 
+**** bluetooth
+#+BEGIN_SRC sh
 [module/app-bluetooth]
 type = custom/script
 exec = ~/.config/polybar/modules/app-bluetooth.sh
 interval = 10
+#+END_SRC
 
+**** vpn
+#+BEGIN_SRC sh
 [module/app-vpn]
 type = custom/script
 exec = ~/.config/polybar/modules/app-vpn.sh
 interval = 10
+#+END_SRC
 
+**** keyboard
+#+BEGIN_SRC sh :tangle no
 [module/xkeyboard]
 type = internal/xkeyboard
 blacklist-0 = num lock
@@ -1547,6 +1577,10 @@ label-indicator-margin = 1
 label-indicator-background = ${colors.secondary}
 label-indicator-underline = ${colors.secondary}
 
+#+END_SRC
+
+**** bspwm
+#+BEGIN_SRC sh
 [module/bspwm]
 type = internal/bspwm
 
@@ -1595,29 +1629,10 @@ label-empty-padding = 1
 
 ; Separator in between workspaces
 ; label-separator = |
+#+END_SRC
 
-[module/xbacklight]
-type = internal/xbacklight
-
-format = <label> <bar>
-label = BL
-
-bar-width = 10
-bar-indicator = |
-bar-indicator-foreground = #fff
-bar-indicator-font = 2
-bar-fill = ─
-bar-fill-font = 2
-bar-fill-foreground = #9f78e1
-bar-empty = ─
-bar-empty-font = 2
-bar-empty-foreground = ${colors.foreground-alt}
-
-# [module/backlight-acpi]
-# inherit = module/xbacklight
-# type = internal/backlight
-# card = intel_backlight
-
+**** wifi
+#+BEGIN_SRC sh
 [module/wlan]
 type = internal/network
 interface = wlp3s0
@@ -1643,7 +1658,10 @@ ramp-signal-3 = 
 ramp-signal-3-foreground = ${colors.foreground-alt}
 ramp-signal-4 = 
 ramp-signal-4-foreground = ${colors.foreground-alt}
+#+END_SRC
 
+**** ethernet
+#+BEGIN_SRC sh :tangle no
 [module/eth]
 type = internal/network
 interface = net0
@@ -1660,36 +1678,50 @@ format-disconnected =
 ;label-disconnected = %ifname% disconnected
 ;label-disconnected-foreground = ${colors.foreground-alt}
 
+#+END_SRC
+
+**** date
+#+BEGIN_SRC sh
 [module/date]
 type = internal/date
 interval = 5
 
-date =
-date-alt = " %Y-%m-%d"
-
-time = %H:%M
+label = %date%  %time%
+date = %A, %h %d
+date-alt = %Y-%m-%d
+time = %I:%M %p
 time-alt = %H:%M:%S
-
+;format-prefix = ""
 format-prefix = 
-format-prefix-foreground = ${colors.foreground-alt}
-format-underline = #0a6cf5
+format-prefix-padding = 1
+; format-prefix-background = ${colors.bg-alt}
+format-prefix-foreground = ${colors.icons}
+; format-underline = ${xrdb:color4}
 
-label = %date% %time%
+;date =
+;date-alt = " %Y-%m-%d"
+;
+;time = %H:%M
+;time-alt = %H:%M:%S
+;
+;format-prefix = 
+;format-prefix-foreground = ${colors.foreground-alt}
+;format-underline = #0a6cf5
+;
+;label = %date% %time%
+#+END_SRC
 
+**** pulseaudio
+#+BEGIN_SRC sh
 [module/pulseaudio]
 type = internal/pulseaudio
 
-[module/volume]
-type = internal/volume
-
 ; format-volume = <label-volume> <bar-volume>
 format-volume = <ramp-volume> <bar-volume>
-; label-volume = " "
 label-volume-foreground = ${colors.fg}
 
-; format-muted-prefix = " "
 format-muted-foreground = ${colors.red}
-label-muted = "         "
+label-muted = ""
 
 bar-volume-width = 8
 bar-volume-foreground-0 = ${colors.blue}
@@ -1714,6 +1746,10 @@ ramp-volume-0 = 
 ramp-volume-1 = 
 ramp-volume-2 = 
 
+#+END_SRC
+
+**** battery
+#+BEGIN_SRC sh
 [module/battery]
 type = internal/battery
 battery = BAT0
@@ -1723,30 +1759,73 @@ full-at = 98
 format-charging = <animation-charging> <label-charging>
 format-charging-underline = #ffb52a
 
-format-discharging = <animation-discharging> <label-discharging>
+format-discharging = <ramp-capacity> <label-discharging>
 format-discharging-underline = ${self.format-charging-underline}
 
 format-full-prefix = " "
-format-full-prefix-foreground = ${colors.foreground-alt}
+format-full-prefix-foreground = ${colors.fg-alt}
 format-full-underline = ${self.format-charging-underline}
 
 ramp-capacity-0 = 
 ramp-capacity-1 = 
 ramp-capacity-2 = 
-ramp-capacity-foreground = ${colors.foreground-alt}
+ramp-capacity-foreground = ${colors.fg-alt}
 
 animation-charging-0 = 
 animation-charging-1 = 
 animation-charging-2 = 
-animation-charging-foreground = ${colors.foreground-alt}
+animation-charging-foreground = ${colors.fg-alt}
 animation-charging-framerate = 750
+#+END_SRC
 
-animation-discharging-0 =
-animation-discharging-1 =
-animation-discharging-2 =
-animation-discharging-foreground = ${colors.foreground-alt}
-animation-discharging-framerate = 750
+**** cpu
+#+BEGIN_SRC sh
+[module/cpu]
+type = internal/cpu
+interval = 2
+format = <bar-load>
+format-prefix = ""
+format-foreground = ${colors.icons}
+format-padding = 1
 
+bar-load-indicator =
+bar-load-width = 6
+bar-load-foreground-0 = ${colors.green}
+bar-load-foreground-1 = ${colors.green}
+bar-load-foreground-2 = ${colors.yellow}
+bar-load-foreground-3 = ${colors.red}
+bar-load-foreground-4 = ${colors.red}
+bar-load-fill = |
+bar-load-empty = ¦
+bar-load-empty-foreground = ${colors.fg-alt}
+
+#+END_SRC
+
+**** memory
+#+BEGIN_SRC sh
+[module/memory]
+type = internal/memory
+interval = 3
+format = <bar-used>
+format-prefix = ""
+format-prefix-foreground = ${colors.icons}
+format-padding-left = 1
+
+; Only applies if <bar-used> is used
+bar-used-indicator =
+bar-used-width = 6
+bar-used-foreground-0 = ${colors.green}
+bar-used-foreground-1 = ${colors.green}
+bar-used-foreground-2 = ${colors.yellow}
+bar-used-foreground-3 = ${colors.red}
+bar-used-foreground-4 = ${colors.red}
+bar-used-fill = |
+bar-used-empty = ¦
+bar-used-empty-foreground = ${colors.fg-alt}
+#+END_SRC
+
+**** global settings
+#+BEGIN_SRC sh
 [settings]
 screenchange-reload = true
 ;compositing-background = xor
