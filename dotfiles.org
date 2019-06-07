@@ -1041,7 +1041,7 @@ https://wiki.archlinux.org/index.php/bspwm#Scratchpad
 *** Mouse control
 I want to be able to hide my mouse cursor automatically after a while of non-usage
 https://wiki.archlinux.org/index.php/unclutter
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :no
 unclutter &
 #+END_SRC
 
@@ -1049,7 +1049,7 @@ unclutter &
 I want to switch caps lock to ctrl when pressed in conjunction with another key,
 and escape when pressed by itself. This functionality is provided by the program
 ~xcape~.
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :no
 xcape &
 #+END_SRC
 
