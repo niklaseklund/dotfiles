@@ -296,13 +296,26 @@ xrandr --output DP-2 --right-of eDP-1 --scale 1.5x1.5 --auto
 wal -R
 #+END_SRC
 
-*** Keyboard
+*** TODO Keyboard
+
+I want to have a smarter solution in place here. Maybe one that utilizes udev
+rules to set this automatically depending on wether I have a specfic external
+keyboard in use.
+
+Essentially this is only valuable when I run on my Ubuntu computer or having a
+non keyboardio external keyboard attached to the computer.
 
 Set the keyboard mapping. I enable ~Swedish~ and ~English~ and switch languages
 by pressing both of the ~shift~ keys.
-#+BEGIN_SRC sh
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 # set keyboard layouts
 setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_lwin
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+# set keyboard layouts
+setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
 #+END_SRC
 
 *** Programs
