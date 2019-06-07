@@ -12,13 +12,14 @@ These are the dotfiles related to ~X~.
 
 ** xinitrc
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os '(arch) "~/.xinitrc") :comments link :shebang "#! /bin/sh" :mkdirp yes
+:header-args: :tangle (my/tangle-not-app '(lightdm) "~/.xinitrc") :shebang "#! /bin/sh" :mkdirp yes
 :END:
 
-For my Arch Linux setup I don't have a login manager. Hence I let the ~xinitrc~
-be the configuration file where I specify the settings and programs to launch
-upon startup.
-
+If my os doesn't have a display manager I will utilize this setup. Hence I let
+the ~xinitrc~ be the configuration file where I specify the settings and
+programs to launch upon startup. Currently assumes that if ~lightdm~ exists that
+it is enabled and properly configured. ~xinitrc~ will then not tangle but
+instead ~xprofile~ will, and vice versa.
 
 *** Load xresources
 
@@ -225,7 +226,7 @@ URxvt.boldFont: xft:Roboto Mono:style=bold:size=12
 
 ** xprofile
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os '(ubuntu) "~/.xprofile") :comments link :mkdirp yes
+:header-args: :tangle (my/tangle-app '(lightdm) "~/.xprofile") :mkdirp yes
 :END:
 
 *** About
@@ -1024,7 +1025,7 @@ look into when I have time for it.
 
 * compton
 :PROPERTIES:
-:header-args: :tangle ~/.config/compton.conf :mkdirp yes :comments link
+:header-args: :tangle ~/.config/compton.conf :mkdirp yes
 :END:
 
 I have used the example configuration to start with.
@@ -2405,7 +2406,7 @@ margin-bottom = 30
 
 ** launch script
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/launch.sh :comments link :shebang "#! /bin/sh" :mkdirp yes
+:header-args: :tangle ~/.config/polybar/launch.sh :shebang "#! /bin/sh" :mkdirp yes
 :END:
 
 *** Kill active bars
@@ -2534,7 +2535,7 @@ fi
 * Rofi
 ** The application launcher
 :PROPERTIES:
-:header-args: :tangle ~/.config/rofi/config :mkdirp yes :comments link
+:header-args: :tangle ~/.config/rofi/config :mkdirp yes
 :END:
 
 The [[https://wiki.archlinux.org/index.php/Rofi][ArchWiki entry about Rofi]], defines it as a ~window switcher, run dialog,
@@ -3669,7 +3670,7 @@ also looked at the arch wiki https://wiki.archlinux.org/index.php/GTK%2B#Example
 
 ** GTK+ 2.x
 :PROPERTIES:
-:header-args: :tangle ~/.gtkrc-2.0 :comments link :mkdirp yes
+:header-args: :tangle ~/.gtkrc-2.0 :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
@@ -3678,7 +3679,7 @@ include "/usr/share/themes/Arc-Dark/gtk-2.0/gtkrc"
 
 ** GTK+ 3.x
 :PROPERTIES:
-:header-args: :tangle ~/.config/gtk-3.0/settings.ini :comments link :mkdirp yes
+:header-args: :tangle ~/.config/gtk-3.0/settings.ini :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
