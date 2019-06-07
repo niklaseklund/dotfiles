@@ -258,6 +258,31 @@ Ubuntu18.
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
 #+END_SRC
 
+*** TODO HIDPI screen support
+
+I found an example configuration for the retina display at
+https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
+Currently I have commented out the gdk and qt settings until I read up on what
+they actually does. The xrandr command however I needed because by default the
+output of the ~xrandr -q~ said the dpi was 96 which was clearly incorrect. I
+verified that the 227 was correct by consulting the apple website for the
+macbook specs.
+
+Some more information on the matter:
+https://wiki.archlinux.org/index.php/HiDPI#GDK_3_(GTK+_3)
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+# hidpi settings
+export GDK_SCALE=1.5
+export GDK_DPI_SCALE=0.5
+#export QT_SCREEN_SCALE_FACTORS=0.9
+#export QT_AUTO_SCREEN_SCALE_FACTOR=2
+#export QT_SCALE_FACTOR=2
+
+xrandr --output eDP-1 --dpi 227
+xrandr --output DP-2 --right-of eDP-1 --scale 1.5x1.5 --auto
+#+END_SRC
+
 *** Pywall
 
 #+BEGIN_SRC sh
