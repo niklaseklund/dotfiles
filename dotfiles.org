@@ -2621,7 +2621,7 @@ Customize appearance for ~Arch~
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 rofi.width: 1500
 rofi.lines: 10
-rofi.font: hack 15
+rofi.font: Roboto Mono 14
 rofi.bw: 0
 rofi.padding: 50
 rofi.line-margin: 5
