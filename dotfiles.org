@@ -1781,7 +1781,7 @@ ramp-volume-2 = 
 type = internal/battery
 battery = BAT0
 adapter = ADP1
-full-at = 98
+full-at = 96
 
 format-charging = <animation-charging> <label-charging>
 format-charging-underline = #ffb52a
