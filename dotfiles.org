@@ -2040,6 +2040,13 @@ fi
 
 #+END_SRC
 
+*** screen recording
+
+Start with the symbol
+#+BEGIN_SRC sh :tangle no
+
+#+END_SRC
+
 * Rofi
 ** The application launcher
 :PROPERTIES:
