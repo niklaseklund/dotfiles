@@ -4031,7 +4031,7 @@ WantedBy=timers.target
 #+END_SRC
 *** service
 
-#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.service :tangle-mode (identity #o644)
+#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.service :mkdirp t :tangle-mode (identity #o644)
 [Unit]
 Description=Mailbox synchronization service
 
@@ -4048,8 +4048,10 @@ ExecStartPre=/home/niklascarlsson/bin/notmuch-pre
 
 Start the service
 #+BEGIN_SRC sh
-sudo systemctl --user enable mbsync.timer
-sudo systemctl --user start mbsync.timer
+sudo systemctl daemon-reload # reload systemd
+# user services don't need elevated rights
+systemctl --user enable mbsync.timer
+systemctl --user start mbsync.timer
 #+END_SRC
 *** utility
 :PROPERTIES:
