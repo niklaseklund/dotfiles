@@ -2250,8 +2250,25 @@ insert_pass="Alt+n"
 
 * tmux
 :PROPERTIES:
-:header-args: :tangle ~/.tmux.conf :mkdirp yes :comments link
+:header-args: :tangle ~/.tmux.conf :mkdirp yes
 :END:
+
+** TODO Fix tmux settings incompatibility
+
+Version 2.9 introduced some breaking changes to the styling, here is some discussion:
+https://github.com/tmux/tmux/issues/1689
+
+An example is here:
+#+BEGIN_SRC sh :tangle no
+# before 2.9
+# setw -g window-status-fg colour236
+# setw -g window-status-bg default
+# setw -g window-status-attr none
+# setw -g window-status-format '#[fg=colour8] #I #[fg=default]#W '
+
+# after 2.9
+set -g window-status-style bg=default,fg=colour236,none
+#+END_SRC
 
 ** General information
 
