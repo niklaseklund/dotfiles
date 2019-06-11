@@ -2046,6 +2046,17 @@ Start with the symbol
 #+BEGIN_SRC sh :tangle no
 
 #+END_SRC
+*** pad-volume
+
+#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-pad-volume.sh :shebang "#!/usr/bin/env bash" :mkdirp yes
+muted=$(pacmd list-sinks | grep muted | cut -d' ' -f2)
+# Set the color and icon
+if [ "$muted" = "yes" ]; then
+    echo "%{F#81a2be}         " # blue
+else
+    echo "%{F#81a2be}" # blue
+fi
+#+END_SRC
 
 * Rofi
 ** The application launcher
