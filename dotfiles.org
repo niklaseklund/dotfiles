@@ -2374,13 +2374,12 @@ set -s escape-time 0
 
 #+END_SRC
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 # # Custom prefix
 set -g prefix C-c
 bind C-c send-prefix
 
 unbind C-b
-
 #+END_SRC
 
 ** Window management
