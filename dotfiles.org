@@ -2811,6 +2811,60 @@ Mount external
 # mount ssd
 alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
+*** inputrc
+:PROPERTIES:
+:header-args: :tangle (my/tangle-app '(zsh) "~/.inputrc") :mkdirp yes
+:END:
+
+If zsh is not found on the computer this will create an inputrc file enabling
+vi-mode in bash. It will try to mimic emacs-mode(readline bindings) in insert
+mode but retain normal mode.
+
+#+BEGIN_SRC sh
+# Found these settings here:
+# https://unix.stackexchange.com/questions/303631/how-can-i-setup-a-hybrid-readline-with-emacs-insert-mode-and-vi-command-mode/409866
+# using vi mode in bash and emulate emacs keybindings in vim-insert mode
+set editing-mode vi
+
+set keymap emacs
+"\ee": vi-editing-mode
+
+set keymap vi-command
+"\ee": emacs-editing-mode
+
+# key bindings to get out of vi-editing-mode
+set keymap vi-insert
+"\ee": emacs-editing-mode
+
+# emacs keybindings in vi-insert mode
+"\C-@": set-mark
+"\C-]": character-search
+"\C-_": undo
+"\C-a": beginning-of-line
+"\C-b": backward-char
+"\C-d": delete-char
+"\C-e": end-of-line
+"\C-f": forward-char
+"\C-g": abort
+"\C-k": kill-line
+"\C-l": clear-screen
+"\C-o": operate-and-get-next
+"\C-q": quoted-insert
+"\C-n": next-history
+"\C-p": previous-history
+
+# Change the color of the cursor depending on mode
+# https://stackoverflow.com/questions/44534678/how-to-change-cursor-shape-depending-on-vi-mode-in-bash
+set show-mode-in-prompt on
+set vi-cmd-mode-string "\1\e[2 q\2"
+set vi-ins-mode-string "\1\e[6 q\2"
+
+# Enable Readline not waiting for additional input when a key is pressed.
+# Needed for the mappings below.
+# https://unix.stackexchange.com/questions/318433/bash-urxvt-delay-after-esc-in-vi-mode
+set keyseq-timeout 0
+
+#+END_SRC
 
 ** Zsh
 *** zshrc
