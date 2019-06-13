@@ -3336,6 +3336,55 @@ Create Both
 # Save the synchronization state files in the relevant directory
 SyncState *
 #+END_SRC
+
+Mail setup for work
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#
+# Zenuity
+#
+
+IMAPAccount     zenuity
+Host            "outlook.office365.com"
+User            "niklas.carlsson@zenuity.com"
+PassCmd         "pass show work/zenuity/login | sed -n 1p"
+AuthMechs       "PLAIN"
+SSLTYPE         "IMAPS"
+CertificateFile "/etc/ssl/certs/ca-certificates.crt"
+
+IMAPStore zenuity-remote
+Account   "zenuity"
+
+MaildirStore zenuity-local
+Path         "/home/nikcar/.mail/zenuity/"
+Inbox        "/home/nikcar/.mail/zenuity/Inbox"
+Trash        "/home/nikcar/.mail/zenuity/Trash"
+SubFolders   "Verbatim"
+
+
+Channel   zenuity-inbox
+Master    ":zenuity-remote:Inbox"
+Slave     ":zenuity-local:"
+Create    "Slave"
+SyncState "*"
+
+Channel   zenuity-sent
+Master    ":zenuity-remote:Sent Items"
+Slave     ":zenuity-local:Sent"
+Create    "Slave"
+SyncState "*"
+
+Channel   zenuity-trash
+Master    ":zenuity-remote:Deleted Items"
+Slave     ":zenuity-local:Trash"
+Create    "Slave"
+SyncState "*"
+
+Group   zenuity
+Channel "zenuity-inbox"
+Channel "zenuity-sent"
+Channel "zenuity-trash"
+#+END_SRC
+
 ** notmuch
 :PROPERTIES:
 :header-args: :tangle ~/.notmuch-config
@@ -3517,6 +3566,16 @@ password       my_password
 #+BEGIN_SRC conf
 # Set a default account
 account default : gmail
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)))
+# Zenuity
+account        zenuity
+host           smtp.office365.com
+port           587
+from           niklas.carlsson@zenuity.com
+user           niklas.carlsson@zenuity.com
+passwordeval "pass show work/zenuity/login | sed -n 1p"
 #+END_SRC
 
 * redshift
@@ -4113,7 +4172,7 @@ done
 ** mbsync
 *** timer
 
-#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.timer :mkdir -p :tangle-mode (identity #o644)
+#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.timer :mkdirp t :tangle-mode (identity #o644)
 [Unit]
 Description=Mailbox synchronization timer
 
@@ -4126,8 +4185,11 @@ Unit=mbsync.service
 WantedBy=timers.target
 #+END_SRC
 *** service
+:PROPERTIES:
+:header-args: :tangle ~/.config/systemd/user/mbsync.service :mkdirp t :tangle-mode (identity #o644) :padline no
+:END:
 
-#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.service :mkdirp t :tangle-mode (identity #o644)
+#+BEGIN_SRC sh
 [Unit]
 Description=Mailbox synchronization service
 
@@ -4135,8 +4197,16 @@ Description=Mailbox synchronization service
 Type=oneshot
 ExecStart=/usr/bin/mbsync -Va
 ExecStartPost=/usr/bin/notmuch new
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 ExecStartPre=/home/niklascarlsson/bin/notmuch-pre
 #+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+ExecStartPre=/home/nikcar/bin/notmuch-pre
+#+END_SRC
+
 *** start
 :PROPERTIES:
 :header-args: :tangle no
