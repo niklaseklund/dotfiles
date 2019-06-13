@@ -3645,7 +3645,7 @@ default-audio-renderer = OMX.Aratelia.audio_renderer.pulseaudio.pcm
 # -------------------------------------------------------------------------
 # Valid values are: true | false
 #
-mpris-enabled = false
+mpris-enabled = true
 
 #+END_SRC
 
@@ -3791,7 +3791,7 @@ default-audio-renderer = OMX.Aratelia.audio_renderer.pulseaudio.pcm
 # -------------------------------------------------------------------------
 # Valid values are: true | false
 #
-mpris-enabled = false
+mpris-enabled = true
 
 # Spotify configuration
 # -------------------------------------------------------------------------
@@ -3849,6 +3849,21 @@ spotify.password = $(pass web/spotify)
 
 
 #+END_SRC
+** tizonia remote control
+
+Download the tizonia remote script which can use mpris2 to communicate with the
+running tizonia instance
+#+BEGIN_SRC sh :tangle no :results none
+wget -O /tmp/tizonia-remote https://raw.githubusercontent.com/tizonia/tizonia-openmax-il/master/player/tools/tizonia-remote.in /tmp/tizonia-remote.in
+#+END_SRC
+
+Move it to somewhere in path and make it executable
+#+BEGIN_SRC sh :tangle no :results no
+mv /tmp/tizonia-remote ~/bin/tizonia-remote
+chmod +x ~/bin/tizonia-remote
+#+END_SRC
+
+Make sure to also have mpris enabled in the configuration.
 
 * zathura
 :PROPERTIES:
