@@ -2916,6 +2916,8 @@ I grabbed this from https://github.com/hlissner/dotfiles/tree/master/shell/zsh
 #+BEGIN_SRC sh
 ## vi-mode
 bindkey -v
+bindkey -M viins 'jk' vi-cmd-mode
+bindkey -M viins ' ' magic-space
 
 bindkey -M viins '^n' history-substring-search-down
 bindkey -M viins '^p' history-substring-search-up
