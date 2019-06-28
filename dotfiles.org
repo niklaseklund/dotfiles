@@ -4026,71 +4026,52 @@ fi
 ~Note:~ an idea for the future might be to utilize a rofi popup to select which
 vpn connection to use when activating. Currently one is hardcoded.
 ** Emacs anywhere
+:PROPERTIES:
+:header-args: :tangle ~/bin/emacs-anywhere :shebang "#!/bin/bash"
+:END:
 
-#+BEGIN_SRC sh :tangle ~/bin/emacs-anywhere :shebang "#!/bin/bash"
-# Start by only supporting Firefox
-# 1) Get the name of the calling application
+I had an idea of using this in multiple places but I will just make it work for
+Firefox for the time being. It's where I miss it the most.
+
+1) Make sure it's called from Firefox. Get the name of the calling application
+
+#+BEGIN_SRC sh
 WINDOW=$( xdotool getactivewindow )
-# APP_NAME=$( xprop -id $WINDOW WM_CLASS | grep -oE '[^ ]+$' )
-APP_NAME=$( xprop -id $WINDOW WM_CLASS)
-echo $APP_NAME >> ~/tmp/selection.txt
-x=$( echo $APP_NAME | awk -F ',' '{print $2}' )
-echo $x >> ~/tmp/selection.txt
+APP_NAME=$( xprop -id "$WINDOW WM_CLASS")
+x=$( echo "$APP_NAME" | awk -F ',' '{print $2}' )
 x2=$(echo "$x" | tr -d '"')
-echo $x2 >> ~/tmp/selection.txt
-
-# 2) Make comparison
+Make comparison
 if [[ "$x2" == *"Firefox"* ]]; then
-    # Do nothing continue
     :
 else
     exit 1;
 fi
+#+END_SRC
 
-# Add a check if the content of the copy is the same before and after I have
-# copied. Cause in that case there is nothing in the current text box and I
-# should ignore previously copied text.
-
-# Clear the clipboard to copies when encountering empty selections
-# TODO: use visual selection clipboard instead, I use that less often to
-# avoid tempering with the primary clipboard. Should be done with the home+end
-# keybinding
-
-# Solution1: use selection clipboard
-# echo -n | xclip -selection c
-
-# Solution2: use selection primary (default)
+2) Mark the content in Firefox and copy it to the default clipboard
+#+BEGIN_SRC sh
+# clear the clipboard
 echo -n | xclip
-
-# Solution1:
-# Clear modifiers is needed to get rid of the super modifer that I press to
-# activate this script
-# xdotool key --clearmodifiers ctrl+a ctrl+c
-
-# Solution2:
-# Clear modifiers is needed to get rid of the super modifer that I press to
-# using a selection seems to be easier to detect if it's empty or not, or not
-xdotool key --clearmodifiers Shift+Home Shift+End
+# make selection
+sleep 0.2
 xdotool key --clearmodifiers ctrl+a
-
-# Solution1:
-# content=$(xclip -selection c -o)
-
-# Solution2:
-content=$(xclip -o)
-
-
-# I encountered issues that the xdotool sometimes makes the super key stuck
-# after I use the clearmodifiers flag. To mitigate that I found this issue on
-# github: https://github.com/jordansissel/xdotool/issues/43
-
+xdotool key --clearmodifiers ctrl+c
+# clear modifiers to avoid registering them
 sleep 0.2 && xdotool keyup Super_L Super_R
+#+END_SRC
 
+I encountered issues that the xdotool sometimes makes the super key stuck
+after I use the clearmodifiers flag. To mitigate that I found this issue on
+github: https://github.com/jordansissel/xdotool/issues/43. Which is why I have
+the keyup command.
+
+3) Lastly export the copied content to a variable that will be accessible in the
+   called run scrip.
+#+BEGIN_SRC sh
+content=$(xclip -selection c -o)
 export EA_CLIPBOARD=$content
 
-# Call emacs-anywhere
-# TODO: Add a check to make sure it's not a nested call, it seems to hang then
-$HOME/opensource/emacs-anywhere/bin/run
+"/home/nikcar/.emacs_anywhere/bin/run"
 #+END_SRC
 ** Right pad strings in zsh
 :PROPERTIES:
