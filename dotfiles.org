@@ -2727,6 +2727,11 @@ nnoremap N Nzzzv
 " Command-line history with C-p/C-n
 cnoremap <C-p> <up>
 cnoremap <C-n> <down>
+" Easier than escape
+inoremap jk <ESC>
+inoremap Jk <ESC>
+inoremap JK <ESC>
+inoremap jK <ESC>
 " Macro, fast access to macro q
 nmap Q @q
 " Windows
