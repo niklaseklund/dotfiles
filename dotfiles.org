@@ -4257,18 +4257,26 @@ Add some initial notes about the dotfiles. The design choices and credits mostly
 ** Desktop environment
 *** X server
 *** Window manager
+
+[[https://github.com/baskerville/bspwm][bspwm, a tiling window manager]]
+
 **** bspwm
 **** sxhkd
 *** Compositor
-**** compton
-*** Status bar
-**** polybar
-*** Application launcher
-**** rofi
-*** Looks
-**** Application looks
 
-gtk
+[[https://github.com/chjj/compton][Compton, a compositor for X]]
+
+*** Status bar
+
+[[https://github.com/polybar/polybar][Polybar, a fast and easy-to-use tool for creating status bars]]
+
+*** Application launcher
+
+[[https://github.com/davatorium/rofi][Rofi, a window switcher and application launcher]]
+
+*** Looks
+
+**** GTK
 
 ** Editors
 *** Neovim
@@ -4280,6 +4288,13 @@ My Vim configuration goes here.
 How to install doom and setup my private configuration goes here. And Emacs
 anywhere as well.
 
+#+BEGIN_SRC sh :tangle no :dir ~/src :mkdirp yes
+git clone https://github.com/hlissner/doom-emacs
+git clone https://github.com:niklascarlsson/doom-private
+ln -s ~/src/doom-emacs ~/.emacs.d
+ln -s ~/src/doom-private ~/.doom.d
+#+END_SRC
+
 ** Encryption
 *** gpg
 
@@ -4287,9 +4302,13 @@ My gpg-agent configuration goes here. And my rofi-pass pinentry setup. And rofi-
 
 ** Media
 *** Browser
-**** Firefox
+**** Minimal looks
 
 Firefox goes here
+
+**** Keyboard driven
+
+Tirdactyl configuration goes here
 *** Music
 **** Tizonia
 
@@ -4303,11 +4322,6 @@ Zathura goes here.
 **** automatic systemd
 *** indexing
 *** sending
-** Misc
-*** Ideas
-*** Sleep
-
-Redshift
 ** Shells
 *** Zsh
 
