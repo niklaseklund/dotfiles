@@ -4249,3 +4249,74 @@ Fix the following:
 - replace font size in Emacs
 - tweak the resolution for darktable to match external monitor setup, I will not
   use it with laptop screen that much
+* New dotfiles structure
+** Desktop environment
+*** X server
+*** Window manager
+**** bspwm
+**** sxhkd
+*** Compositor
+**** compton
+*** Status bar
+**** polybar
+*** Application launcher
+**** rofi
+*** Looks
+**** Application looks
+
+gtk
+
+** Editors
+*** Neovim
+
+My Vim configuration goes here.
+
+*** Emacs
+
+How to install doom and setup my private configuration goes here. And Emacs
+anywhere as well.
+
+** Encryption
+*** gpg
+
+My gpg-agent configuration goes here. And my rofi-pass pinentry setup. And rofi-pass.
+
+** Media
+*** Browser
+**** Firefox
+
+Firefox goes here
+*** Music
+**** Tizonia
+
+Tizonia and the remote control goes here.
+*** Reader
+**** Zathura
+
+Zathura goes here.
+** Mail
+*** retrieving
+**** automatic systemd
+*** indexing
+*** sending
+** Misc
+*** Ideas
+*** Sleep
+
+Redshift
+** Shells
+*** Zsh
+
+my zsh configuration goes here.
+*** Bash
+
+my bash configuration goes here.
+
+** Terminal
+*** Tmux
+
+tmux goes here
+
+*** Scripts
+
+my custom scripts goes here.
