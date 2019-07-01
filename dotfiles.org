@@ -4250,6 +4250,10 @@ Fix the following:
 - tweak the resolution for darktable to match external monitor setup, I will not
   use it with laptop screen that much
 * New dotfiles structure
+** Background
+
+Add some initial notes about the dotfiles. The design choices and credits mostly.
+
 ** Desktop environment
 *** X server
 *** Window manager
