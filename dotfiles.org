@@ -237,8 +237,10 @@ URxvt.boldFont: xft:Iosevka Term:style=bold:size=6
 
 ~Ubuntu~
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-URxvt.font: xft:Roboto Mono:style=regular:size=12
-URxvt.boldFont: xft:Roboto Mono:style=bold:size=12
+!URxvt.font: xft:Roboto Mono:style=regular:size=12
+!URxvt.boldFont: xft:Roboto Mono:style=bold:size=12
+URxvt.font: xft:Iosevka Term:style=Regular:size=12
+URxvt.boldFont: xft:Iosevka Term:style=Bold:size=12
 #+END_SRC
 
 ** xprofile
@@ -651,13 +653,12 @@ connected then the internal screen will automatically be set to primary which
 means that I don't need to do antyhing more.
 
 This is my primary monitor for my ~ubuntu~ setup
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-EXTERNAL_MONITOR1="DP-0.8"
-EXTERNAL_MONITOR2="DP-1-1-8"
+#+BEGIN_SRC sh
+EXTERNAL_MONITOR="DP-1-1-8"
 #+END_SRC
 
 This is my primary monitor for my ~arch~ setup
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh
 EXTERNAL_MONITOR="DP-2"
 #+END_SRC
 
@@ -913,7 +914,7 @@ bspc config window_gap      50
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-bspc config window_gap      25
+bspc config window_gap      12
 #+END_SRC
 
 #+BEGIN_SRC sh
@@ -1476,20 +1477,21 @@ line-color = #f00
 border-size = 0
 
 border-color = #00000000
-
-padding-left = 4
-padding-right = 4
-
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-module-margin-left = 1
-module-margin-right = 1
+padding-left = 4
+padding-right = 4
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+padding-left = 2
+padding-right = 2
+#+END_SRC
+
+#+BEGIN_SRC sh
 module-margin-left = 1
-module-margin-right = 2
+module-margin-right = 1
 #+END_SRC
 
 *** Resolution
@@ -1499,8 +1501,8 @@ dpi-y = 227
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-dpi-x = 192
-dpi-y = 192
+dpi-x = 96
+dpi-y = 96
 #+END_SRC
 
 *** Fonts
@@ -1512,10 +1514,10 @@ font-3 = "Wuncon Siji:style=Regular:pixelsize=8;1"
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-font-0 = "Roboto Mono:style=Regular:size=8"
+font-0 = "Roboto Mono:style=Regular:size=10"
 font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
 font-2 = siji:pixelsize=8;1
-font-3 = "Material Icons:style=Regular:size=8"
+font-3 = "Material Icons:style=Regular:size=10"
 #+END_SRC
 
 *** Modules setup
@@ -2099,9 +2101,9 @@ rofi.eh: 1
 
 Customize appearance for ~Ubuntu~
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-rofi.width: 1000
-rofi.lines: 15
-rofi.font: hack 12
+rofi.width: 1500
+rofi.lines: 10
+rofi.font: Roboto Mono 10
 rofi.bw: 0
 rofi.padding: 50
 rofi.line-margin: 5
