@@ -4803,3 +4803,8 @@ echo $y
 
 #+RESULTS:
 : 3xxxxxxxxx
+*** Detect if keyboard is plugged in :keyboard:
+
+Use something to detect if a keyboard is plugged in so I can update the
+~setxkbmap~ command accordingly. This is currently a problem when my Macbook
+doesn't have an external keyboard plugged in.
