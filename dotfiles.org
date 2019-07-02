@@ -3587,60 +3587,6 @@ user           niklas.carlsson@zenuity.com
 passwordeval "pass show work/zenuity/login | sed -n 1p"
 #+END_SRC
 
-* redshift
-:PROPERTIES:
-:header-args: :tangle (my/tangle-os '(arch) "~/.config/redshift/redshift.conf") :mkdirp yes
-:END:
-
-Have redshift run automatically using systemd:
-#+BEGIN_SRC sh :tangle no
-systemctl --user enable redshift.service
-#+END_SRC
-
-Modified version of [[https://github.com/hlissner/dotfiles][hlissner]] configuration.
-#+BEGIN_SRC text
-[redshift]
-temp-day=6500
-temp-night=3600
-
-; Enable/Disable a smooth transition between day and night
-transition=1
-
-;brightness=0.9
-;brightness-day=1.0
-;brightness-night=0.85
-; screen gamma for all colors...
-gamma=1.0
-; or each color channel individually
-;gamma=0.8:0.7:0.8
-;gamma-day=0.8:0.7:0.8
-;gamma-night=0.6
-
-; redshift -l list
-location-provider=manual
-
-; redshift -m list
-adjustment-method=randr
-
-; redshift -l PROVIDER:help
-[manual]
-;; Gothenburg
-lat=57.696991
-lon=11.986500
-
-[randr]
-;screen=0
-#+END_SRC
-
-* gpg
-** agent
-
-This is my setup for ~ubuntu~:
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu) "~/.gnupg/gpg-agent.conf") :mkdirp yes
-default-cache-ttl 86400
-max-cache-ttl 86400
-#+END_SRC
-
 * music
 ** tizonia arch
 :PROPERTIES:
