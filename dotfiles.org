@@ -1974,207 +1974,6 @@ else
 fi
 #+END_SRC
 
-* Rofi
-** The application launcher
-:PROPERTIES:
-:header-args: :tangle ~/.config/rofi/config :mkdirp yes
-:END:
-
-The [[https://wiki.archlinux.org/index.php/Rofi][ArchWiki entry about Rofi]], defines it as a ~window switcher, run dialog,
-ssh-launcher and dmenu replacement~. I use it to start applications mainly, but
-also to access my passwords through the password-store.
-
-The configuration here is something that I have copied from ~Matt Dobson~.
-Unfortunately I don't remember where I found his config.
-#+BEGIN_SRC sh
-! ------------------------------------------------------------------------------
-!                          ROFI THEME
-! ------------------------------------------------------------------------------
-rofi.color-window: argb:f2171717, #535c5c,         #a4a4a4
-rofi.color-normal: argb:00171717, #a4a4a4, argb:00535c5c, argb:00171717, #535c5c
-rofi.color-urgent: argb:00171717, #cc6666, argb:e54b5160, argb:00171717, #535c5c
-rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
-#+END_SRC
-
-Pywall instead
-#+BEGIN_SRC sh :tangle no
-# Dark theme.
-rofi.theme: ~/.cache/wal/colors-rofi-dark.rasi
-#+END_SRC
-
-Customize appearance for ~Arch~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-rofi.width: 1500
-rofi.lines: 10
-rofi.font: Roboto Mono 14
-rofi.bw: 0
-rofi.padding: 50
-rofi.line-margin: 5
-rofi.eh: 1
-#+END_SRC
-
-Customize appearance for ~Ubuntu~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-rofi.width: 1500
-rofi.lines: 10
-rofi.font: Roboto Mono 10
-rofi.bw: 0
-rofi.padding: 50
-rofi.line-margin: 5
-rofi.eh: 1
-#+END_SRC
-
-
-The ~-m~ option switches the behavior of ~rofi~ from the default which is to
-show the window in the monitor where the mouse recides.
-
-To the monitor which is in focus. I found this setting in the
-[[https://github.com/DaveDavenport/rofi/blob/1ab3e571eca1768d437246ca6ec09f44432b0e20/doc/rofi.1.markdown][rofi manpages]]
-#+BEGIN_EXAMPLE
--1: the currently focused monitor.
-
--2: the currently focused window (i.e. rofi will be displayed on top of the focused window).
-
--3: Position at mouse (overrides the location setting to get normal context menu
-behaviour.)
-
--4: the monitor with the focused window.
-
--5: the monitor that shows the mouse pointer.
-#+END_EXAMPLE
-
-I want to set this globally to -1. That setting makes most sense to me. It will
-be the display that I have currently focus on.
-#+BEGIN_SRC sh
-rofi.m: -1
-#+END_SRC
-
-#+BEGIN_SRC sh
-rofi.sidebar-mode: true
-rofi.separator-style: none
-rofi.hide-scrollbar: true
-rofi.show-icons: false
-rofi.location: 0
-!rofi.modi: window,run,drun
-rofi.modi: window,run
-rofi.matching: fuzzy
-
-#+END_SRC
-
-*** TODO Sync the colors used to Xresources
-
-I should probably use the same colors for concistency
-
-** The pass integration
-
-There is an extension to rofi for handling passwords, [[https://github.com/carnager/rofi-pass][rofi-pass]]. I have used the
-default configuration that was present in the github repository.
-
-I have added the ~-m -1~ flag to synchronize the window behavior between the
-rofi-pass and rofi.
-#+BEGIN_SRC sh :tangle ~/.config/rofi-pass/config :mkdirp yes
-# permanently set alternative root dir. Use ":" to separate multiple roots
-# which can be switched at runtime with shift+left/right
-# root=/path/to/root
-_rofi () {
-    rofi -i -no-auto-select -m -1 "$@"
-}
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle ~/.config/rofi-pass/config :mkdirp yes
-# default command to generate passwords
-_pwgen () {
-	pwgen -y "$@"
-}
-
-# image viewer to display qrcode of selected entry
-# qrencode is needed to generate the image and a viewer
-# that can read from pipes. Known viewers to work are feh and display
-_image_viewer () {
-    feh -
-#    display
-}
-
-# xdotool needs the keyboard layout to be set using setxkbmap
-# You can do this in your autostart scripts (e.g. xinitrc)
-
-# If for some reason, you cannot do this, you can set the command here.
-# and set fix_layout to true
-fix_layout=false
-
-layout_cmd () {
-  setxkbmap us
-}
-
-# fields to be used
-URL_field='url'
-USERNAME_field='user'
-AUTOTYPE_field='autotype'
-
-# delay to be used for :delay keyword
-delay=2
-
-# rofi-pass needs to close itself before it can type passwords. Set delay here.
-wait=0.2
-
-# delay between keypresses when typing (in ms)
-xdotool_delay=12
-
-## Programs to be used
-# Editor
-EDITOR='gvim -f'
-
-# Browser
-BROWSER='xdg-open'
-
-## Misc settings
-
-default_do='menu' # menu, autotype, copyPass, typeUser, typePass, copyUser, copyUrl, viewEntry, typeMenu, actionMenu, copyMenu, openUrl
-auto_enter='false'
-notify='false'
-default_autotype='user :tab pass'
-
-# color of the help messages
-# leave empty for autodetection
-help_color="#4872FF"
-
-# Clipboard settings
-# Possible options: primary, clipboard, both
-# clip=primary
-clip=both
-
-# Seconds before clearing pass from clipboard
-clip_clear=45
-
-## Options for generating new password entries
-
-# open new password entries in editor
-edit_new_pass="true"
-
-# default_user is also used for password files that have no user field.
-#default_user="${ROFI_PASS_DEFAULT_USER-$(whoami)}"
-#default_user2=mary_ann
-#password_length=12
-
-# Custom Keybindings
-autotype="Alt+1"
-type_user="Alt+2"
-type_pass="Alt+3"
-open_url="Alt+4"
-copy_name="Alt+u"
-copy_url="Alt+l"
-copy_pass="Alt+p"
-show="Alt+o"
-copy_entry="Alt+2"
-type_entry="Alt+1"
-copy_menu="Alt+c"
-action_menu="Alt+a"
-type_menu="Alt+t"
-help="Alt+h"
-switch="Alt+x"
-insert_pass="Alt+n"
-#+END_SRC
-
 * tmux
 :PROPERTIES:
 :header-args: :tangle ~/.tmux.conf :mkdirp yes
@@ -3836,8 +3635,65 @@ applications, resulting in massive adoption from most distributions.
 **** custom modules
 
 *** Application launcher
+:PROPERTIES:
+:header-args: :tangle ~/.config/rofi/config :mkdirp yes
+:END:
 
-[[https://github.com/davatorium/rofi][Rofi, a window switcher and application launcher]]
+[[https://github.com/davatorium/rofi][Rofi, a window switcher and application launcher]].
+
+The configuration here is something that I have copied from ~Matt Dobson~.
+Unfortunately I don't remember where I found his config.
+#+BEGIN_SRC sh
+! ------------------------------------------------------------------------------
+!                          ROFI THEME
+! ------------------------------------------------------------------------------
+rofi.color-window: argb:f2171717, #535c5c,         #a4a4a4
+rofi.color-normal: argb:00171717, #a4a4a4, argb:00535c5c, argb:00171717, #535c5c
+rofi.color-urgent: argb:00171717, #cc6666, argb:e54b5160, argb:00171717, #535c5c
+rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
+#+END_SRC
+
+Tweaked for ~Arch~
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+rofi.width: 1500
+rofi.lines: 10
+rofi.font: Roboto Mono 14
+rofi.bw: 0
+rofi.padding: 50
+rofi.line-margin: 5
+rofi.eh: 1
+#+END_SRC
+
+Tweaked for ~Ubuntu~
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+rofi.width: 1500
+rofi.lines: 10
+rofi.font: Roboto Mono 10
+rofi.bw: 0
+rofi.padding: 50
+rofi.line-margin: 5
+rofi.eh: 1
+#+END_SRC
+
+The ~-m~ option determines the behavior of ~rofi~ where the rofi window should
+appear. I want to set this globally to -1. That setting makes most sense to me.
+It will be the display that I have currently focus on.
+#+BEGIN_SRC sh
+rofi.m: -1
+#+END_SRC
+
+Other settings
+#+BEGIN_SRC sh
+rofi.sidebar-mode: true
+rofi.separator-style: none
+rofi.hide-scrollbar: true
+rofi.show-icons: false
+rofi.location: 0
+!rofi.modi: window,run,drun
+rofi.modi: window,run
+rofi.matching: fuzzy
+
+#+END_SRC
 
 *** Looks
 
