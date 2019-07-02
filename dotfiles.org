@@ -4259,6 +4259,18 @@ has been to craft a setup that is highly focused on being ~minimalistic~,
 
 ** Desktop environment
 *** X server
+
+[[https://wiki.archlinux.org/index.php/xorg][Xorg in ArchWiki]]
+#+BEGIN_QUOTE
+Xorg (commonly referred as simply X) is the most popular display server among
+Linux users. Its ubiquity has led to making it an ever-present requisite for GUI
+applications, resulting in massive adoption from most distributions.
+#+END_QUOTE
+
+**** Xresources
+**** Xprofile
+**** Profile
+
 *** Window manager
 
 [[https://github.com/baskerville/bspwm][bspwm, a tiling window manager]]. The ~bspwm~ window manager relies upon
@@ -4274,13 +4286,18 @@ has been to craft a setup that is highly focused on being ~minimalistic~,
 
 [[https://github.com/polybar/polybar][Polybar, a fast and easy-to-use tool for creating status bars]]
 
+**** launch script
+**** configuration
+**** custom modules
+
 *** Application launcher
 
 [[https://github.com/davatorium/rofi][Rofi, a window switcher and application launcher]]
 
 *** Looks
 
-**** GTK
+**** GTK+ 2.x
+**** GTK+ 3.x
 
 ** Editors
 *** Neovim
@@ -4530,6 +4547,9 @@ Tridactyl. Need to add how to customize the colors.
 [[https://github.com/tizonia/tizonia-openmax-il][Tizonia, command-line music player]]
 
 Tizonia and the remote control goes here.
+
+***** configuration
+***** remote control
 
 *** Reader
 **** Zathura
