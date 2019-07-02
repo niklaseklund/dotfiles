@@ -4319,8 +4319,25 @@ Tizonia and the remote control goes here.
 
 *** Reader
 **** Zathura
+:PROPERTIES:
+:header-args: :tangle ~/.config/zathura/zathurarc :mkdir p
+:END:
 
-[[https://github.com/pwmt/zathura][Zathura, a highly customizable document viewer]]
+[[https://github.com/pwmt/zathura][Zathura, a highly customizable document viewer]]. I got some inspiration from the
+[[https://wiki.archlinux.org/index.php/Zathura][the arch wiki]] and the video from Luke Smith [[https://www.youtube.com/watch?v=V_Iz4zdyRM4&t=315s][zathura: a vim based minimalist pdf
+reader]]
+
+Enable copy to clipboard
+#+BEGIN_SRC sh
+set selection-clipboard clipboard
+#+END_SRC
+
+Control the paddings
+#+BEGIN_SRC sh
+set statusbar-h-padding 0
+set statusbar-v-padding 0
+set page-padding 1
+#+END_SRC
 
 ** Mail
 *** retrieving
@@ -4343,9 +4360,204 @@ my bash configuration goes here.
 
 *** Scripts
 
-my custom scripts goes here.
+These are my custom utility scripts that I use.
+
+**** Music player :tmux:tizonia:
+
+A music player setup combining ~tizonia~ with the music visualizer ~cava~ and
+volume control ~ncpamixer~ into a three window setup with ~tmux~.
+
+#+BEGIN_SRC sh :tangle ~/bin/music-tmux :shebang "#! /bin/zsh"
+tmux new-session \; \
+    send-keys 'ncpamixer' C-m \; \
+    send-keys LL \; \
+    split-window -v \; \
+    split-window -v \; \
+    select-layout even-vertical \; \
+    send-keys 'cava' C-m \; \
+    select-pane -U \;
+#+END_SRC
+
+**** Glitch lock
+
+Glitch locking the screen utilizing ~videoglitch~
+
+#+BEGIN_SRC sh :tangle ~/bin/glitcher~ :shebang "#! /bin/zsh"
+OUTPUT='/tmp/i3lock.png'
+scrot -z $OUTPUT
+convert $OUTPUT -scale '50%' $OUTPUT
+videoglitch -c gm $OUTPUT $OUTPUT
+convert $OUTPUT -scale '200%' $OUTPUT
+i3lock -i $OUTPUT -t
+#+END_SRC
+
+**** Vpn utility :vpn:
+:PROPERTIES:
+:header-args: :tangle ~/bin/vpn-toggle :shebang "#! /bin/zsh"
+:END:
+
+The purpose of this script should be to toggle a vpn connection between active
+and inactive.
+
+The third column contains the type of connection. To not be fooled by a name
+of a connection that might contain the word vpn I extract this column and grep
+for vpn.
+#+BEGIN_SRC sh
+connection=$(nmcli connection show --active | awk '{print $3}' | grep vpn)
+#+END_SRC
+
+If a connection is detected set it to down otherwise start it.
+#+BEGIN_SRC sh
+if [ "$connection" = "vpn" ]; then
+    # active
+    active_connection=$(nmcli connection show --active | grep vpn | awk '{print $1}')
+    nmcli connection down $active_connection >/dev/null 2>&1
+else
+    # inactive
+    printf $(pass network/ovpn)'\n' | nmcli connection up ovpn-se-tcp --ask >/dev/null 2>&1
+fi
+#+END_SRC
+
+~Note:~ an idea for the future might be to utilize a rofi popup to select which
+vpn connection to use when activating. Currently one is hardcoded.
+**** Emacs anywhere
+:PROPERTIES:
+:header-args: :tangle ~/bin/emacs-anywhere :shebang "#!/bin/bash"
+:END:
+
+I had an idea of using this in multiple places but I will just make it work for
+Firefox for the time being. It's where I miss it the most.
+
+1) Make sure it's called from Firefox. Get the name of the calling application
+
+#+BEGIN_SRC sh
+WINDOW=$( xdotool getactivewindow )
+APP_NAME=$( xprop -id "$WINDOW WM_CLASS")
+x=$( echo "$APP_NAME" | awk -F ',' '{print $2}' )
+x2=$(echo "$x" | tr -d '"')
+Make comparison
+if [[ "$x2" == *"Firefox"* ]]; then
+    :
+else
+    exit 1;
+fi
+#+END_SRC
+
+2) Mark the content in Firefox and copy it to the default clipboard
+#+BEGIN_SRC sh
+# clear the clipboard
+echo -n | xclip
+# make selection
+sleep 0.2
+xdotool key --clearmodifiers ctrl+a
+xdotool key --clearmodifiers ctrl+c
+# clear modifiers to avoid registering them
+sleep 0.2 && xdotool keyup Super_L Super_R
+#+END_SRC
+
+I encountered issues that the xdotool sometimes makes the super key stuck
+after I use the clearmodifiers flag. To mitigate that I found this issue on
+github: https://github.com/jordansissel/xdotool/issues/43. Which is why I have
+the keyup command.
+
+3) Lastly export the copied content to a variable that will be accessible in the
+   called run scrip.
+#+BEGIN_SRC sh
+content=$(xclip -selection c -o)
+export EA_CLIPBOARD=$content
+
+"/home/nikcar/.emacs_anywhere/bin/run"
+#+END_SRC
+**** Control monitor brightness :python:xrandr:
+
+Use xrandr and Python to adjust the monitor brightness.
+
+Improvements
+- make it so that the function can operate on the monitor that currently has the
+  focus in bspwm. Making this a feature that not only works on the external screen.
+
+#+BEGIN_SRC python :tangle ~/bin/monitor-brightness :shebang "#!/usr/bin/env python"
+# -*- mode: python-*-
+import subprocess
+import sys
+import numpy as np
+
+def _get_clamped_brightness(brightness):
+    clamp = lambda n, minn, maxn: max(min(maxn, n), minn)
+    return clamp(brightness, 0.0, 1.0)
+
+def adjust_brightness(adjustment_value):
+    # Get a list of connected monitors and their brightness levels
+    connected_monitors = subprocess.check_output(
+        "xrandr -q | grep ' connected' | cut -d' ' -f1",
+        shell=True,
+        universal_newlines=True).strip().split()
+    current_brightness = subprocess.check_output(
+        "xrandr --verbose | grep 'Brightness' | cut -d' ' -f2",
+        shell=True,
+        universal_newlines=True).strip().split()
+
+    # Find sought after monitor
+    monitor = 'eDP-1'
+    for idx, m in enumerate(connected_monitors):
+        if m == monitor:
+            # TODO add signed float as input so that the user and choose to
+            # decrement or increment and make sure the output value is bound between
+            # 0 and 1
+            new_brightness = \
+                _get_clamped_brightness(float(current_brightness[idx]) +
+                                        adjustment_value)
+
+            command = "xrandr --output {0} --brightness {1:.1f}".format(
+                monitor, new_brightness)
+            subprocess.call(command, shell=True)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        adjust_brightness(float(sys.argv[1]))
+#+END_SRC
+
 ** Utility applications
 *** Screen color temperature
+:PROPERTIES:
+:header-args: :tangle (my/tangle-os '(arch) "~/.config/redshift/redshift.conf") :mkdirp yes
+:END:
+
+The configuration is a copy from [[https://github.com/hlissner/dotfiles][hlissner]].
+#+BEGIN_SRC text
+[redshift]
+temp-day=6500
+temp-night=3600
+
+; Enable/Disable a smooth transition between day and night
+transition=1
+
+;brightness=0.9
+;brightness-day=1.0
+;brightness-night=0.85
+; screen gamma for all colors...
+gamma=1.0
+; or each color channel individually
+;gamma=0.8:0.7:0.8
+;gamma-day=0.8:0.7:0.8
+;gamma-night=0.6
+
+; redshift -l list
+location-provider=manual
+
+; redshift -m list
+adjustment-method=randr
+
+; redshift -l PROVIDER:help
+[manual]
+;; Gothenburg
+lat=57.696991
+lon=11.986500
+
+[randr]
+;screen=0
+#+END_SRC
 
 Redshift
 
@@ -4354,3 +4566,29 @@ Redshift
 *** Notifications
 
 [[https://github.com/dunst-project/dunst][Dunst, a lightweight and customizable notification daemon]]
+
+** WIP
+
+This work in progress section contains some ideas that I am exploring but where
+I haven't found a good solution or reached a conclusion.
+
+*** Right pad strings :zsh:
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+Found an example [[https://github.com/yamadapc/zshguide/blob/master/chapter5.md][here]]
+
+#+BEGIN_SRC shell
+#! /bin/zsh
+
+Take a string of a number
+y='3'
+
+# Right pad the number with x
+y=${(r:10::x:)y}
+echo $y
+#+END_SRC
+
+#+RESULTS:
+: 3xxxxxxxxx
