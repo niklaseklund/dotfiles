@@ -4299,17 +4299,228 @@ ln -s ~/src/doom-private ~/.doom.d
 ** Encryption
 *** gpg
 
-My gpg-agent configuration goes here. And my rofi-pass pinentry setup. And rofi-pass.
+Increase the cache validity for the ~gpg-agent~.
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu) "~/.gnupg/gpg-agent.conf") :mkdirp yes
+default-cache-ttl 86400
+max-cache-ttl 86400
+#+END_SRC
+*** rofi-pass
+:PROPERTIES:
+:header-args: :tangle ~/.config/rofi-pass/config :mkdirp yes
+:END:
+
+There is an extension to rofi for handling passwords, [[https://github.com/carnager/rofi-pass][rofi-pass]]. I have used the
+default configuration that was present in the github repository.
+
+I have added the ~-m -1~ flag to synchronize the window behavior between the
+rofi-pass and rofi.
+#+BEGIN_SRC sh
+# permanently set alternative root dir. Use ":" to separate multiple roots
+# which can be switched at runtime with shift+left/right
+# root=/path/to/root
+_rofi () {
+    rofi -i -no-auto-select -m -1 "$@"
+}
+#+END_SRC
+
+#+BEGIN_SRC sh
+# default command to generate passwords
+_pwgen () {
+	pwgen -y "$@"
+}
+
+# image viewer to display qrcode of selected entry
+# qrencode is needed to generate the image and a viewer
+# that can read from pipes. Known viewers to work are feh and display
+_image_viewer () {
+    feh -
+#    display
+}
+
+# xdotool needs the keyboard layout to be set using setxkbmap
+# You can do this in your autostart scripts (e.g. xinitrc)
+
+# If for some reason, you cannot do this, you can set the command here.
+# and set fix_layout to true
+fix_layout=false
+
+layout_cmd () {
+  setxkbmap us
+}
+
+# fields to be used
+URL_field='url'
+USERNAME_field='user'
+AUTOTYPE_field='autotype'
+
+# delay to be used for :delay keyword
+delay=2
+
+# rofi-pass needs to close itself before it can type passwords. Set delay here.
+wait=0.2
+
+# delay between keypresses when typing (in ms)
+xdotool_delay=12
+
+## Programs to be used
+# Editor
+EDITOR='gvim -f'
+
+# Browser
+BROWSER='xdg-open'
+
+## Misc settings
+
+default_do='menu' # menu, autotype, copyPass, typeUser, typePass, copyUser, copyUrl, viewEntry, typeMenu, actionMenu, copyMenu, openUrl
+auto_enter='false'
+notify='false'
+default_autotype='user :tab pass'
+
+# color of the help messages
+# leave empty for autodetection
+help_color="#4872FF"
+
+# Clipboard settings
+# Possible options: primary, clipboard, both
+# clip=primary
+clip=both
+
+# Seconds before clearing pass from clipboard
+clip_clear=45
+
+## Options for generating new password entries
+
+# open new password entries in editor
+edit_new_pass="true"
+
+# default_user is also used for password files that have no user field.
+#default_user="${ROFI_PASS_DEFAULT_USER-$(whoami)}"
+#default_user2=mary_ann
+#password_length=12
+
+# Custom Keybindings
+autotype="Alt+1"
+type_user="Alt+2"
+type_pass="Alt+3"
+open_url="Alt+4"
+copy_name="Alt+u"
+copy_url="Alt+l"
+copy_pass="Alt+p"
+show="Alt+o"
+copy_entry="Alt+2"
+type_entry="Alt+1"
+copy_menu="Alt+c"
+action_menu="Alt+a"
+type_menu="Alt+t"
+help="Alt+h"
+switch="Alt+x"
+insert_pass="Alt+n"
+#+END_SRC
+
+*** rofi-pinentry :arch-linux:
+
+The default pinentry is ~gtk-2~, which with the arc-dark theme looks alright.
+However since I use rofi as the program launcher that is even better looking.
+[[https://github.com/plattfot/pinentry-rofi][The pinentry-rofi]] package by ~plattfot~ makes it possible to use rofi as the
+pinentry.
+
+#+BEGIN_SRC sh :tangle no
+git clone git@github.com:plattfot/pinentry-rofi-aur.git
+cd pinentry-rofi-aur
+makepkg -ic
+#+END_SRC
+
+I added the ~pinentry-rofi-guile~ as my first pinentry to use in the
+~/usr/bin/pinentry~ file.
+#+BEGIN_SRC sh :tangle no
+#!/bin/sh
+
+test -e /usr/lib/libgtk-x11-2.0.so.0 &&
+exec /usr/bin/pinentry-rofi-guile  "$@"
+
+exec /usr/bin/pinentry-gtk-2  "$@"
+
+exec /usr/bin/pinentry-curses "$@"
+#+END_SRC
 
 ** Media
 *** Browser
-**** Minimal looks
 
-Firefox goes here
+For now Firefox is my browser. I keep my eyes on the development of the
+common-lisp based [[https://github.com/atlas-engineer/next][next browser]].
+
+**** Finding the profile directory
+
+The tricky aspect with tangling this configuration file is that the path to the
+~profile directory~, in which this file should be tangled, is dynamic. It varies
+from computer to computer. Now maybe I could have done this with some regexp
+directly, I am not sure, but it was quite easy to just write an ~Elisp~ function
+that could be used in the tangling process.
+
+#+BEGIN_SRC elisp :tangle no
+(defun my/firefox-profile-directory ()
+  "Find the path to the Firefox profile directory where settings recide."
+  (let ((profile-directory '())
+        (firefox-path (expand-file-name "~/.mozilla/firefox/")))
+    (with-temp-buffer (shell-command (concat "ls " firefox-path) t)
+                      (goto-char (point-min))
+                      (while (not (eobp))
+                          (let ((content (string-trim (thing-at-point 'line))))
+                            (if (string-match "default" content)
+                                (setq profile-directory (concat firefox-path content))))
+                          (forward-line 1)))
+    profile-directory))
+#+END_SRC
+
+**** Minimal looks
+:PROPERTIES:
+:header-args: :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes
+:END:
+
+I created [[https://niklascarlsson.github.io/posts/a-minimalists-firefox/][a blog post]] on where I found this configuration and what it does.
+
+#+BEGIN_SRC sh
+/*
+ * Do not remove the @namespace line -- it's required for correct functioning
+ */
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* set default namespace to XUL */
+
+/*
+ * Hide tab bar, navigation bar and scrollbars
+ * !important may be added to force override, but not necessary
+ */
+#TabsToolbar {visibility: collapse;}
+#navigator-toolbox {visibility: collapse;}
+#content browser {margin-right: -14px; margin-bottom: -14px;}
+#+END_SRC
+
+Getting rid of the status bar
+#+BEGIN_SRC sh
+/* Suppress Connecting/Waiting/Reading/Transerring */
+#statuspanel[type="status"] {
+  display: none !important;
+}
+/* Suppress Link Destination Overlay */
+#statuspanel[type="overLink"] {
+  display: none !important;
+}
+
+window[inFullscreen="true"] #statuspanel {
+bottom: 0px !important; /* adjust*/
+height: 0px !important; /* adjust */
+}
+#+END_SRC
+
+#+BEGIN_SRC sh
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* only needed once */
+
+statuspanel[type="status"] .statuspanel-label {display:none!important;}
+#+END_SRC
 
 **** Keyboard driven
 
-Tirdactyl configuration goes here
+Tridactyl. Need to add how to customize the colors.
+
 *** Music
 **** Tizonia
 
