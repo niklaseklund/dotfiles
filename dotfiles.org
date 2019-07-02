@@ -1283,92 +1283,6 @@ wintypes:
 };
 #+END_SRC
 
-* Firefox
-
-There is not that much to configure, at least with configuration files, when it
-comes to Firefox. However one aspect is the appearance. Since I am using a
-window manager in combination with Vim emulation there is not that much need for
-me to have the menus. So I want to make them dissapear.
-
-** Finding the profile directory
-
-The tricky aspect with tangling this configuration file is that the path to the
-~profile directory~, in which this file should be tangled, is dynamic. It varies
-from computer to computer. Now maybe I could have done this with some regexp
-directly, I am not sure, but it was quite easy to just write an ~Elisp~ function
-that could be used in the tangling process.
-
-#+BEGIN_SRC elisp
-(defun my/firefox-profile-directory ()
-  "Find the path to the Firefox profile directory where settings recide."
-  (let ((profile-directory '())
-        (firefox-path (expand-file-name "~/.mozilla/firefox/")))
-    (with-temp-buffer (shell-command (concat "ls " firefox-path) t)
-                      (goto-char (point-min))
-                      (while (not (eobp))
-                          (let ((content (string-trim (thing-at-point 'line))))
-                            (if (string-match "default" content)
-                                (setq profile-directory (concat firefox-path content))))
-                          (forward-line 1)))
-    profile-directory))
-#+END_SRC
-
-** Minimalistic appearance
-:PROPERTIES:
-:header-args: :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes :comments link
-:END:
-
-I created [[https://niklascarlsson.github.io/posts/a-minimalists-firefox/][a blog post]] on where I found this configuration and what it does.
-
-#+BEGIN_SRC sh
-/*
- * Do not remove the @namespace line -- it's required for correct functioning
- */
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* set default namespace to XUL */
-
-/*
- * Hide tab bar, navigation bar and scrollbars
- * !important may be added to force override, but not necessary
- */
-#TabsToolbar {visibility: collapse;}
-#navigator-toolbox {visibility: collapse;}
-#content browser {margin-right: -14px; margin-bottom: -14px;}
-#+END_SRC
-** Getting rid of status bar
-:PROPERTIES:
-:header-args: :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes :comments link
-:END:
-
-#+BEGIN_SRC sh
-/* Suppress Connecting/Waiting/Reading/Transerring */
-#statuspanel[type="status"] {
-  display: none !important;
-}
-/* Suppress Link Destination Overlay */
-#statuspanel[type="overLink"] {
-  display: none !important;
-}
-
-window[inFullscreen="true"] #statuspanel {
-bottom: 0px !important; /* adjust*/
-height: 0px !important; /* adjust */
-}
-#+END_SRC
-
-#+BEGIN_SRC sh
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* only needed once */
-
-statuspanel[type="status"] .statuspanel-label {display:none!important;}
-#+END_SRC
-** Vim plugin
-
-Tridactyl:
-How to get it dark
-https://github.com/tridactyl/tridactyl
-Enter ~:colors dark~ in the command line for tridactyl.
-Some good info about hinting
-https://github.com/tridactyl/tridactyl/blob/master/doc/hinting.md
-
 * Polybar
 ** configuration
 :PROPERTIES:
@@ -3998,7 +3912,6 @@ export EA_CLIPBOARD=$content
 
 "/home/nikcar/.emacs_anywhere/bin/run"
 #+END_SRC
-
 
 ** Encryption
 *** gpg
