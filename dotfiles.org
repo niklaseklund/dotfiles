@@ -4252,7 +4252,10 @@ Fix the following:
 * New dotfiles structure
 ** Background
 
-Add some initial notes about the dotfiles. The design choices and credits mostly.
+This dotfile setup is heavily inspired/borderline stolen from [[https://github.com/hlissner/dotfiles][hlissner's
+dotfiles]]. I have also taken inspiration from others such as [[https://github.com/noctuid][noctuid]]. My ambition
+has been to craft a setup that is highly focused on being ~minimalistic~,
+~keyboardriven~, and ~highly customizable~.
 
 ** Desktop environment
 *** X server
