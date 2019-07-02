@@ -4233,22 +4233,6 @@ fi
 ~Improvement:~ add a smart function for deletion in Emacs to avoid
 deleting mails that have been flagged.
 
-* ideas
-
-- add private/work condition?
-- tangle other local files from this file? Useful for code that should not be
-  publically available
-- mouse toggle script that I can call from rofi? https://askubuntu.com/questions/199271/x11-disable-mouse
-
-** hdpi and non hdpi screen solution
-
-Fix the following:
-- replace value in pref.json for firefox setting user_pref("layout.css.devPixelsPerPx", "1");
-- replace dpi values in Xresources and Polybar
-- replace font size in Xresources, Polybar and Rofi
-- replace font size in Emacs
-- tweak the resolution for darktable to match external monitor setup, I will not
-  use it with laptop screen that much
 * New dotfiles structure
 ** Background
 
@@ -4751,7 +4735,6 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         adjust_brightness(float(sys.argv[1]))
 #+END_SRC
-
 ** Utility applications
 *** Screen color temperature
 :PROPERTIES:
@@ -4831,3 +4814,8 @@ echo $y
 Use something to detect if a keyboard is plugged in so I can update the
 ~setxkbmap~ command accordingly. This is currently a problem when my Macbook
 doesn't have an external keyboard plugged in.
+*** Mouse toggle
+
+The trackpad on my work computer sucks, I want a mouse toggle script that I can
+call from rofi, [[https://askubuntu.com/questions/199271/x11-disable-mouse][inspiration]]. This would make it easy to turn it off when I don't
+have an external keyboard attached.
