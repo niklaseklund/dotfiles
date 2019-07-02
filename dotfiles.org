@@ -4159,80 +4159,6 @@ done
 
 #+END_SRC
 
-* systemd
-** mbsync
-*** timer
-
-#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.timer :mkdirp t :tangle-mode (identity #o644)
-[Unit]
-Description=Mailbox synchronization timer
-
-[Timer]
-OnBootSec=2m
-OnUnitActiveSec=5m
-Unit=mbsync.service
-
-[Install]
-WantedBy=timers.target
-#+END_SRC
-*** service
-:PROPERTIES:
-:header-args: :tangle ~/.config/systemd/user/mbsync.service :mkdirp t :tangle-mode (identity #o644) :padline no
-:END:
-
-#+BEGIN_SRC sh
-[Unit]
-Description=Mailbox synchronization service
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/mbsync -Va
-ExecStartPost=/usr/bin/notmuch new
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-ExecStartPre=/home/niklascarlsson/bin/notmuch-pre
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-ExecStartPre=/home/nikcar/bin/notmuch-pre
-#+END_SRC
-
-*** start
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-
-Start the service
-#+BEGIN_SRC sh
-sudo systemctl daemon-reload # reload systemd
-# user services don't need elevated rights
-systemctl --user enable mbsync.timer
-systemctl --user start mbsync.timer
-#+END_SRC
-*** utility
-:PROPERTIES:
-:header-args: :tangle ~/bin/notmuch-pre :shebang "#!/bin/bash"
-:END:
-
-Remove mails that has been taged as deleted the --no-run -if-empty prevents the
-rm to run if no files are piped otherwise the command will fail due to lack of
-input arguments.
-#+BEGIN_SRC sh
-notmuch search --output=files --format=text0 tag:deleted | xargs -0 --no-run-if-empty /bin/rm
-#+END_SRC
-
-If the above fails due to index filed taged with deleted doesn't exist this will
-remove the tag making sure that the above statement doesn't keep failing.
-#+BEGIN_SRC sh
-if [ $? -ne 0 ]; then
-    notmuch tag -deleted tag:deleted
-fi
-#+END_SRC
-
-~Improvement:~ add a smart function for deletion in Emacs to avoid
-deleting mails that have been flagged.
-
 * New dotfiles structure
 ** Background
 
@@ -4559,9 +4485,81 @@ set page-padding 1
 
 ** Mail
 *** retrieving
-**** automatic systemd
 *** indexing
 *** sending
+*** systemd automation
+**** timer
+
+#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.timer :mkdirp t :tangle-mode (identity #o644)
+[Unit]
+Description=Mailbox synchronization timer
+
+[Timer]
+OnBootSec=2m
+OnUnitActiveSec=5m
+Unit=mbsync.service
+
+[Install]
+WantedBy=timers.target
+#+END_SRC
+**** service
+:PROPERTIES:
+:header-args: :tangle ~/.config/systemd/user/mbsync.service :mkdirp t :tangle-mode (identity #o644) :padline no
+:END:
+
+#+BEGIN_SRC sh
+[Unit]
+Description=Mailbox synchronization service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/mbsync -Va
+ExecStartPost=/usr/bin/notmuch new
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+ExecStartPre=/home/niklascarlsson/bin/notmuch-pre
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+ExecStartPre=/home/nikcar/bin/notmuch-pre
+#+END_SRC
+
+**** start
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+Start the service
+#+BEGIN_SRC sh
+sudo systemctl daemon-reload # reload systemd
+# user services don't need elevated rights
+systemctl --user enable mbsync.timer
+systemctl --user start mbsync.timer
+#+END_SRC
+**** utility
+:PROPERTIES:
+:header-args: :tangle ~/bin/notmuch-pre :shebang "#!/bin/bash"
+:END:
+
+Remove mails that has been taged as deleted the --no-run -if-empty prevents the
+rm to run if no files are piped otherwise the command will fail due to lack of
+input arguments.
+#+BEGIN_SRC sh
+notmuch search --output=files --format=text0 tag:deleted | xargs -0 --no-run-if-empty /bin/rm
+#+END_SRC
+
+If the above fails due to index filed taged with deleted doesn't exist this will
+remove the tag making sure that the above statement doesn't keep failing.
+#+BEGIN_SRC sh
+if [ $? -ne 0 ]; then
+    notmuch tag -deleted tag:deleted
+fi
+#+END_SRC
+
+~Improvement:~ add a smart function for deletion in Emacs to avoid
+deleting mails that have been flagged.
+
 ** Shells
 *** Zsh
 
