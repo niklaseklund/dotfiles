@@ -1,5 +1,5 @@
 #+TITLE: dotfiles
-* Xorg
+* Xorg :deprecated:
 
 [[https://wiki.archlinux.org/index.php/xorg][Xorg in ArchWiki]]
 #+BEGIN_QUOTE
@@ -3615,16 +3615,372 @@ Linux users. Its ubiquity has led to making it an ever-present requisite for GUI
 applications, resulting in massive adoption from most distributions.
 #+END_QUOTE
 
+**** Xinitrc
+:PROPERTIES:
+:header-args: :tangle (my/tangle-not-app '(lightdm) "~/.xinitrc") :shebang "#! /bin/sh" :mkdirp yes
+:END:
+
+If my os doesn't have a display manager I will utilize this setup. Hence I let
+the ~xinitrc~ be the configuration file where I specify the settings and
+programs to launch upon startup. Currently assumes that if ~lightdm~ exists that
+it is enabled and properly configured. ~xinitrc~ will then not tangle but
+instead ~xprofile~ will, and vice versa.
+
+***** Load xresources
+
+Loading the Xresources file which contains the configuration parameters for some
+X client applications like the terminal emulator ~urxvt~.
+#+BEGIN_SRC sh
+# customize xresources
+[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
+# set wallpaper
+[[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
+#+END_SRC
+
+***** DONE HIDPI screen support
+CLOSED: [2019-06-07 Fri 17:32]
+
+I found an example configuration for the retina display at
+https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
+Currently I have commented out the gdk and qt settings until I read up on what
+they actually does. The xrandr command however I needed because by default the
+output of the ~xrandr -q~ said the dpi was 96 which was clearly incorrect. I
+verified that the 227 was correct by consulting the apple website for the
+macbook specs.
+
+Some more information on the matter:
+https://wiki.archlinux.org/index.php/HiDPI#GDK_3_(GTK+_3)
+
+#+BEGIN_SRC sh
+# hidpi settings
+export GDK_SCALE=2
+export GDK_DPI_SCALE=0.5
+#export QT_SCREEN_SCALE_FACTORS=0.9
+#export QT_AUTO_SCREEN_SCALE_FACTOR=2
+#export QT_SCALE_FACTOR=2
+
+#+END_SRC
+
+Previously I scaled up the non hidpi external monitor. A better approach was
+what was suggested at the [[https://wiki.archlinux.org/index.php/HiDPI#Multiple_external_monitors][arch wiki]], namely scale down the hidpi screen. Since
+this only applies when I have the computer connected to the external monitor I
+am not using the built in screen primarly so scaling it down should be a better
+strategy.
+
+#+BEGIN_SRC sh
+# Setup screen scaling/resolutions
+if [ "$(xrandr -q | grep ' connected' -c)" -eq "1" ]; then
+    xrandr --output eDP-1 --dpi 227
+else
+    xrandr --output eDP-1 --dpi 227 --scale 0.75x0.75
+    xrandr --output DP-2 --right-of eDP-1 --auto
+fi
+#+END_SRC
+
+***** Keyboard settings
+
+These are the settings for the keyboard.
+#+BEGIN_SRC sh
+# keyboard settings
+setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
+#+END_SRC
+
+I learnt about the ~setxkbmap~ at the [[https://wiki.archlinux.org/index.php/Xorg/Keyboard_configuration#Using_setxkbmap][arch wiki]], where else. Let's break down
+the line. The ~layout~ specifies ~American~ and ~Swedish~ layouts. One can
+switch between these two keyboard layouts by pressing both ~shifts~ at
+time. Last I swap ctrl to caps and remove capslock.
+***** Pywall
+
+#+BEGIN_SRC sh :tangle no
+# Add this to your .xinitrc or whatever file starts programs on startup.
+# -R restores the last colorscheme that was in use.
+wal -R
+#+END_SRC
+
+***** Launch programs
+
+I need to launch sxhkd since bspwm is relying upon that program to handle the
+keybindings. I launch the terminal as well at startup. It can be convinent at
+times when I hadn't installed rofi. Can probably be removed now.
+
+#+BEGIN_SRC sh
+# start programs
+sxhkd &
+urxvt &
+# redshift &
+compton &
+exec bspwm
+#+END_SRC
+
 **** Xresources
+:PROPERTIES:
+:header-args: :tangle ~/.Xresources :mkdirp yes
+:END:
+
+[[https://wiki.archlinux.org/index.php/x_resources#Usage][Xresources in ArchWiki]]
+#+BEGIN_QUOTE
+Xresources is a user-level configuration dotfile, typically located at
+~/.Xresources. It can be used to set X resources, which are configuration
+parameters for X client applications.
+#+END_QUOTE
+
+***** TODO HIDPI
+
+The configuration of hidpi parameters originate from the blogpost
+[[https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/][installing-arch-linux-on-a-macbook-with-retina-hidpi]], but the [[https://wiki.archlinux.org/index.php/HiDPI#X_Resources][ArchWiki]] also has
+some hints for what to configure these values to.
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+!! hidpi
+Xft.dpi: 227
+Xft.rgba: rgb
+Xft.antialias: true
+Xft.hinting: false
+Xft.lcdfilter: lcddefault
+#+END_SRC
+
+***** TODO Colors
+
+The colors originate from ~hlissners~ dotfiles setup. Another source for color
+schemes might be
+
+I found these colors in [[https://github.com/hlissner/dotfiles/blob/master/base/arch-desktop/Xresources][hlissner/dotfiles]], and thought they would make a good
+start. For changes in the future the [[https://terminal.sexy/][terminal.sexy]] has some color schemes that
+can be directly exported to Xresources format.
+#+BEGIN_SRC sh
+!! Colors
+#define blk  #141517
+#define bblk #969896
+#define red  #cc6666
+#define bred #de935f
+#define grn  #b5bd68
+#define bgrn #757d28
+#define ylw  #f0c674
+#define bylw #f9a03f
+#define blu  #81a2be
+#define bblu #2a8fed
+#define mag  #b294bb
+#define bmag #bc77a8
+#define cyn  #8abeb7
+#define bcyn #a3685a
+#define wht  #c5c8c6
+#define bwht #ffffff
+#define bg blk
+#define fg wht
+
+,*.foreground:  fg
+,*.background:  bg
+,*.cursorColor: mag
+
+,*.color0:  blk
+,*.color8:  bblk
+,*.color1:  red
+,*.color9:  bred
+,*.color2:  grn
+,*.color10: bgrn
+,*.color3:  ylw
+,*.color11: bylw
+,*.color4:  blu
+,*.color12: bblu
+,*.color5:  mag
+,*.color13: bmag
+,*.color6:  cyn
+,*.color14: bcyn
+,*.color7:  wht
+,*.color15: bwht
+
+! greys
+,*.color234: #1d2021
+,*.color235: #282828
+,*.color236: #32302f
+,*.color237: #3c3836
+,*.color239: #504945
+,*.color240: #544c49
+,*.color241: #665c54
+
+!! cursor
+Xcursor.theme: default
+Xcursor.size: 32
+#+END_SRC
+
+***** urxvt
+
+These settings originates from the the same link as the above block.
+#+BEGIN_SRC sh
+!! urxvt
+URxvt*.background:             [96]blk
+URxvt*.termName:               xterm-256color
+URxvt*.geometry:               81x20
+URxvt*.buffered:               true
+URxvt*.cursorBlink:            true
+URxvt*.underlineColor:         grey
+URxvt*.depth:                  32
+URxvt*.borderless:             1
+URxvt.iso14755:                false
+URxvt.iso14755_52:             false
+URxvt*.internalBorder:         14
+URxvt*.scrollBar:              false
+URxvt*.saveLines:              5000
+URxvt*.loginShell:             false
+URxvt*.matcher.button:         1
+URxvt*.matcher.rend.0:         Uline Bold fg5
+URxvt*.url-launcher:           firefox
+
+URxvt*.lineSpace:              0
+URxvt*.letterSpace:            0
+#+END_SRC
+
+***** Fonts
+
+Choosing fonts are never easy. These are my current setup.
+
+~Arch~
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+URxvt.font: xft:Iosevka Term:style=regular:size=6
+URxvt.boldFont: xft:Iosevka Term:style=bold:size=6
+#+END_SRC
+
+~Ubuntu~
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+!URxvt.font: xft:Roboto Mono:style=regular:size=12
+!URxvt.boldFont: xft:Roboto Mono:style=bold:size=12
+URxvt.font: xft:Iosevka Term:style=Regular:size=12
+URxvt.boldFont: xft:Iosevka Term:style=Bold:size=12
+#+END_SRC
+
 **** Xprofile
-**** Profile
+:PROPERTIES:
+:header-args: :tangle (my/tangle-app '(lightdm) "~/.xprofile") :mkdirp yes
+:END:
+
+***** About
+
+In the [[https://wiki.archlinux.org/index.php/xprofile][ArchWiki]] this is said about the ~xprofile~.
+#+BEGIN_QUOTE
+An xprofile file, ~/.xprofile and /etc/xprofile, allows you to execute commands
+at the beginning of the X user session - before the window manager is started.
+#+END_QUOTE
+
+When configuring ~bspwm~ for ~Ubuntu~ the [[https://github.com/windelicato/dotfiles/wiki/bspwm-for-dummies][bspwm-for-dummies]] guide explicitly
+said that if you have a display manager, like the one in Ubuntu, then you
+shouldn't use the ~xinitrc~. So instead I am using the ~xprofile~ to configure
+what applications and settings to configure upon startup.
+
+****** TODO Improvement
+
+One improvement here would be to use xprofile if I have a display manager or
+not. In the case when I don't have one I can source the xprofile from the
+xinitrc. I should consider this in the future. Maybe after switching to
+Ubuntu18.
+***** hidpi and non-hidpi solution
+
+This is my hacky solution for dealing with hidpi and non-hidpi screen mix. If
+only the internal screen is used I use sed commands to adjust dpi/font settings
+to hidpi mode.
+
+If the external monitor is connected I however downscale the internal one and
+use sed commands to set non hidpi dpi/font settings.
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+# Customize settings for non/hidpi setup
+if [ "$(bspc query -M | wc -l)" -eq "1" ]; then
+    # no external monitor connected, adjust to hidpi settings
+    sed -i '/font-[[:digit:]]./ {s/size=[[:digit:]]\+/size=8/; }' ~/.config/polybar/config
+    sed -i '/dpi-./ {s/[[:digit:]]\+/227/; }' ~/.config/polybar/config
+    sed -i '/Xft.dpi:./ {s/[[:digit:]]\+/227/; }' ~/.Xresources
+    sed -i '/URxvt*.\+ont./ {s/[[:digit:]]\+/8/; }' ~/.Xresources
+    sed -i '/rofi.font./ {s/[[:digit:]]\+/8/; }' ~/.config/rofi/config
+    sed -i '/layout.css.devPixelsPerPx./ {s/[[:digit:]]*\.[[:digit:]]/1.5/; }' /home/niklascarlsson/.mozilla/firefox/eeakdoa8.default'/prefs.js'
+
+    # hidpi settings
+    export GDK_SCALE=1.5
+    export GDK_DPI_SCALE=0.5
+    export QT_SCREEN_SCALE_FACTORS=0.9
+    export QT_AUTO_SCREEN_SCALE_FACTOR=2
+    export QT_SCALE_FACTOR=2
+
+    xrandr --output eDP-1 --dpi 227
+else
+    # external monitor connected, adjust to non hidpi settings
+    sed -i '/font-[[:digit:]]./ {s/size=[[:digit:]]\+/size=10/; }' ~/.config/polybar/config
+    sed -i '/dpi-./ {s/[[:digit:]]\+/96/; }' ~/.config/polybar/config
+    sed -i '/Xft.dpi:./ {s/[[:digit:]]\+/96/; }' ~/.Xresources
+    sed -i '/URxvt*.\+ont./ {s/[[:digit:]]\+/10/; }' ~/.Xresources
+    sed -i '/rofi.font./ {s/[[:digit:]]\+/10/; }' ~/.config/rofi/config
+    sed -i '/layout.css.devPixelsPerPx./ {s/[[:digit:]]*\.[[:digit:]]/1/; }' /home/niklascarlsson/.mozilla/firefox/eeakdoa8.default'/prefs.js'
+
+    xrandr --output eDP-1 --dpi 227 --scale 0.75x0.75
+    xrandr --output DP-2 --right-of eDP-1 --auto
+fi
+#+END_SRC
+
+***** Xresources
+
+#+BEGIN_SRC sh
+# customize xresources
+[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
+#+END_SRC
+
+***** Pywall
+
+#+BEGIN_SRC sh
+# set wallpaper
+[[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle no
+# Add this to your .xinitrc or whatever file starts programs on startup.
+# -R restores the last colorscheme that was in use.
+wal -R
+#+END_SRC
+
+***** TODO Keyboard
+
+I want to have a smarter solution in place here. Maybe one that utilizes udev
+rules to set this automatically depending on wether I have a specfic external
+keyboard in use.
+
+Essentially this is only valuable when I run on my Ubuntu computer or having a
+non keyboardio external keyboard attached to the computer.
+
+Set the keyboard mapping. I enable ~Swedish~ and ~English~ and switch languages
+by pressing both of the ~shift~ keys.
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+# set keyboard layouts
+setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_lwin
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+# set keyboard layouts
+setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
+#+END_SRC
+
+***** Programs
+
+Launch the hotkey daemon.
+#+BEGIN_SRC sh
+sxhkd &
+#+END_SRC
+
+Launch the compositor compton to enable semi-trasparency.
+#+BEGIN_SRC sh
+# Start compositor
+compton &
+#+END_SRC
+
+Wait some before launching before launching the other, non-critical, applications
+#+BEGIN_SRC sh
+xcape &
+unclutter &
+#+END_SRC
 
 *** Window manager
 
 [[https://github.com/baskerville/bspwm][bspwm, a tiling window manager]]. The ~bspwm~ window manager relies upon
 [[https://github.com/baskerville/sxhkd][sxhkd, an X daemon]] which is where the keybindings are specified.
 
-**** bspwm
+**** TODO bspwm
 **** sxhkd
 *** Compositor
 :PROPERTIES:
