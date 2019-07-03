@@ -386,12 +386,11 @@ export XDG_CONFIG_HOME
 
 *** bspwm
 :PROPERTIES:
-:header-args: :tangle ~/.config/bspwm/bspwmrc2 :mkdirp yes
+:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :mkdirp yes
 :END:
 
 **** Monitors and desktops
-***** [X] Set the primary monitor
-CLOSED: [2019-01-27 Sun 13:38]
+***** Define the primary monitor
 
 I will start by setting up the correct monitor to be primary using ~randr~. The
 benefit of that is that I later can just refer to the primary monitor, for
@@ -403,111 +402,44 @@ connected then the internal screen will automatically be set to primary which
 means that I don't need to do antyhing more.
 
 This is my primary monitor for my ~ubuntu~ setup
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 EXTERNAL_MONITOR="DP-1-1-8"
 #+END_SRC
 
 This is my primary monitor for my ~arch~ setup
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 EXTERNAL_MONITOR="DP-2"
 #+END_SRC
 
+***** Setup the screen layout
+
 Setup for external monitors. I found inspiration on how to find out wether the
 external monitor is among the items in the list [[https://stackoverflow.com/questions/8063228/how-do-i-check-if-a-variable-exists-in-a-list-in-bash][here]]
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
 if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
     # if external monitor is connected set it to primary
     xrandr --output $EXTERNAL_MONITOR --primary
 fi
 #+END_SRC
-***** TODO Distribute workspaces on the different displays
 
-With bspwm I can have different amount of workspaces on different displays. The
-workspaces are not connected either which is a nice feature making it possible
-to change workspace on one screen whilst keeping the other workspaces unchanged.
-
-****** Uniform distribution
-
-Each display gets the same amount of workspaces.
-
-****** Primary distribution
-
-The primary display get's more workspaces whilst the others have one each.
-
-***** first solution
-****** randr
-
-#+BEGIN_SRC sh :tangle no
-xrandr --output DP-1-1-8 --primary
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle no
-xrandr -q | grep DP-1-1-8
-#+END_SRC
-
-#+RESULTS:
-
-Trying to improve setting primary
-#+BEGIN_SRC sh :tangle no
+This is the more hardcoded setup for my work station
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
-echo $MONITORS
-if [[ $MONITORS == *DP* ]];
-then
-    echo "Connected"
+if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
+    # Center
+    xrandr --output $EXTERNAL_MONITOR --primary --right-of eDP-1-1 --auto
+    # Right
+    xrandr --output DP-1-1-1 --right-of $EXTERNAL_MONITOR --auto
+    # Left
+    xrandr --output eDP-1-1 --dpi 96 --scale 1.25 1.25 --left-of $EXTERNAL_MONITOR --auto
 else
-    echo "Not connected"
+    # Center
+    xrandr --output eDP-1-1 --primary --auto
 fi
 #+END_SRC
 
-#+RESULTS:
-| eDP-1-1 |           |
-| Not     | connected |
-
-#+BEGIN_SRC sh :tangle no :results output
-EXTERNAL_CONNECTED=$(xrandr -q | grep DP-1-1-8 | wc -l)
-
-echo $EXTERNAL_CONNECTED
-if [ $EXTERNAL_CONNECTED -eq "0"]; then
-echo "External not connnected"
-else
-echo "External connnected"
-fi
-#+END_SRC
-
-#+RESULTS:
-: 0
-: External connnected
-
-#+BEGIN_SRC sh :tangle no :results output
-INTERNAL_CONNECTED=$(xrandr -q | grep "eDP-1-1" | wc -l)
-echo $INTERNAL_CONNECTED
-if [ $INTERNAL_CONNECTED -eq "0"]; then
-echo "Internal not connnected"
-else
-echo "Internal connnected"
-fi
-#+END_SRC
-
-#+RESULTS:
-: 1
-: Internal connnected
-
-****** Simple hardcoded solution
-This is the setup for monitors in the example configuration
-#+BEGIN_SRC sh :tangle no
-bspc monitor -d I II III IV V VI VII VIII IX X
-#+END_SRC
-
-This is the first attempt to use multiple monitors on my macArch
-#+BEGIN_SRC sh :tangle no
-# bspc monitor DP-1 I II III IV V
-# bspc monitor eDP-1 VI VII VIII IX X
-bspc monitor 0x00600002 -d I II III IV V
-bspc monitor 0x00600004 -d VI VII VIII IX X
-#+END_SRC
-
-****** Generic solution
+***** Distribute workspaces among the screens
 This is the more generic solution. It splits up the ten workspaces on the number
 of monitors that exists. In the case of three screens 3 workspaces will be
 assigned to each monitor.
@@ -527,119 +459,7 @@ else
 fi
 #+END_SRC
 
-****** Specific 3 monitor solution :wip:
-This solution finds the primary display and allocates five workspaces on that
-one and leaves the other screens with 1 workspace each. Maybe this is a good
-approach, I will evaluate it.
-#+BEGIN_SRC sh :tangle no
-export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
-export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
-MONITOR=${MONITOR:-${MONITORS[0]}}
-# Multiple workspaces for main monitor, but only one for others
-bspc monitor $MONITOR -d {1,2,3,4,5}
-for mon in ${MONITORS[@]/${MONITOR}}; do
-    bspc monitor $mon -d $mon/1
-done
-
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle no
-export CENTER_MONITOR=$(xrandr -q | grep " connected" | sed -n '1p' | cut -d' ' -f1)
-export LEFT_MONITOR=$(xrandr -q | grep " connected" | sed -n '2p' | cut -d' ' -f1)
-export RIGHT_MONITOR=$(xrandr -q | grep " connected" | sed -n '3p' | cut -d' ' -f1)
-
-bspc monitor $LEFT_MONITOR -d {1}
-bspc monitor $CENTER_MONITOR -d {2,3,4,5,6}
-bspc monitor $RIGHT_MONITOR -d {7}
-#+END_SRC
-
-****** Multiple monitors improved
-
-******* Finding out the monitors with xrandr
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-Find the primary monitor (this is the built in one in the laptop)
-#+BEGIN_SRC sh :results output
-xrandr -q | grep primary | grep 'connected'
-#+END_SRC
-
-#+RESULTS:
-: eDP-1-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 309mm x 175mm
-
-#+BEGIN_SRC sh :results output
-xrandr -q | grep primary | grep 'connected' | cut -d' ' -f1
-#+END_SRC
-
-#+RESULTS:
-: eDP-1-1
-
-Find the other connected monitors
-#+BEGIN_SRC sh :results output
-xrandr -q | grep 'connected'
-#+END_SRC
-
-#+RESULTS:
-: DP-0 disconnected (normal left inverted right x axis y axis)
-: DP-1 disconnected (normal left inverted right x axis y axis)
-: eDP-1-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 309mm x 175mm
-: DP-1-1 disconnected (normal left inverted right x axis y axis)
-: HDMI-1-1 disconnected (normal left inverted right x axis y axis)
-: DP-1-1-8 connected 1920x1200+1920+0 (normal left inverted right x axis y axis) 518mm x 324mm
-: DP-1-1-1 connected 1920x1200+3840+0 (normal left inverted right x axis y axis) 518mm x 324mm
-
-The problem here is that I find a lot of disconnected monitors. I want to get
-rid of those
-
-In the grep manual there is an ~invert~ entry
-#+BEGIN_SRC sh :results output
-grep --help | grep invert
-#+END_SRC
-
-#+RESULTS:
-:   -v, --invert-match        select non-matching lines
-
-If I use that then
-#+BEGIN_SRC sh :results output
-xrandr -q | grep 'connected' | grep -v 'disconnected' | cut -d' ' -f1
-#+END_SRC
-
-#+RESULTS:
-: eDP-1-1
-: DP-1-1-8
-: DP-1-1-1
-
-Or use awk https://stackoverflow.com/questions/3548453/negative-matching-using-grep-match-lines-that-do-not-contain-foo
-#+BEGIN_SRC sh :results output
-xrandr -q | grep 'connected' | awk '!/disconnected/' | cut -d' ' -f1
-#+END_SRC
-
-#+RESULTS:
-: eDP-1-1
-: DP-1-1-8
-: DP-1-1-1
-******* Finding out the monitors with bspc
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-
-I found this post on the matter, [[https://www.reddit.com/r/unixporn/comments/5lxecy/bspwm_with_two_monitors/][bspwm with two monitors]].
-
-This solution evenly distributes the monitors. So with a 3 monitor setup the
-workspaces becomes. In this setup there will be 3 monitors per monitor meaning 9
-desktops in total.
-#+BEGIN_SRC sh
-i=0
-n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
-per=$(( 10 / n ))          # number of desktops per monitor
-for monitor in `bspc query -M`; do
-    bspc monitor $monitor -d `seq $i $(( i + per - 1 ))`
-    # seq is end-inclusive; `seq 1 $((1+2))` returns "1 2 3"
-    i=$(( i + per ))
-done
-#+END_SRC
-
-**** bspwm look
+**** The look
 
 These settings are from hlissner's setup
 #+BEGIN_SRC sh
@@ -664,7 +484,7 @@ bspc config window_gap      50
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-bspc config window_gap      12
+bspc config window_gap      30
 #+END_SRC
 
 #+BEGIN_SRC sh
@@ -691,7 +511,7 @@ bspc config -m $MONITOR window_gap     50
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-bspc config -m $MONITOR window_gap     60
+bspc config -m $MONITOR window_gap     30
 #+END_SRC
 
 This sets the padding value. If it's matched to the ~height~ value in ~polybar~
@@ -710,25 +530,18 @@ bspc config -m $MONITOR left_padding   0
 bspc config -m $MONITOR right_padding  0
 #+END_SRC
 
-**** Default rules
+**** Default window rules
 
 #+BEGIN_SRC sh
-bspc rule -a 'Emacs:org*' state=floating
 bspc rule -a Gimp desktop='^8' state=floating follow=on
 bspc rule -a Chromium desktop='^2'
 bspc rule -a mplayer2 state=floating
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
 #+END_SRC
-**** Custom rules
+**** Custom window rules
 
-***** Emacs
-#+BEGIN_SRC sh
-bspc rule -a 'Emacs:org*' state=floating
-bspc rule -a Emacs split_ratio=0.5 border=off state=tiled
-#+END_SRC
-
-***** Peek
+***** How to know what to name to use for the rule
 I want peek to be floating as it's suppose to record what is underneath it.
 This code did however not work
 #+BEGIN_SRC sh :tangle no
@@ -748,23 +561,19 @@ The output when clicking on the top of the ~Peek~ window is
 WM_CLASS(STRING) = "peek", "Peek"
 #+END_EXAMPLE
 
+***** Rules
+
+#+BEGIN_SRC sh
+bspc rule -a 'Emacs:org*' state=floating
+bspc rule -a Emacs split_ratio=0.5 border=off state=tiled
+#+END_SRC
+
 #+BEGIN_SRC sh
 bspc rule -a Peek state=floating
 #+END_SRC
-***** Zathura
 
 #+BEGIN_SRC sh
 bspc rule -a Zathura state=tiled
-#+END_SRC
-
-**** Background
-I found this post about how to configure feh when using bspwm,
-http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.html.
-I tried to use xinitrc first to set the background but that approach seemed to
-have implications when running dual screens.
-
-#+BEGIN_SRC sh :tangle no
-feh --bg-scale ~/src/dotfiles/assets/ghostinshell.jpg
 #+END_SRC
 
 **** Status bar
@@ -786,26 +595,6 @@ $HOME/.config/polybar/launch.sh
 bspc config presel_feedback_color "$color1"
 # Use the line below if you are on bspwm < 0.9.4
 #bspc config presel_border_color "$color1"
-#+END_SRC
-
-**** TODO Drop down scrach terminal
-
-The ~scratchpad~ might be a useful feature
-https://wiki.archlinux.org/index.php/bspwm#Scratchpad
-
-**** Mouse control
-I want to be able to hide my mouse cursor automatically after a while of non-usage
-https://wiki.archlinux.org/index.php/unclutter
-#+BEGIN_SRC sh :no
-unclutter &
-#+END_SRC
-
-**** Keyboard control
-I want to switch caps lock to ctrl when pressed in conjunction with another key,
-and escape when pressed by itself. This functionality is provided by the program
-~xcape~.
-#+BEGIN_SRC sh :no
-xcape &
 #+END_SRC
 
 
