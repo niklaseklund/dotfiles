@@ -2561,7 +2561,7 @@ SyncState *
 #+END_SRC
 
 Mail setup for work
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :noweb tangle
 #
 # Zenuity
 #
@@ -2578,9 +2578,9 @@ IMAPStore zenuity-remote
 Account   "zenuity"
 
 MaildirStore zenuity-local
-Path         "/home/nikcar/.mail/zenuity/"
-Inbox        "/home/nikcar/.mail/zenuity/Inbox"
-Trash        "/home/nikcar/.mail/zenuity/Trash"
+Path         "<<home()>>/.mail/zenuity/"
+Inbox        "<<home()>>/.mail/zenuity/Inbox"
+Trash        "<<home()>>/.mail/zenuity/Trash"
 SubFolders   "Verbatim"
 
 
@@ -2821,7 +2821,7 @@ WantedBy=timers.target
 #+END_SRC
 *** service
 :PROPERTIES:
-:header-args: :tangle ~/.config/systemd/user/mbsync.service :mkdirp t :tangle-mode (identity #o644) :padline no
+:header-args: :tangle ~/.config/systemd/user/mbsync.service :mkdirp t :tangle-mode (identity #o644) :padline no :noweb tangle
 :END:
 
 #+BEGIN_SRC sh
@@ -2832,14 +2832,7 @@ Description=Mailbox synchronization service
 Type=oneshot
 ExecStart=/usr/bin/mbsync -Va
 ExecStartPost=/usr/bin/notmuch new
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-ExecStartPre=/home/niklascarlsson/bin/notmuch-pre
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-ExecStartPre=/home/nikcar/bin/notmuch-pre
+ExecStartPre=<<home()>>/bin/notmuch-pre
 #+END_SRC
 
 *** start
@@ -3241,7 +3234,7 @@ alias unmountsdcard="sudo umount /mnt/sdcard"
 #+END_SRC
 *** zshenv
 :PROPERTIES:
-:header-args: :tangle ~/.zshenv :mkdirp yes :comments link
+:header-args: :tangle ~/.zshenv :mkdirp yes
 :END:
 
 Set the editors that I use. ~Emacs~ for the gui stuff and ~Neovim~ for the good
@@ -3254,8 +3247,8 @@ export VISUAL=emacs
 
 Add ~HOME/bin~ to ~PATH~ to find my local binaries. To ~prepend~ or ~append~ is
 exemplified [[https://stackoverflow.com/questions/11530090/adding-a-new-entry-to-the-path-variable-in-zsh ][here.]]
-#+BEGIN_SRC sh
-path=('/home/niklascarlsson/bin' $path) # prepend path
+#+BEGIN_SRC sh :noweb tangle
+path=('<<home()>>/bin' $path) # prepend path
 #+END_SRC
 
 
