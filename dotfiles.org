@@ -3168,20 +3168,6 @@ publicly available.
 [[ -f ~/.zshrc_local ]] && source "${HOME}/.zshrc_local"
 #+END_SRC
 
-Import colorscheme asynchronously for wal
-#+BEGIN_SRC sh :tangle no
-# https://github.com/dylanaraps/pywal/wiki/Getting-Started
-# Import colorscheme from 'wal' asynchronously
-# &   # Run the process in the background.
-# ( ) # Hide shell job control messages.
-(/usr/bin/cat ~/.cache/wal/sequences &)
-#+END_SRC
-
-I want to source the colors.sh in order to get the colors into FZF_DEFAULT_OPTS
-#+BEGIN_SRC sh :tangle no
-source ~/.cache/wal/colors.sh
-#+END_SRC
-
 **** DONE do not show duplicates in fzf history
 CLOSED: [2019-02-04 mån 10:30]
 
