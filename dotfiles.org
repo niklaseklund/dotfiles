@@ -3010,7 +3010,7 @@ gtk-application-prefer-dark-theme = true
 gtk-theme-name = Arc-Dark
 gtk-icon-theme-name = Arc-Dark
 #+END_SRC
-* mail
+* mail :deprecated:
 ** msbsync
 :PROPERTIES:
 :header-args: :tangle ~/.mbsyncrc
@@ -3300,7 +3300,7 @@ user           niklas.carlsson@zenuity.com
 passwordeval "pass show work/zenuity/login | sed -n 1p"
 #+END_SRC
 
-* music :legacy:
+* music :deprecated:
 ** tizonia arch
 :PROPERTIES:
 :header-args: :tangle (my/tangle-os '(arch) "~/.config/tizonia/tizonia.conf~") :mkdirp yes :comments link
@@ -4217,8 +4217,297 @@ set page-padding 1
 
 ** Mail
 *** retrieving
+:PROPERTIES:
+:header-args: :tangle ~/.mbsyncrc
+:END:
+
+On the [[https://wiki.archlinux.org/index.php/isync#Configuring][Arch Wiki]] there is an example configuration file. I have just modified
+the password and user section to my needs.
+
+This file behaves a little bit strange though. I tried to separate the content
+but when it tangled with some empty lines ~isync~ wasn't happy. That is why I
+decided to keep it as a big block.
+#+BEGIN_SRC sh
+IMAPAccount gmail
+# Address to connect to
+Host imap.gmail.com
+User carlsson.niklas@gmail.com
+PassCmd "pass email/gmail.com"
+# Pass your_password, if you don't have the pass application
+#
+# Use SSL
+SSLType IMAPS
+# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+#CertificateFile ~/.cert/imap.gmail.com.pem
+#CertificateFile ~/.cert/Equifax_Secure_CA.pem
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Subfolders Verbatim
+# The trailing "/" is important
+Path ~/.mail/gmail/
+Inbox ~/.mail/gmail/Inbox
+
+Channel gmail
+Master :gmail-remote:
+Slave :gmail-local:
+# Exclude everything under the internal [Gmail] folder, except the interesting folders
+Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
+# Or include everything
+#Patterns *
+# Automatically create missing mailboxes, both locally and on the server
+Create Both
+# Save the synchronization state files in the relevant directory
+SyncState *
+#+END_SRC
+
+Mail setup for work
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#
+# Zenuity
+#
+
+IMAPAccount     zenuity
+Host            "outlook.office365.com"
+User            "niklas.carlsson@zenuity.com"
+PassCmd         "pass show work/zenuity/login | sed -n 1p"
+AuthMechs       "PLAIN"
+SSLTYPE         "IMAPS"
+CertificateFile "/etc/ssl/certs/ca-certificates.crt"
+
+IMAPStore zenuity-remote
+Account   "zenuity"
+
+MaildirStore zenuity-local
+Path         "/home/nikcar/.mail/zenuity/"
+Inbox        "/home/nikcar/.mail/zenuity/Inbox"
+Trash        "/home/nikcar/.mail/zenuity/Trash"
+SubFolders   "Verbatim"
+
+
+Channel   zenuity-inbox
+Master    ":zenuity-remote:Inbox"
+Slave     ":zenuity-local:"
+Create    "Slave"
+SyncState "*"
+
+Channel   zenuity-sent
+Master    ":zenuity-remote:Sent Items"
+Slave     ":zenuity-local:Sent"
+Create    "Slave"
+SyncState "*"
+
+Channel   zenuity-trash
+Master    ":zenuity-remote:Deleted Items"
+Slave     ":zenuity-local:Trash"
+Create    "Slave"
+SyncState "*"
+
+Group   zenuity
+Channel "zenuity-inbox"
+Channel "zenuity-sent"
+Channel "zenuity-trash"
+#+END_SRC
+
+
 *** indexing
+:PROPERTIES:
+:header-args: :tangle ~/.notmuch-config
+:END:
+
+~notmuch~ is an indexer providing a cli and ~Emacs~ interface. This
+configuration is the default gnerated config file.
+
+https://wiki.archlinux.org/index.php/Notmuch
+#+BEGIN_QUOTE
+Notmuch is a mail indexer. Essentially, is a very thin front end on top of
+xapian.
+#+END_QUOTE
+
+#+BEGIN_SRC sh
+# .notmuch-config - Configuration file for the notmuch mail system
+#
+# For more information about notmuch, see https://notmuchmail.org
+
+# Database configuration
+#
+# The only value supported here is 'path' which should be the top-level
+# directory where your mail currently exists and to where mail will be
+# delivered in the future. Files should be individual email messages.
+# Notmuch will store its database within a sub-directory of the path
+# configured here named ".notmuch".
+#
+[database]
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+path=/home/niklascarlsson/.mail
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+path=/home/nikcar/.mail
+#+END_SRC
+
+#+BEGIN_SRC sh
+# User configuration
+#
+# Here is where you can let notmuch know how you would like to be
+# addressed. Valid settings are
+#
+#	name		Your full name.
+#	primary_email	Your primary email address.
+#	other_email	A list (separated by ';') of other email addresses
+#			at which you receive email.
+#
+# Notmuch will use the various email addresses configured here when
+# formatting replies. It will avoid including your own addresses in the
+# recipient list of replies, and will set the From address based on the
+# address to which the original email was addressed.
+#
+[user]
+name=Niklas Carlsson
+primary_email=carlsson.niklas@gmail.com
+
+# Configuration for "notmuch new"
+#
+# The following options are supported here:
+#
+#	tags	A list (separated by ';') of the tags that will be
+#		added to all messages incorporated by "notmuch new".
+#
+#	ignore	A list (separated by ';') of file and directory names
+#		that will not be searched for messages by "notmuch new".
+#
+#		NOTE: *Every* file/directory that goes by one of those
+#		names will be ignored, independent of its depth/location
+#		in the mail store.
+#
+[new]
+tags=unread;inbox;
+ignore=
+
+# Search configuration
+#
+# The following option is supported here:
+#
+#	exclude_tags
+#		A ;-separated list of tags that will be excluded from
+#		search results by default.  Using an excluded tag in a
+#		query will override that exclusion.
+#
+[search]
+exclude_tags=deleted;spam;
+
+# Maildir compatibility configuration
+#
+# The following option is supported here:
+#
+#	synchronize_flags      Valid values are true and false.
+#
+#	If true, then the following maildir flags (in message filenames)
+#	will be synchronized with the corresponding notmuch tags:
+#
+#		Flag	Tag
+#		----	-------
+#		D	draft
+#		F	flagged
+#		P	passed
+#		R	replied
+#		S	unread (added when 'S' flag is not present)
+#
+#	The "notmuch new" command will notice flag changes in filenames
+#	and update tags, while the "notmuch tag" and "notmuch restore"
+#	commands will notice tag changes and update flags in filenames
+#
+[maildir]
+synchronize_flags=true
+
+# Cryptography related configuration
+#
+# The following *deprecated* option is currently supported:
+#
+#	gpg_path
+#		binary name or full path to invoke gpg.
+#		NOTE: In a future build, this option will be ignored.
+#		Setting $PATH is a better approach.
+#
+[crypto]
+gpg_path=gpg
+
+#+END_SRC
+
+
+
 *** sending
+:PROPERTIES:
+:header-args: :tangle ~/.msmtprc :tangle-mode (identity #o600)
+:END:
+
+I use ~msmtp~ for sending my emails [[https://wiki.archlinux.org/index.php/msmtp][more information in arch wiki]]. One important
+aspect of the configuration file is that it needs to have the right permission.
+This can be found in the link above, it should have permission ~600~.
+
+#+BEGIN_QUOTE
+The user configuration file must be explicitly readable/writeable by its owner
+or msmtp will fail:
+#+END_QUOTE
+
+This is something that ~:tangle-mode~ handles, which I found information about
+in the [[https://orgmode.org/manual/tangle_002dmode.html][org-manual.]]
+
+Here is the default configuration found at the arch wiki, just with my gmail
+account instead of the default one.
+#+BEGIN_SRC conf
+# Set default values for all following accounts.
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile        ~/.msmtp.log
+
+# Gmail
+account        gmail
+host           smtp.gmail.com
+port           587
+from           carlsson.niklas@gmail.com
+user           carlsson.niklas@gmail.com
+#+END_SRC
+
+Now I have [[https://www.passwordstore.org/][Pass the standard unix password manager]] setup so I can call that
+directly:
+#+BEGIN_SRC conf
+passwordeval "pass email/gmail.com"
+#+END_SRC
+
+If you don't have the password-store, but have setup gpg then one can use:
+#+BEGIN_SRC conf :tangle no
+passwordeval   "gpg --use-agent --quiet --for-your-eyes-only --no-tty --decrypt path_to_gpg_file_with_password
+#+END_SRC
+
+This is the solution if you don't have set up neither ~pass~ nor ~gpg~. You need
+to store the password in plain text.
+#+BEGIN_SRC conf :tangle no
+password       my_password
+#+END_SRC
+
+#+BEGIN_SRC conf
+# Set a default account
+account default : gmail
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)))
+# Zenuity
+account        zenuity
+host           smtp.office365.com
+port           587
+from           niklas.carlsson@zenuity.com
+user           niklas.carlsson@zenuity.com
+passwordeval "pass show work/zenuity/login | sed -n 1p"
+#+END_SRC
+
 *** systemd automation
 **** timer
 
