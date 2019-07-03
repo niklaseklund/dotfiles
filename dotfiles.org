@@ -808,28 +808,6 @@ and escape when pressed by itself. This functionality is provided by the program
 xcape &
 #+END_SRC
 
-***** TODO Differentiate between internal and external keyboard
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-An improvement will be to make this conditional. I want to only start
-xcape as long as the keyboardio can't be detected that it is plugged in. Cause
-in that case this modification is not needed.
-
-https://askubuntu.com/questions/337411/how-to-permanently-assign-a-different-keyboard-layout-to-a-usb-keyboard
-
-I should probably have a strategy that when there is a usb keyboard detected.
-Investigate if it is my special external keyboard. If so don't do any remaping.
-Otherwise do it since I will only have the internal keyboard at my disposal.
-
-#+BEGIN_SRC sh :results output
-xinput -list | grep "Keyboard"
-#+END_SRC
-
-#+RESULTS:
-: ⎜   ↳ USB Keyboard                            	id=11	[slave  pointer  (2)]
-:     ↳ USB Keyboard                            	id=12	[slave  keyboard (3)]
-
 
 *** sxhkd
 :PROPERTIES:
@@ -4172,3 +4150,25 @@ doesn't have an external keyboard plugged in.
 The trackpad on my work computer sucks, I want a mouse toggle script that I can
 call from rofi, [[https://askubuntu.com/questions/199271/x11-disable-mouse][inspiration]]. This would make it easy to turn it off when I don't
 have an external keyboard attached.
+
+*** TODO Differentiate between internal and external keyboard
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+An improvement will be to make this conditional. I want to only start
+xcape as long as the keyboardio can't be detected that it is plugged in. Cause
+in that case this modification is not needed.
+
+https://askubuntu.com/questions/337411/how-to-permanently-assign-a-different-keyboard-layout-to-a-usb-keyboard
+
+I should probably have a strategy that when there is a usb keyboard detected.
+Investigate if it is my special external keyboard. If so don't do any remaping.
+Otherwise do it since I will only have the internal keyboard at my disposal.
+
+#+BEGIN_SRC sh :results output
+xinput -list | grep "Keyboard"
+#+END_SRC
+
+#+RESULTS:
+: ⎜   ↳ USB Keyboard                            	id=11	[slave  pointer  (2)]
+:     ↳ USB Keyboard                            	id=12	[slave  keyboard (3)]
