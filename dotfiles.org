@@ -1733,7 +1733,7 @@ fi
 
 ** Application launcher
 :PROPERTIES:
-:header-args: :tangle ~/.config/rofi/config :mkdirp yes
+:header-args: :tangle ~/.config/rofi/config2 :mkdirp yes
 :END:
 
 [[https://github.com/davatorium/rofi][Rofi, a window switcher and application launcher]].
@@ -1763,8 +1763,8 @@ rofi.eh: 1
 
 Tweaked for ~Ubuntu~
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-rofi.width: 1500
-rofi.lines: 10
+rofi.width: 1200
+rofi.lines: 8
 rofi.font: Roboto Mono 10
 rofi.bw: 0
 rofi.padding: 50
