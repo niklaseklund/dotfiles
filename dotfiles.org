@@ -1219,9 +1219,8 @@ font-3 = "Wuncon Siji:style=Regular:pixelsize=8;1"
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 font-0 = "Roboto Mono:style=Regular:size=10"
-font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
-font-2 = siji:pixelsize=8;1
-font-3 = "Material Icons:style=Regular:size=10"
+font-1 = unifont:fontformat=truetype:size=10:antialias=false;0
+font-2 = "Material Icons:style=Regular:size=8"
 #+END_SRC
 
 **** Modules setup
@@ -1236,8 +1235,8 @@ modules-right = battery app-bluetooth app-vpn wlan app-redshift pad date
 ***** Misc features
 
 #+BEGIN_SRC sh
-tray-position = right
-tray-padding = 2
+;tray-position = right
+;tray-padding = 2
 ;tray-background = #0063ff
 
 ;wm-restack = bspwm
@@ -1369,10 +1368,21 @@ label-empty-padding = 1
 #+END_SRC
 
 ***** wifi
-#+BEGIN_SRC sh
+
+The name of the wifi device is not the same across different computers. Use this
+code to deduce the wifi-device name and use it in the following source block.
+#+NAME: wifi-device
+#+BEGIN_SRC sh :tangle no
+nmcli device | grep wifi | cut -d' ' -f1
+#+END_SRC
+
+#+RESULTS:
+: wlp4s0
+
+#+BEGIN_SRC sh :noweb tangle
 [module/wlan]
 type = internal/network
-interface = wlp3s0
+interface = <<wifi-device()>>
 interval = 3.0
 
 format-connected = <ramp-signal>
@@ -1601,7 +1611,7 @@ margin-bottom = 30
 
 **** bluetooth
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/modules/app-bluetooth.sh :shebang "#! /bin/sh" :mkdirp yes
+:header-args: :tangle ~/.config/polybar/modules/app-bluetooth.sh :shebang "#! /bin/bash" :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
