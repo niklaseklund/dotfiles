@@ -2985,7 +2985,7 @@ if command -v pyenv 1>/dev/null 2>&1; then
 fi
 #+END_SRC
 
-* GTK+
+* GTK+ :deprecated:
 
 Both of these configuration files has been copied from hlissers-setup. I have
 also looked at the arch wiki https://wiki.archlinux.org/index.php/GTK%2B#Examples.
@@ -3701,8 +3701,29 @@ rofi.matching: fuzzy
 
 *** Looks
 
+Both of these configuration files has been copied from hlissers-setup. I have
+also looked at the [[https://wiki.archlinux.org/index.php/GTK%2B#Examples][arch wiki examples]].
+
 **** GTK+ 2.x
+:PROPERTIES:
+:header-args: :tangle ~/.gtkrc-2.0 :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+include "/usr/share/themes/Arc-Dark/gtk-2.0/gtkrc"
+#+END_SRC
+
 **** GTK+ 3.x
+:PROPERTIES:
+:header-args: :tangle ~/.config/gtk-3.0/settings.ini :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+[Settings]
+gtk-application-prefer-dark-theme = true
+gtk-theme-name = Arc-Dark
+gtk-icon-theme-name = Arc-Dark
+#+END_SRC
 
 ** Editors
 *** Neovim
