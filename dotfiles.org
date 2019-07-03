@@ -597,7 +597,6 @@ bspc config presel_feedback_color "$color1"
 #bspc config presel_border_color "$color1"
 #+END_SRC
 
-
 *** sxhkd
 :PROPERTIES:
 :header-args: :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes
@@ -1818,7 +1817,7 @@ gtk-theme-name = Arc-Dark
 gtk-icon-theme-name = Arc-Dark
 #+END_SRC
 
-**** Mitigate GTK3+ window issues
+**** TODO Mitigate GTK3+ window issues
 :PROPERTIES:
 :header-args: :tangle ~/.config/gtk-3.0/gtk.css :shebang :mkdirp yes
 :END:
