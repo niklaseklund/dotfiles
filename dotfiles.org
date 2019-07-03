@@ -4023,6 +4023,19 @@ echo $y
 Use something to detect if a keyboard is plugged in so I can update the
 ~setxkbmap~ command accordingly. This is currently a problem when my Macbook
 doesn't have an external keyboard plugged in.
+
+#+BEGIN_SRC sh
+lsusb
+#+END_SRC
+
+#+RESULTS:
+| Bus | 2 | Device | 003: | ID | 05ac:8406 | Apple,  | Inc.        |           |                   |            |     |    |
+| Bus | 2 | Device | 002: | ID | 04e8:61f5 | Samsung | Electronics | Co.,      | Ltd               | Portable   | SSD | T5 |
+| Bus | 2 | Device | 001: | ID | 1d6b:0003 | Linux   | Foundation  | 3.0       | root              | hub        |     |    |
+| Bus | 1 | Device | 003: | ID | 05ac:0273 | Apple,  | Inc.        | Internal  | Keyboard/Trackpad | (ISO)      |     |    |
+| Bus | 1 | Device | 002: | ID | 05ac:8290 | Apple,  | Inc.        | Bluetooth | Host              | Controller |     |    |
+| Bus | 1 | Device | 001: | ID | 1d6b:0002 | Linux   | Foundation  | 2.0       | root              | hub        |     |    |
+
 ** Mouse toggle
 
 The trackpad on my work computer sucks, I want a mouse toggle script that I can
