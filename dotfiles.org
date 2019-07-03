@@ -3107,13 +3107,6 @@ else # From outside tmux
     tdup() { tmux new-session -t "${1:-`tmux display-message -p '#S'`}"; }
 fi
 #+END_SRC
-***** bat
-
-[[https://github.com/sharkdp/bat][Bat is the new cat]]
-#+BEGIN_SRC sh
-alias cat="bat"
-#+END_SRC
-
 **** settings
 
 This setting controls the hightlightstyle
