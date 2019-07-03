@@ -2280,14 +2280,14 @@ export EA_CLIPBOARD=$content
 #+END_SRC
 
 * Encryption
-** gpg
+** GPG
 
 Increase the cache validity for the ~gpg-agent~.
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu) "~/.gnupg/gpg-agent.conf") :mkdirp yes
 default-cache-ttl 86400
 max-cache-ttl 86400
 #+END_SRC
-** rofi-pass
+** Rofi-pass
 :PROPERTIES:
 :header-args: :tangle ~/.config/rofi-pass/config :mkdirp yes
 :END:
@@ -2400,7 +2400,7 @@ switch="Alt+x"
 insert_pass="Alt+n"
 #+END_SRC
 
-** rofi-pinentry :arch-linux:
+** Rofi-pinentry :arch-linux:
 
 The default pinentry is ~gtk-2~, which with the arc-dark theme looks alright.
 However since I use rofi as the program launcher that is even better looking.
@@ -2722,7 +2722,7 @@ set page-padding 1
 #+END_SRC
 
 * Mail
-** retrieving
+** Retrieve
 :PROPERTIES:
 :header-args: :tangle ~/.mbsyncrc
 :END:
@@ -2818,7 +2818,7 @@ Channel "zenuity-sent"
 Channel "zenuity-trash"
 #+END_SRC
 
-** indexing
+** Index
 :PROPERTIES:
 :header-args: :tangle ~/.notmuch-config
 :END:
@@ -2944,7 +2944,7 @@ gpg_path=gpg
 
 #+END_SRC
 
-** sending
+** Send
 :PROPERTIES:
 :header-args: :tangle ~/.msmtprc :tangle-mode (identity #o600)
 :END:
@@ -3011,7 +3011,7 @@ user           niklas.carlsson@zenuity.com
 passwordeval "pass show work/zenuity/login | sed -n 1p"
 #+END_SRC
 
-** systemd automation
+** Automate
 *** timer
 
 #+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.timer :mkdirp t :tangle-mode (identity #o644)
@@ -3568,7 +3568,7 @@ set keyseq-timeout 0
 my bash configuration goes here.
 
 * Terminal
-** Tmux
+** Multiplexing
 :PROPERTIES:
 :header-args: :tangle ~/.tmux.conf :mkdirp yes
 :END:
