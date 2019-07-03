@@ -3233,16 +3233,6 @@ fh() {
 }
 #+END_SRC
 
-This makes it possible to fuzzy find and cd to selected directory
-#+BEGIN_SRC sh
-# fd - cd to selected directory
-fd() {
-  local dir
-  dir=$(find ${1:-.} -path '*/\.*' -prune \
-                  -o -type d -print 2> /dev/null | fzf +m) &&
-  cd "$dir"
-}
-#+END_SRC
 **** mounting
 
 Dealing with the sd card reader
