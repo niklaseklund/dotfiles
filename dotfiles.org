@@ -398,247 +398,10 @@ export XDG_CONFIG_HOME
 [[https://github.com/baskerville/bspwm][bspwm, a tiling window manager]]. The ~bspwm~ window manager relies upon
 [[https://github.com/baskerville/sxhkd][sxhkd, an X daemon]] which is where the keybindings are specified.
 
-*** TODO bspwm
-*** sxhkd
+*** bspwm
 :PROPERTIES:
-:header-args: :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes
+:header-args: :tangle ~/.config/bspwm/bspwmrc2 :mkdirp yes
 :END:
-
-I followed the instructions from the manual and copied over the example
-configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
-
-**** Independent hotkeys
-
-#+BEGIN_SRC sh
-#
-# wm independent hotkeys
-#
-
-# terminal emulator
-super + Return
-	urxvt
-#+END_SRC
-
-A dropdown terminal can come in handy, [[https://github.com/noctuid/tdrop][tdrop]] provides that. The parameters are
-the following, a for autodection of the window manager, m for monitor awareness,
-s for creating a session named scratch and urxvt is the program that launches.
-#+BEGIN_SRC sh
-# dropdown terminal
-super + grave
-    tdrop -ma -s scratch urxvt
-#+END_SRC
-
-#+BEGIN_SRC sh
-# make sxhkd reload its configuration files:
-super + Escape
-	pkill -USR1 -x sxhkd
-#+END_SRC
-
-Add a shortcut for launching a floating org-capture window
-#+BEGIN_SRC sh
-mod4 + ctrl + shift + grave
-	bspc rule -a 'Emacs' -o state=floating && org-capture
-#+END_SRC
-
-Add a shortcut for Emacs anywhere. Make it always appear tiled at the bottom
-#+BEGIN_SRC sh
-mod4 + apostrophe
-    emacsclient -e nil && bspc rule -a 'Emacs' -o split_ratio=0.7 state=tiled split_dir=south && emacs-anywhere
-#+END_SRC
-
-***** Application launcher
-
-I have changed the application launcher from ~dmenu~ to ~rofi~.
-#+BEGIN_SRC sh
-super + @space
-	rofi -show run
-
-#+END_SRC
-
-***** Lock
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-@F2
-    lock -n -p
-#+END_SRC
-***** Password
-
-Quickly search through my passwords
-
-#+BEGIN_SRC sh
-super + backslash
-    rofi-pass
-#+END_SRC
-
-**** Hotkeys
-#+BEGIN_SRC sh
-#
-# bspwm hotkeys
-#
-
-# quit bspwm normally
-super + alt + Escape
-	bspc quit
-
-# close and kill
-super + {_,shift + }w
-	bspc node -{c,k}
-
-# alternate between the tiled and monocle layout
-super + m
-	bspc desktop -l next
-
-# send the newest marked node to the newest preselected node
-super + y
-	bspc node newest.marked.local -n newest.!automatic.local
-
-# swap the current node and the biggest node
-super + g
-	bspc node -s biggest
-
-#+END_SRC
-
-**** State flags
-
-#+BEGIN_SRC sh
-#
-# state/flags
-#
-
-# set the window state
-super + {t,shift + t,s,f}
-	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
-
-# set the node flags
-super + ctrl + {m,x,y,z}
-	bspc node -g {marked,locked,sticky,private}
-
-#+END_SRC
-
-**** Focus and swapping
-#+BEGIN_SRC sh
-#
-# focus/swap
-#
-
-# focus the node in the given direction
-super + {_,shift + }{h,j,k,l}
-	bspc node -{f,s} {west,south,north,east}
-
-# focus the node for the given path jump
-super + {p,b,comma,period}
-	bspc node -f @{parent,brother,first,second}
-
-# focus the next/previous node in the current desktop
-super + {_,shift + }c
-	bspc node -f {next,prev}.local
-
-# focus the next/previous desktop in the current monitor
-super + bracket{left,right}
-	bspc desktop -f {prev,next}.local
-
-# focus the last node/desktop
-super + {grave,Tab}
-	bspc {node,desktop} -f last
-
-# focus the older or newer node in the focus history
-super + {o,i}
-	bspc wm -h off; \
-	bspc node {older,newer} -f; \
-	bspc wm -h on
-
-# focus or send to the given desktop
-super + {_,shift + }{1-9,0}
-	bspc {desktop -f,node -d} '^{1-9,10}'
-
-#+END_SRC
-
-**** Preselect
-
-#+BEGIN_SRC sh
-#
-# preselect
-#
-
-# preselect the direction
-super + ctrl + {h,j,k,l}
-	bspc node -p {west,south,north,east}
-
-# preselect the ratio
-super + ctrl + {1-9}
-	bspc node -o 0.{1-9}
-
-# cancel the preselection for the focused node
-super + ctrl + space
-	bspc node -p cancel
-
-# cancel the preselection for the focused desktop
-super + ctrl + shift + space
-	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
-
-#+END_SRC
-
-**** Move/resize
-#+BEGIN_SRC sh
-#
-# move/resize
-#
-
-# expand a window by moving one of its side outward
-super + alt + {h,j,k,l}
-	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
-
-# contract a window by moving one of its side inward
-super + alt + shift + {h,j,k,l}
-	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
-
-# move a floating window
-super + {Left,Down,Up,Right}
-	bspc node -v {-20 0,0 20,0 -20,20 0}
-#+END_SRC
-
-Resize the gaps in tiled layout. Found inspiration [[https://github.com/desyncr/bspwmrc/blob/master/sxhkdrc ][here]]
-#+BEGIN_SRC sh
-#
-# gaps
-#
-
-# change window gap at run time
-super + plus
-    bspc config -d focused window_gap $((`bspc config -d focused window_gap` + 5 ))
-
-# Restore original gap
-super + equal
-    bspc config top_padding 6; bspc config -d focused window_gap 15
-
-# decrease gap
-super + minus
-    bspc config -d focused window_gap $((`bspc config -d focused window_gap` - 5 ))
-#+END_SRC
-
-**** Brightness
-
-I want to be able to control the brightness of the screen. To my help I have
-[[https://haikarainen.github.io/light/][light]].
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-#
-# Brightness
-#
-XF86MonBrightnessDown
-	light -U 5
-XF86MonBrightnessUp
-	light -A 5
-#+END_SRC
-
-:PROPERTIES:
-:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :mkdirp yes
-:END:
-
-With ~bspwmrc~ it's important that the file is executable. With tangle there are
-two different ways of making a tangled file executable
-https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
-argument which will org will make sure to add the shebang and make the file
-executable.
 
 **** sxhkd
 
@@ -1092,6 +855,248 @@ xinput -list | grep "Keyboard"
 #+RESULTS:
 : ⎜   ↳ USB Keyboard                            	id=11	[slave  pointer  (2)]
 :     ↳ USB Keyboard                            	id=12	[slave  keyboard (3)]
+
+
+*** sxhkd
+:PROPERTIES:
+:header-args: :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes
+:END:
+
+I followed the instructions from the manual and copied over the example
+configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
+
+**** Independent hotkeys
+
+#+BEGIN_SRC sh
+#
+# wm independent hotkeys
+#
+
+# terminal emulator
+super + Return
+	urxvt
+#+END_SRC
+
+A dropdown terminal can come in handy, [[https://github.com/noctuid/tdrop][tdrop]] provides that. The parameters are
+the following, a for autodection of the window manager, m for monitor awareness,
+s for creating a session named scratch and urxvt is the program that launches.
+#+BEGIN_SRC sh
+# dropdown terminal
+super + grave
+    tdrop -ma -s scratch urxvt
+#+END_SRC
+
+#+BEGIN_SRC sh
+# make sxhkd reload its configuration files:
+super + Escape
+	pkill -USR1 -x sxhkd
+#+END_SRC
+
+Add a shortcut for launching a floating org-capture window
+#+BEGIN_SRC sh
+mod4 + ctrl + shift + grave
+	bspc rule -a 'Emacs' -o state=floating && org-capture
+#+END_SRC
+
+Add a shortcut for Emacs anywhere. Make it always appear tiled at the bottom
+#+BEGIN_SRC sh
+mod4 + apostrophe
+    emacsclient -e nil && bspc rule -a 'Emacs' -o split_ratio=0.7 state=tiled split_dir=south && emacs-anywhere
+#+END_SRC
+
+***** Application launcher
+
+I have changed the application launcher from ~dmenu~ to ~rofi~.
+#+BEGIN_SRC sh
+super + @space
+	rofi -show run
+
+#+END_SRC
+
+***** Lock
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+@F2
+    lock -n -p
+#+END_SRC
+***** Password
+
+Quickly search through my passwords
+
+#+BEGIN_SRC sh
+super + backslash
+    rofi-pass
+#+END_SRC
+
+**** Hotkeys
+#+BEGIN_SRC sh
+#
+# bspwm hotkeys
+#
+
+# quit bspwm normally
+super + alt + Escape
+	bspc quit
+
+# close and kill
+super + {_,shift + }w
+	bspc node -{c,k}
+
+# alternate between the tiled and monocle layout
+super + m
+	bspc desktop -l next
+
+# send the newest marked node to the newest preselected node
+super + y
+	bspc node newest.marked.local -n newest.!automatic.local
+
+# swap the current node and the biggest node
+super + g
+	bspc node -s biggest
+
+#+END_SRC
+
+**** State flags
+
+#+BEGIN_SRC sh
+#
+# state/flags
+#
+
+# set the window state
+super + {t,shift + t,s,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+
+# set the node flags
+super + ctrl + {m,x,y,z}
+	bspc node -g {marked,locked,sticky,private}
+
+#+END_SRC
+
+**** Focus and swapping
+#+BEGIN_SRC sh
+#
+# focus/swap
+#
+
+# focus the node in the given direction
+super + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+# focus the node for the given path jump
+super + {p,b,comma,period}
+	bspc node -f @{parent,brother,first,second}
+
+# focus the next/previous node in the current desktop
+super + {_,shift + }c
+	bspc node -f {next,prev}.local
+
+# focus the next/previous desktop in the current monitor
+super + bracket{left,right}
+	bspc desktop -f {prev,next}.local
+
+# focus the last node/desktop
+super + {grave,Tab}
+	bspc {node,desktop} -f last
+
+# focus the older or newer node in the focus history
+super + {o,i}
+	bspc wm -h off; \
+	bspc node {older,newer} -f; \
+	bspc wm -h on
+
+# focus or send to the given desktop
+super + {_,shift + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+
+#+END_SRC
+
+**** Preselect
+
+#+BEGIN_SRC sh
+#
+# preselect
+#
+
+# preselect the direction
+super + ctrl + {h,j,k,l}
+	bspc node -p {west,south,north,east}
+
+# preselect the ratio
+super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+# cancel the preselection for the focused node
+super + ctrl + space
+	bspc node -p cancel
+
+# cancel the preselection for the focused desktop
+super + ctrl + shift + space
+	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+#+END_SRC
+
+**** Move/resize
+#+BEGIN_SRC sh
+#
+# move/resize
+#
+
+# expand a window by moving one of its side outward
+super + alt + {h,j,k,l}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+# contract a window by moving one of its side inward
+super + alt + shift + {h,j,k,l}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+# move a floating window
+super + {Left,Down,Up,Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+#+END_SRC
+
+Resize the gaps in tiled layout. Found inspiration [[https://github.com/desyncr/bspwmrc/blob/master/sxhkdrc ][here]]
+#+BEGIN_SRC sh
+#
+# gaps
+#
+
+# change window gap at run time
+super + plus
+    bspc config -d focused window_gap $((`bspc config -d focused window_gap` + 5 ))
+
+# Restore original gap
+super + equal
+    bspc config top_padding 6; bspc config -d focused window_gap 15
+
+# decrease gap
+super + minus
+    bspc config -d focused window_gap $((`bspc config -d focused window_gap` - 5 ))
+#+END_SRC
+
+**** Brightness
+
+I want to be able to control the brightness of the screen. To my help I have
+[[https://haikarainen.github.io/light/][light]].
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#
+# Brightness
+#
+XF86MonBrightnessDown
+	light -U 5
+XF86MonBrightnessUp
+	light -A 5
+#+END_SRC
+
+:PROPERTIES:
+:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :mkdirp yes
+:END:
+
+With ~bspwmrc~ it's important that the file is executable. With tangle there are
+two different ways of making a tangled file executable
+https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
+argument which will org will make sure to add the shebang and make the file
+executable.
 
 ** Compositor
 :PROPERTIES:
