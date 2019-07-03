@@ -2085,14 +2085,12 @@ max-cache-ttl 86400
 There is an extension to rofi for handling passwords, [[https://github.com/carnager/rofi-pass][rofi-pass]]. I have used the
 default configuration that was present in the github repository.
 
-I have added the ~-m -1~ flag to synchronize the window behavior between the
-rofi-pass and rofi.
 #+BEGIN_SRC sh
 # permanently set alternative root dir. Use ":" to separate multiple roots
 # which can be switched at runtime with shift+left/right
 # root=/path/to/root
 _rofi () {
-    rofi -i -no-auto-select -m -1 "$@"
+    rofi -i -no-auto-select "$@"
 }
 #+END_SRC
 
@@ -2190,7 +2188,7 @@ switch="Alt+x"
 insert_pass="Alt+n"
 #+END_SRC
 
-** Rofi-pinentry :arch-linux:
+** Rofi-pinentry
 
 The default pinentry is ~gtk-2~, which with the arc-dark theme looks alright.
 However since I use rofi as the program launcher that is even better looking.
