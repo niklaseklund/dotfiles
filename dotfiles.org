@@ -4024,6 +4024,7 @@ Use something to detect if a keyboard is plugged in so I can update the
 ~setxkbmap~ command accordingly. This is currently a problem when my Macbook
 doesn't have an external keyboard plugged in.
 
+Detect the active usb devices:
 #+BEGIN_SRC sh
 lsusb
 #+END_SRC
@@ -4035,6 +4036,14 @@ lsusb
 | Bus | 1 | Device | 003: | ID | 05ac:0273 | Apple,  | Inc.        | Internal  | Keyboard/Trackpad | (ISO)      |     |    |
 | Bus | 1 | Device | 002: | ID | 05ac:8290 | Apple,  | Inc.        | Bluetooth | Host              | Controller |     |    |
 | Bus | 1 | Device | 001: | ID | 1d6b:0002 | Linux   | Foundation  | 2.0       | root              | hub        |     |    |
+
+Extract if there is an external keyboard plugged in
+#+BEGIN_SRC sh
+lsusb | grep Keyboard
+#+END_SRC
+
+#+RESULTS:
+| Bus 001 Device 003: ID 05ac:0273 Apple | Inc. Internal Keyboard/Trackpad (ISO) |
 
 ** Mouse toggle
 
