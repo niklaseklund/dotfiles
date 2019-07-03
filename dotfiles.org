@@ -2875,7 +2875,7 @@ deleting mails that have been flagged.
 
 *** zshrc
 :PROPERTIES:
-:header-args: :tangle ~/.zshrc :mkdirp yes :comments link
+:header-args: :tangle ~/.zshrc :mkdirp yes
 :END:
 
 **** zgen
@@ -3273,7 +3273,7 @@ fi
 
 ** Bash
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os '(arch) "~/.bashrc") :mkdirp yes :comments link
+:header-args: :tangle (my/tangle-os '(arch) "~/.bashrc") :mkdirp yes
 :END:
 *** default
 This is the default content that where in the rc file at start
