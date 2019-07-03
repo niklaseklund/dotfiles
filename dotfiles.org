@@ -1,5 +1,13 @@
 #+TITLE: dotfiles
-* Xorg :deprecated:
+* Background
+
+This dotfile setup is heavily inspired/borderline stolen from [[https://github.com/hlissner/dotfiles][hlissner's
+dotfiles]]. I have also taken inspiration from others such as [[https://github.com/noctuid][noctuid]]. My ambition
+has been to craft a setup that is highly focused on being ~minimalistic~,
+~keyboardriven~, and ~highly customizable~.
+
+* Desktop environment
+** X server
 
 [[https://wiki.archlinux.org/index.php/xorg][Xorg in ArchWiki]]
 #+BEGIN_QUOTE
@@ -8,9 +16,7 @@ Linux users. Its ubiquity has led to making it an ever-present requisite for GUI
 applications, resulting in massive adoption from most distributions.
 #+END_QUOTE
 
-These are the dotfiles related to ~X~.
-
-** xinitrc
+*** Xinitrc
 :PROPERTIES:
 :header-args: :tangle (my/tangle-not-app '(lightdm) "~/.xinitrc") :shebang "#! /bin/sh" :mkdirp yes
 :END:
@@ -21,7 +27,7 @@ programs to launch upon startup. Currently assumes that if ~lightdm~ exists that
 it is enabled and properly configured. ~xinitrc~ will then not tangle but
 instead ~xprofile~ will, and vice versa.
 
-*** Load xresources
+**** Load xresources
 
 Loading the Xresources file which contains the configuration parameters for some
 X client applications like the terminal emulator ~urxvt~.
@@ -32,7 +38,7 @@ X client applications like the terminal emulator ~urxvt~.
 [[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
 #+END_SRC
 
-*** DONE HIDPI screen support
+**** DONE HIDPI screen support
 CLOSED: [2019-06-07 Fri 17:32]
 
 I found an example configuration for the retina display at
@@ -72,7 +78,7 @@ else
 fi
 #+END_SRC
 
-*** Keyboard settings
+**** Keyboard settings
 
 These are the settings for the keyboard.
 #+BEGIN_SRC sh
@@ -84,7 +90,7 @@ I learnt about the ~setxkbmap~ at the [[https://wiki.archlinux.org/index.php/Xor
 the line. The ~layout~ specifies ~American~ and ~Swedish~ layouts. One can
 switch between these two keyboard layouts by pressing both ~shifts~ at
 time. Last I swap ctrl to caps and remove capslock.
-*** Pywall
+**** Pywall
 
 #+BEGIN_SRC sh :tangle no
 # Add this to your .xinitrc or whatever file starts programs on startup.
@@ -92,7 +98,7 @@ time. Last I swap ctrl to caps and remove capslock.
 wal -R
 #+END_SRC
 
-*** Launch programs
+**** Launch programs
 
 I need to launch sxhkd since bspwm is relying upon that program to handle the
 keybindings. I launch the terminal as well at startup. It can be convinent at
@@ -107,7 +113,7 @@ compton &
 exec bspwm
 #+END_SRC
 
-** Xresources
+*** Xresources
 :PROPERTIES:
 :header-args: :tangle ~/.Xresources :mkdirp yes
 :END:
@@ -119,7 +125,7 @@ Xresources is a user-level configuration dotfile, typically located at
 parameters for X client applications.
 #+END_QUOTE
 
-*** TODO HIDPI
+**** TODO HIDPI
 
 The configuration of hidpi parameters originate from the blogpost
 [[https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/][installing-arch-linux-on-a-macbook-with-retina-hidpi]], but the [[https://wiki.archlinux.org/index.php/HiDPI#X_Resources][ArchWiki]] also has
@@ -134,7 +140,7 @@ Xft.hinting: false
 Xft.lcdfilter: lcddefault
 #+END_SRC
 
-*** TODO Colors
+**** TODO Colors
 
 The colors originate from ~hlissners~ dotfiles setup. Another source for color
 schemes might be
@@ -198,7 +204,7 @@ Xcursor.theme: default
 Xcursor.size: 32
 #+END_SRC
 
-*** urxvt
+**** urxvt
 
 These settings originates from the the same link as the above block.
 #+BEGIN_SRC sh
@@ -225,7 +231,7 @@ URxvt*.lineSpace:              0
 URxvt*.letterSpace:            0
 #+END_SRC
 
-*** Fonts
+**** Fonts
 
 Choosing fonts are never easy. These are my current setup.
 
@@ -243,12 +249,12 @@ URxvt.font: xft:Iosevka Term:style=Regular:size=12
 URxvt.boldFont: xft:Iosevka Term:style=Bold:size=12
 #+END_SRC
 
-** xprofile
+*** Xprofile
 :PROPERTIES:
 :header-args: :tangle (my/tangle-app '(lightdm) "~/.xprofile") :mkdirp yes
 :END:
 
-*** About
+**** About
 
 In the [[https://wiki.archlinux.org/index.php/xprofile][ArchWiki]] this is said about the ~xprofile~.
 #+BEGIN_QUOTE
@@ -261,13 +267,13 @@ said that if you have a display manager, like the one in Ubuntu, then you
 shouldn't use the ~xinitrc~. So instead I am using the ~xprofile~ to configure
 what applications and settings to configure upon startup.
 
-**** TODO Improvement
+***** TODO Improvement
 
 One improvement here would be to use xprofile if I have a display manager or
 not. In the case when I don't have one I can source the xprofile from the
 xinitrc. I should consider this in the future. Maybe after switching to
 Ubuntu18.
-*** hidpi and non-hidpi solution
+**** hidpi and non-hidpi solution
 
 This is my hacky solution for dealing with hidpi and non-hidpi screen mix. If
 only the internal screen is used I use sed commands to adjust dpi/font settings
@@ -309,14 +315,14 @@ else
 fi
 #+END_SRC
 
-*** Xresources
+**** Xresources
 
 #+BEGIN_SRC sh
 # customize xresources
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
 #+END_SRC
 
-*** Pywall
+**** Pywall
 
 #+BEGIN_SRC sh
 # set wallpaper
@@ -329,7 +335,7 @@ fi
 wal -R
 #+END_SRC
 
-*** TODO Keyboard
+**** TODO Keyboard
 
 I want to have a smarter solution in place here. Maybe one that utilizes udev
 rules to set this automatically depending on wether I have a specfic external
@@ -351,7 +357,7 @@ setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_l
 setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
 #+END_SRC
 
-*** Programs
+**** Programs
 
 Launch the hotkey daemon.
 #+BEGIN_SRC sh
@@ -369,9 +375,7 @@ Wait some before launching before launching the other, non-critical, application
 xcape &
 unclutter &
 #+END_SRC
-
-* bspwm :deprecated:
-** profile
+*** Profile
 :PROPERTIES:
 :header-args: :tangle ~/.profile :mkdirp yes
 :END:
@@ -389,7 +393,13 @@ XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CONFIG_HOME
 #+END_SRC
 
-** sxkhkdrc
+** Window manager
+
+[[https://github.com/baskerville/bspwm][bspwm, a tiling window manager]]. The ~bspwm~ window manager relies upon
+[[https://github.com/baskerville/sxhkd][sxhkd, an X daemon]] which is where the keybindings are specified.
+
+*** TODO bspwm
+*** sxhkd
 :PROPERTIES:
 :header-args: :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes
 :END:
@@ -397,7 +407,7 @@ export XDG_CONFIG_HOME
 I followed the instructions from the manual and copied over the example
 configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
 
-*** Independent hotkeys
+**** Independent hotkeys
 
 #+BEGIN_SRC sh
 #
@@ -436,7 +446,7 @@ mod4 + apostrophe
     emacsclient -e nil && bspc rule -a 'Emacs' -o split_ratio=0.7 state=tiled split_dir=south && emacs-anywhere
 #+END_SRC
 
-**** Application launcher
+***** Application launcher
 
 I have changed the application launcher from ~dmenu~ to ~rofi~.
 #+BEGIN_SRC sh
@@ -445,13 +455,13 @@ super + @space
 
 #+END_SRC
 
-**** Lock
+***** Lock
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 @F2
     lock -n -p
 #+END_SRC
-**** Password
+***** Password
 
 Quickly search through my passwords
 
@@ -460,7 +470,7 @@ super + backslash
     rofi-pass
 #+END_SRC
 
-*** Hotkeys
+**** Hotkeys
 #+BEGIN_SRC sh
 #
 # bspwm hotkeys
@@ -488,7 +498,7 @@ super + g
 
 #+END_SRC
 
-*** State flags
+**** State flags
 
 #+BEGIN_SRC sh
 #
@@ -505,7 +515,7 @@ super + ctrl + {m,x,y,z}
 
 #+END_SRC
 
-*** Focus and swapping
+**** Focus and swapping
 #+BEGIN_SRC sh
 #
 # focus/swap
@@ -543,7 +553,7 @@ super + {_,shift + }{1-9,0}
 
 #+END_SRC
 
-*** Preselect
+**** Preselect
 
 #+BEGIN_SRC sh
 #
@@ -568,7 +578,7 @@ super + ctrl + shift + space
 
 #+END_SRC
 
-*** Move/resize
+**** Move/resize
 #+BEGIN_SRC sh
 #
 # move/resize
@@ -606,7 +616,7 @@ super + minus
     bspc config -d focused window_gap $((`bspc config -d focused window_gap` - 5 ))
 #+END_SRC
 
-*** Brightness
+**** Brightness
 
 I want to be able to control the brightness of the screen. To my help I have
 [[https://haikarainen.github.io/light/][light]].
@@ -630,7 +640,7 @@ https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
 argument which will org will make sure to add the shebang and make the file
 executable.
 
-*** sxhkd
+**** sxhkd
 
 The example file starts with ~sxhkd~. I am unsure if I need it both here and in
 the ~xinitrc~.
@@ -639,8 +649,8 @@ the ~xinitrc~.
 sxhkd &
 #+END_SRC
 
-*** Monitors and desktops
-**** [X] Set the primary monitor
+**** Monitors and desktops
+***** [X] Set the primary monitor
 CLOSED: [2019-01-27 Sun 13:38]
 
 I will start by setting up the correct monitor to be primary using ~randr~. The
@@ -671,22 +681,22 @@ if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ];
     xrandr --output $EXTERNAL_MONITOR --primary
 fi
 #+END_SRC
-**** TODO Distribute workspaces on the different displays
+***** TODO Distribute workspaces on the different displays
 
 With bspwm I can have different amount of workspaces on different displays. The
 workspaces are not connected either which is a nice feature making it possible
 to change workspace on one screen whilst keeping the other workspaces unchanged.
 
-***** Uniform distribution
+****** Uniform distribution
 
 Each display gets the same amount of workspaces.
 
-***** Primary distribution
+****** Primary distribution
 
 The primary display get's more workspaces whilst the others have one each.
 
-**** first solution
-***** randr
+***** first solution
+****** randr
 
 #+BEGIN_SRC sh :tangle no
 xrandr --output DP-1-1-8 --primary
@@ -743,7 +753,7 @@ fi
 : 1
 : Internal connnected
 
-***** Simple hardcoded solution
+****** Simple hardcoded solution
 This is the setup for monitors in the example configuration
 #+BEGIN_SRC sh :tangle no
 bspc monitor -d I II III IV V VI VII VIII IX X
@@ -757,7 +767,7 @@ bspc monitor 0x00600002 -d I II III IV V
 bspc monitor 0x00600004 -d VI VII VIII IX X
 #+END_SRC
 
-***** Generic solution
+****** Generic solution
 This is the more generic solution. It splits up the ten workspaces on the number
 of monitors that exists. In the case of three screens 3 workspaces will be
 assigned to each monitor.
@@ -777,7 +787,7 @@ else
 fi
 #+END_SRC
 
-***** Specific 3 monitor solution                                                          :wip:
+****** Specific 3 monitor solution :wip:
 This solution finds the primary display and allocates five workspaces on that
 one and leaves the other screens with 1 workspace each. Maybe this is a good
 approach, I will evaluate it.
@@ -803,9 +813,9 @@ bspc monitor $CENTER_MONITOR -d {2,3,4,5,6}
 bspc monitor $RIGHT_MONITOR -d {7}
 #+END_SRC
 
-***** Multiple monitors improved
+****** Multiple monitors improved
 
-****** Finding out the monitors with xrandr
+******* Finding out the monitors with xrandr
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -868,7 +878,7 @@ xrandr -q | grep 'connected' | awk '!/disconnected/' | cut -d' ' -f1
 : eDP-1-1
 : DP-1-1-8
 : DP-1-1-1
-****** Finding out the monitors with bspc
+******* Finding out the monitors with bspc
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -889,7 +899,7 @@ for monitor in `bspc query -M`; do
 done
 #+END_SRC
 
-*** bspwm look
+**** bspwm look
 
 These settings are from hlissner's setup
 #+BEGIN_SRC sh
@@ -960,7 +970,7 @@ bspc config -m $MONITOR left_padding   0
 bspc config -m $MONITOR right_padding  0
 #+END_SRC
 
-*** Default rules
+**** Default rules
 
 #+BEGIN_SRC sh
 bspc rule -a 'Emacs:org*' state=floating
@@ -970,15 +980,15 @@ bspc rule -a mplayer2 state=floating
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
 #+END_SRC
-*** Custom rules
+**** Custom rules
 
-**** Emacs
+***** Emacs
 #+BEGIN_SRC sh
 bspc rule -a 'Emacs:org*' state=floating
 bspc rule -a Emacs split_ratio=0.5 border=off state=tiled
 #+END_SRC
 
-**** Peek
+***** Peek
 I want peek to be floating as it's suppose to record what is underneath it.
 This code did however not work
 #+BEGIN_SRC sh :tangle no
@@ -1001,13 +1011,13 @@ WM_CLASS(STRING) = "peek", "Peek"
 #+BEGIN_SRC sh
 bspc rule -a Peek state=floating
 #+END_SRC
-**** Zathura
+***** Zathura
 
 #+BEGIN_SRC sh
 bspc rule -a Zathura state=tiled
 #+END_SRC
 
-*** TODO Window issues
+**** TODO Window issues
 
 I have had an issue with the ~Emacs~ window that the box is rendered larger than
 actual ~Emacs~. The issue seems to be this
@@ -1037,7 +1047,7 @@ don't think that it worked.
 }
 #+END_SRC
 
-*** Background
+**** Background
 I found this post about how to configure feh when using bspwm,
 http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.html.
 I tried to use xinitrc first to set the background but that approach seemed to
@@ -1047,7 +1057,7 @@ have implications when running dual screens.
 feh --bg-scale ~/src/dotfiles/assets/ghostinshell.jpg
 #+END_SRC
 
-*** Status bar
+**** Status bar
 It was recomended in the polybar wiki,
 https://github.com/jaagr/polybar/wiki, to add a launch file which could be
 called from the ~bspwmrc~.
@@ -1056,7 +1066,7 @@ called from the ~bspwmrc~.
 $HOME/.config/polybar/launch.sh
 #+END_SRC
 
-*** Pywal color
+**** Pywal color
 #+BEGIN_SRC sh :tangle no
 # source the colors.
 . "${HOME}/.cache/wal/colors.sh"
@@ -1071,19 +1081,19 @@ bspc config presel_feedback_color "$color1"
 #bspc config presel_border_color "$color1"
 #+END_SRC
 
-*** TODO Drop down scrach terminal
+**** TODO Drop down scrach terminal
 
 The ~scratchpad~ might be a useful feature
 https://wiki.archlinux.org/index.php/bspwm#Scratchpad
 
-*** Mouse control
+**** Mouse control
 I want to be able to hide my mouse cursor automatically after a while of non-usage
 https://wiki.archlinux.org/index.php/unclutter
 #+BEGIN_SRC sh :no
 unclutter &
 #+END_SRC
 
-*** Keyboard control
+**** Keyboard control
 I want to switch caps lock to ctrl when pressed in conjunction with another key,
 and escape when pressed by itself. This functionality is provided by the program
 ~xcape~.
@@ -1091,7 +1101,7 @@ and escape when pressed by itself. This functionality is provided by the program
 xcape &
 #+END_SRC
 
-**** TODO Differentiate between internal and external keyboard
+***** TODO Differentiate between internal and external keyboard
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -1112,20 +1122,15 @@ xinput -list | grep "Keyboard"
 #+RESULTS:
 : ⎜   ↳ USB Keyboard                            	id=11	[slave  pointer  (2)]
 :     ↳ USB Keyboard                            	id=12	[slave  keyboard (3)]
-** TODO scratchpad
 
-In the [[https://wiki.archlinux.org/index.php/bspwm#Scratchpad][ArchWiki]] there is a section on creating a sratchpad in bspwm. I also
-found [[https://www.reddit.com/r/bspwm/comments/85hr4c/making_a_scratchpaddropdown_terminal_in_bspwm/][this reddit post]] regarding the sratchpad. This is something that I want to
-look into when I have time for it.
-
-* compton :deprecated:
+** Compositor
 :PROPERTIES:
 :header-args: :tangle ~/.config/compton.conf :mkdirp yes
 :END:
 
-I have used the example configuration to start with.
+[[https://github.com/chjj/compton][Compton, a compositor for X]]
 
-** Shadows
+*** Shadows
 I disabled the shadows. I need to understand better how these shadows work
 before I use them.
 
@@ -1152,7 +1157,7 @@ shadow-exclude = [
 # xinerama-shadow-crop = true;
 #+END_SRC
 
-** Opacity and blur
+*** Opacity and blur
 It seems like compton gives emacs some kind of dark frame on the right side,
 which dissapears if I go to monocle view and back. Need to investigate that.
 
@@ -1182,7 +1187,7 @@ blur-background-exclude = [
 ];
 #+END_SRC
 
-** Application opacity rules
+*** Application opacity rules
 I have here the example opacity rule from the arch wiki,
 https://wiki.archlinux.org/index.php/compton.
 
@@ -1222,12 +1227,12 @@ transparent.
 ];
 #+END_SRC
 
-** TODO Different alpha value for inactive windows
+*** TODO Different alpha value for inactive windows
 
 I want to have the alpha value lowered for the other windows, not the active
 one. This will make it easier to know which window currently has the focus.
 
-** Rest
+*** Rest
 #+BEGIN_SRC sh
 # Fading
 fading = true;
@@ -1283,8 +1288,77 @@ wintypes:
 };
 #+END_SRC
 
-* Polybar :deprecated:
-** configuration
+** Status bar
+
+[[https://github.com/polybar/polybar][Polybar, a fast and easy-to-use tool for creating status bars]]
+
+*** launch script
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/launch.sh :shebang "#! /bin/sh" :mkdirp yes
+:END:
+
+**** Kill active bars
+#+BEGIN_SRC sh
+#!/usr/bin/env bash
+
+# Terminate already running bar instances
+killall -q polybar
+
+# Wait until the processes have been shut down
+while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
+
+#+END_SRC
+
+**** Kick of the bar(s)
+I add the ~reload~ option to have the bar automatically reloaded when I change
+the configuration file.
+#+BEGIN_QUOTE
+       -r, --reload
+              Reload the application when the config file has been modified
+#+END_QUOTE
+
+This is my first attempt
+#+BEGIN_SRC sh :tangle no
+# Launch example bar
+polybar -r example &
+
+echo "Bar launched..."
+#+END_SRC
+
+***** Multiple monitors :wip:
+https://github.com/jaagr/polybar/issues/763
+#+BEGIN_SRC sh :tangle no
+if type "xrandr"; then
+  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+    MONITOR=$m polybar --reload example &
+  done
+else
+  polybar --reload example &
+fi
+#+END_SRC
+
+Slimmed down version
+#+BEGIN_SRC sh :tangle no
+for m in $(polybar --list-monitors | cut -d":" -f1); do
+    MONITOR=$m polybar --reload example &
+done
+#+END_SRC
+
+***** Center monitor only
+
+#+BEGIN_SRC sh
+if type "xrandr"; then
+  for m in $(xrandr --query | grep "primary" | cut -d" " -f1); do
+  # for m in $(xrandr --query | grep "DP-1-1-8" | cut -d" " -f1); do
+    MONITOR=$m polybar --reload main &
+  done
+else
+  polybar --reload main &
+fi
+#+END_SRC
+
+
+*** configuration
 :PROPERTIES:
 :header-args: :tangle ~/.config/polybar/config :mkdirp yes
 :END:
@@ -1294,7 +1368,7 @@ Ideas:
   move depending on the size of the right/left module. I would prefer having it
   centered straight in the middle.
 
-*** Colors
+**** Colors
 #+BEGIN_SRC sh
 ;==========================================================
 ;
@@ -1349,7 +1423,7 @@ icons = #555856
 
 #+END_SRC
 
-*** Main bar
+**** Main bar
 #+BEGIN_SRC sh
 [bar/main]
 monitor = ${env:MONITOR:}
@@ -1408,7 +1482,7 @@ module-margin-left = 1
 module-margin-right = 1
 #+END_SRC
 
-*** Resolution
+**** Resolution
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 dpi-x = 227
 dpi-y = 227
@@ -1419,7 +1493,7 @@ dpi-x = 96
 dpi-y = 96
 #+END_SRC
 
-*** Fonts
+**** Fonts
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 font-0 = "Roboto Mono:style=Regular:size=6"
 font-1 = unifont:fontformat=truetype:size=6:antialias=false;0
@@ -1434,16 +1508,16 @@ font-2 = siji:pixelsize=8;1
 font-3 = "Material Icons:style=Regular:size=10"
 #+END_SRC
 
-*** Modules setup
+**** Modules setup
 #+BEGIN_SRC sh
 modules-left = cpu memory pad pulseaudio app-mail app-pad-volume pad-left
 modules-center = bspwm
 modules-right = battery app-bluetooth app-vpn wlan app-redshift pad date
 #+END_SRC
 
-*** Modules
+**** Modules
 
-**** Misc features
+***** Misc features
 
 #+BEGIN_SRC sh
 tray-position = right
@@ -1461,7 +1535,7 @@ cursor-click = pointer
 cursor-scroll = ns-resize
 #+END_SRC
 
-**** Padding
+***** Padding
 
 #+BEGIN_SRC sh
 [module/pad]
@@ -1480,7 +1554,7 @@ interval = 1
 
 #+END_SRC
 
-**** mail
+***** mail
 #+BEGIN_SRC sh
 [module/app-mail]
 type = custom/script
@@ -1488,7 +1562,7 @@ exec = ~/.config/polybar/modules/app-mail.sh
 interval = 10
 #+END_SRC
 
-**** bluetooth
+***** bluetooth
 #+BEGIN_SRC sh
 [module/app-bluetooth]
 type = custom/script
@@ -1496,7 +1570,7 @@ exec = ~/.config/polybar/modules/app-bluetooth.sh
 interval = 10
 #+END_SRC
 
-**** vpn
+***** vpn
 #+BEGIN_SRC sh
 [module/app-vpn]
 type = custom/script
@@ -1504,7 +1578,7 @@ exec = ~/.config/polybar/modules/app-vpn.sh
 interval = 10
 #+END_SRC
 
-**** keyboard
+***** keyboard
 #+BEGIN_SRC sh :tangle no
 [module/xkeyboard]
 type = internal/xkeyboard
@@ -1526,7 +1600,7 @@ label-indicator-underline = ${colors.secondary}
 
 #+END_SRC
 
-**** bspwm
+***** bspwm
 #+BEGIN_SRC sh
 [module/bspwm]
 type = internal/bspwm
@@ -1578,7 +1652,7 @@ label-empty-padding = 1
 ; label-separator = |
 #+END_SRC
 
-**** wifi
+***** wifi
 #+BEGIN_SRC sh
 [module/wlan]
 type = internal/network
@@ -1603,7 +1677,7 @@ ramp-signal-4 = 
 ramp-signal-4-foreground = ${colors.foreground-alt}
 #+END_SRC
 
-**** ethernet
+***** ethernet
 #+BEGIN_SRC sh :tangle no
 [module/eth]
 type = internal/network
@@ -1623,7 +1697,7 @@ format-disconnected =
 
 #+END_SRC
 
-**** date
+***** date
 #+BEGIN_SRC sh
 [module/date]
 type = internal/date
@@ -1654,7 +1728,7 @@ format-prefix-foreground = ${colors.icons}
 ;label = %date% %time%
 #+END_SRC
 
-**** pulseaudio
+***** pulseaudio
 #+BEGIN_SRC sh
 [module/pulseaudio]
 type = internal/pulseaudio
@@ -1691,7 +1765,7 @@ ramp-volume-2 = 
 
 #+END_SRC
 
-**** battery
+***** battery
 #+BEGIN_SRC sh
 [module/battery]
 type = internal/battery
@@ -1721,7 +1795,7 @@ animation-charging-foreground = ${colors.fg-alt}
 animation-charging-framerate = 750
 #+END_SRC
 
-**** cpu
+***** cpu
 #+BEGIN_SRC sh
 [module/cpu]
 type = internal/cpu
@@ -1744,7 +1818,7 @@ bar-load-empty-foreground = ${colors.fg-alt}
 
 #+END_SRC
 
-**** memory
+***** memory
 #+BEGIN_SRC sh
 [module/memory]
 type = internal/memory
@@ -1767,7 +1841,7 @@ bar-used-empty = ¦
 bar-used-empty-foreground = ${colors.fg-alt}
 #+END_SRC
 
-**** redshift
+***** redshift
 
 #+BEGIN_SRC sh
 [module/app-redshift]
@@ -1779,7 +1853,7 @@ format-foreground = ${colors.icons}
 interval = 2
 #+END_SRC
 
-**** global settings
+***** global settings
 #+BEGIN_SRC sh
 [settings]
 screenchange-reload = true
@@ -1805,72 +1879,11 @@ margin-bottom = 30
 ; vim:ft=dosini
 #+END_SRC
 
-** launch script
-:PROPERTIES:
-:header-args: :tangle ~/.config/polybar/launch.sh :shebang "#! /bin/sh" :mkdirp yes
-:END:
 
-*** Kill active bars
-#+BEGIN_SRC sh
-#!/usr/bin/env bash
 
-# Terminate already running bar instances
-killall -q polybar
+*** custom modules
 
-# Wait until the processes have been shut down
-while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
-
-#+END_SRC
-
-*** Kick of the bar(s)
-I add the ~reload~ option to have the bar automatically reloaded when I change
-the configuration file.
-#+BEGIN_QUOTE
-       -r, --reload
-              Reload the application when the config file has been modified
-#+END_QUOTE
-
-This is my first attempt
-#+BEGIN_SRC sh :tangle no
-# Launch example bar
-polybar -r example &
-
-echo "Bar launched..."
-#+END_SRC
-
-**** Multiple monitors :wip:
-https://github.com/jaagr/polybar/issues/763
-#+BEGIN_SRC sh :tangle no
-if type "xrandr"; then
-  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
-    MONITOR=$m polybar --reload example &
-  done
-else
-  polybar --reload example &
-fi
-#+END_SRC
-
-Slimmed down version
-#+BEGIN_SRC sh :tangle no
-for m in $(polybar --list-monitors | cut -d":" -f1); do
-    MONITOR=$m polybar --reload example &
-done
-#+END_SRC
-
-**** Center monitor only
-
-#+BEGIN_SRC sh
-if type "xrandr"; then
-  for m in $(xrandr --query | grep "primary" | cut -d" " -f1); do
-  # for m in $(xrandr --query | grep "DP-1-1-8" | cut -d" " -f1); do
-    MONITOR=$m polybar --reload main &
-  done
-else
-  polybar --reload main &
-fi
-#+END_SRC
-** custom modules
-*** bluetooth
+**** bluetooth
 
 #+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-bluetooth.sh :shebang "#! /bin/sh" :mkdirp yes
 # source ~/.cache/wal/colors.sh
@@ -1904,7 +1917,7 @@ fi
 
 #+END_SRC
 
-*** vpn
+**** vpn
 
 #+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-vpn.sh :shebang "#! /bin/sh" :mkdirp yes
 
@@ -1919,7 +1932,7 @@ else
     echo "%{F#555856}" # grey
 fi
 #+END_SRC
-*** mail
+**** mail
 
 #+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-mail.sh :shebang "#! /bin/sh" :mkdirp yes
 
@@ -1931,7 +1944,7 @@ else
     echo "%{F#f0c674}$unread" # yellow
 fi
 #+END_SRC
-*** redshift
+**** redshift
 
 #+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-redshift :shebang "#! /bin/bash" :mkdirp yes
 
@@ -1956,13 +1969,13 @@ fi
 
 #+END_SRC
 
-*** screen recording
+**** screen recording
 
 Start with the symbol
 #+BEGIN_SRC sh :tangle no
 
 #+END_SRC
-*** pad-volume
+**** pad-volume
 
 #+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-pad-volume.sh :shebang "#!/usr/bin/env bash" :mkdirp yes
 muted=$(pacmd list-sinks | grep muted | cut -d' ' -f2)
@@ -1974,406 +1987,102 @@ else
 fi
 #+END_SRC
 
-* tmux :deprecated:
+** Application launcher
 :PROPERTIES:
-:header-args: :tangle ~/.tmux.conf :mkdirp yes
+:header-args: :tangle ~/.config/rofi/config :mkdirp yes
 :END:
 
-** TODO Fix tmux settings incompatibility
+[[https://github.com/davatorium/rofi][Rofi, a window switcher and application launcher]].
 
-Version 2.9 introduced some breaking changes to the styling, here is some discussion:
-https://github.com/tmux/tmux/issues/1689
-
-An example is here:
-#+BEGIN_SRC sh :tangle no
-# before 2.9
-# setw -g window-status-fg colour236
-# setw -g window-status-bg default
-# setw -g window-status-attr none
-# setw -g window-status-format '#[fg=colour8] #I #[fg=default]#W '
-
-# after 2.9
-set -g window-status-style bg=default,fg=colour236,none
+The configuration here is something that I have copied from ~Matt Dobson~.
+Unfortunately I don't remember where I found his config.
+#+BEGIN_SRC sh
+! ------------------------------------------------------------------------------
+!                          ROFI THEME
+! ------------------------------------------------------------------------------
+rofi.color-window: argb:f2171717, #535c5c,         #a4a4a4
+rofi.color-normal: argb:00171717, #a4a4a4, argb:00535c5c, argb:00171717, #535c5c
+rofi.color-urgent: argb:00171717, #cc6666, argb:e54b5160, argb:00171717, #535c5c
+rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
 #+END_SRC
 
-** General information
+Tweaked for ~Arch~
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+rofi.width: 1500
+rofi.lines: 10
+rofi.font: Roboto Mono 14
+rofi.bw: 0
+rofi.padding: 50
+rofi.line-margin: 5
+rofi.eh: 1
+#+END_SRC
 
-I am trying to grasp the notations of ~tmux~. It seems like there is three
-important words to know. ~Sessions~, ~Windows~ and ~Panes~.
+Tweaked for ~Ubuntu~
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+rofi.width: 1500
+rofi.lines: 10
+rofi.font: Roboto Mono 10
+rofi.bw: 0
+rofi.padding: 50
+rofi.line-margin: 5
+rofi.eh: 1
+#+END_SRC
 
-** TODO Start using relevant code from sensible
+The ~-m~ option determines the behavior of ~rofi~ where the rofi window should
+appear. I want to set this globally to -1. That setting makes most sense to me.
+It will be the display that I have currently focus on.
+#+BEGIN_SRC sh
+rofi.m: -1
+#+END_SRC
 
-The plugin [[https://github.com/tmux-plugins/tmux-sensible][tmux-sensible]] has many sane options as default. I will use many of
-them from there.
+Other settings
+#+BEGIN_SRC sh
+rofi.sidebar-mode: true
+rofi.separator-style: none
+rofi.hide-scrollbar: true
+rofi.show-icons: false
+rofi.location: 0
+!rofi.modi: window,run,drun
+rofi.modi: window,run
+rofi.matching: fuzzy
+
+#+END_SRC
+
+** Looks
+
+Both of these configuration files has been copied from hlissers-setup. I have
+also looked at the [[https://wiki.archlinux.org/index.php/GTK%2B#Examples][arch wiki examples]].
+
+*** GTK+ 2.x
+:PROPERTIES:
+:header-args: :tangle ~/.gtkrc-2.0 :mkdirp yes
+:END:
 
 #+BEGIN_SRC sh
-# # -- GENERAL -----------------------------
-
+include "/usr/share/themes/Arc-Dark/gtk-2.0/gtkrc"
 #+END_SRC
 
-I haven't checked what the setting does but it is suggested to be set here for
-the issue I am trying to solve namnely to have the autosuggestions shown in a
-highlighted way. Currently everything looks like a command.
-https://github.com/zsh-users/zsh-autosuggestions/issues/229
-#+BEGIN_SRC sh
-set -g default-terminal screen-256color
-#+END_SRC
+*** GTK+ 3.x
+:PROPERTIES:
+:header-args: :tangle ~/.config/gtk-3.0/settings.ini :mkdirp yes
+:END:
 
 #+BEGIN_SRC sh
-# set -g default-command $SHELL
-# # Prevent double-execution of profile, $SHELL needs to be explicitly in profile
-# # though
-# set -g default-shell /bin/sh
-# set -s focus-events on
-# # increase scrollback buffer size
-set -g history-limit 50000
-
+[Settings]
+gtk-application-prefer-dark-theme = true
+gtk-theme-name = Arc-Dark
+gtk-icon-theme-name = Arc-Dark
 #+END_SRC
 
-#+BEGIN_SRC sh
-# # Rather than constraining window size to the maximum size of any client
-# # connected to the *session*, constrain window size to the maximum size of any
-# # client connected to *that window*. Much more reasonable.
-setw -g aggressive-resize off
-#+END_SRC
-
-#+BEGIN_SRC sh
-# # Tmux >= 2.1
-# # enable mouse
-# setw -g mouse on
-# # fix mouse scrolling: enter copy mode on scroll-up, exits it when scrolled to bottom
-# bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'copy-mode -e'"
-
-# # For tmux <2.2
-# # UTF-8
-# #set -q -g status-utf8 on
-# #setw -q -g utf8 on
-# # Enable mouse
-# #setw -g mode-mouse on
-# #set -g mouse-resize-pane on
-# #set -g mouse-select-pane on
-# #set -g mouse-select-window on
-
-
-#+END_SRC
-
-** Display
-
-#+BEGIN_SRC sh
-# # -- DISPLAY -----------------------------
-
-set -g set-titles on
-set -g set-titles-string "tmux [#H] #S:#W:#T"
-
-# Zero-based indexing is fine in programming languages, but not so much in a multiplexer
-# when zero is on the other side of the keyboard.
-set -g base-index 1
-setw -g pane-base-index 1
-
-setw -g automatic-rename on # rename window to reflect current program
-set -g renumber-windows on  # renumber windows when a window is closed
-# display tmux messages longer
-set -g display-time 1500
-set -g display-panes-time 800
-
-# focus events enabled for terminals that support them
-set -g focus-events on
-#+END_SRC
-
-** Important keybindings
-#+BEGIN_SRC sh
-# # -- KEYBINDS ----------------------------
-
-# set vi keys
-setw -g mode-keys vi
-
-# setw -g xterm-keys on
-#+END_SRC
-
-When I started using tmux I had a delay in zsh and in tmux there was a
-noticable delay as well. This article describes how to deal with it by seting
-the ~escape-time~ parameter.
-https://www.johnhawthorn.com/2012/09/vi-escape-delays/
-#+BEGIN_SRC sh
-set -s escape-time 0
-# set -sg repeat-time 600
-
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle no
-# # Custom prefix
-set -g prefix C-c
-bind C-c send-prefix
-
-unbind C-b
-#+END_SRC
-
-** Window management
-These keybindings makes more sense from a Vim perspective.
-#+BEGIN_SRC sh
-unbind %
-unbind '"'
-bind s split-window -c "#{pane_current_path}" -v
-bind v split-window -c "#{pane_current_path}" -h
-bind c new-window -c "#{pane_current_path}"
-#+END_SRC
-
-** Pane management
-
-Windows in tmux can be thougth of as tabs. So breaking a pane to a window
-basically takes, what I would call a window and makes it into a tab.
-
-#+BEGIN_SRC sh
-# break pane into a window
-bind = select-layout even-vertical
-bind + select-layout even-horizontal
-bind - break-pane
-bind _ join-pane
-#+END_SRC
-
-These are some clever commands, but I haven't had the time to look more into it
-so I will have it disabled in the meantime.
-#+BEGIN_SRC sh
-# # Smart pane switching with awareness of vim splits
-# # See: https://github.com/christoomey/vim-tmux-navigator
-# is_vim='echo "#{pane_current_command}" | grep -iqE "(^|\/)g?(view|n?vim?x?)(diff)?$"'
-# bind -n C-h if-shell "$is_vim" "send-keys C-h" "select-pane -L"
-# bind -n C-j if-shell "$is_vim" "send-keys C-j" "select-pane -D"
-# bind -n C-k if-shell "$is_vim" "send-keys C-k" "select-pane -U"
-# bind -n C-l if-shell "$is_vim" "send-keys C-l" "select-pane -R"
-# bind -n C-\ if-shell "$is_vim" "send-keys C-\\" "select-pane -l"
-# bind C-w last-pane
-# bind C-n next-window
-# bind C-p previous-window
-#+END_SRC
-
-Resizing and pane switching with Vi-ish bindings.
-#+BEGIN_SRC sh
-# Pane resizing
-bind C-h resize-pane -L 6
-bind C-j resize-pane -D 6
-bind C-k resize-pane -U 6
-bind C-l resize-pane -R 6
-bind -n M-h resize-pane -L 6
-bind -n M-j resize-pane -D 6
-bind -n M-k resize-pane -U 6
-bind -n M-l resize-pane -R 6
-
-# Swap panes directionally
-bind h select-pane -L
-bind j select-pane -D
-bind k select-pane -U
-bind l select-pane -R
-bind H run '$TMUX_HOME/scripts/swap-pane left'
-bind J run '$TMUX_HOME/scripts/swap-pane down'
-bind K run '$TMUX_HOME/scripts/swap-pane up'
-bind L run '$TMUX_HOME/scripts/swap-pane right'
-bind M run '$TMUX_HOME/scripts/swap-pane master'
-
-bind o resize-pane -Z
-bind S choose-session
-bind W choose-window
-bind / choose-session
-bind . choose-window
-
-bind n run 'TMUX= tmux new-session -t "$(basename \"$PWD\")" -d \; switch-client -t "$(basename \"$PWD\")"'
-bind N run 'TMUX= tmux new-session -t "$(tmux display-message -p #S)" -s "$(tmux display-message -p #S-clone)" -d \; switch-client -n \; display-message "session #S cloned"'
-
-# bind = select-layout tiled
-bind | select-layout even-horizontal
-bind _ select-layout even-vertical
-
-#+END_SRC
-
-Clever way of rebinding the ~prefix ]/[~ to navigate between active sessions.
-#+BEGIN_SRC sh
-# switch between sessions
-bind -r [ switch-client -p
-bind -r ] switch-client -n
-#+END_SRC
-
-Killing
-#+BEGIN_SRC sh
-bind x kill-pane
-bind X kill-window
-bind q kill-session
-bind Q kill-server
-#+END_SRC
-
-** Copy mode
-Enable vi bindings for Copy mode
-#+BEGIN_SRC sh
-# # -- COPY MODE ---------------------------
-
-bind Enter copy-mode # enter copy mode
-bind b list-buffers  # list paster buffers
-bind p paste-buffer  # paste from the top pate buffer
-bind P choose-buffer # choose which buffer to paste from
-
-bind -T copy-mode-vi v send -X begin-selection
-bind -T copy-mode-vi C-v send -X rectangle-toggle
-bind -T copy-mode-vi y send -X copy-selection
-bind -T copy-mode-vi Escape send -X cancel
-bind -T copy-mode-vi H send -X start-of-line
-bind -T copy-mode-vi L send -X end-of-line
-
-#+END_SRC
-
-** Reload configuration
-#+BEGIN_SRC sh
-# reload config without killing server
-bind r source-file $HOME/.tmux.conf \; display-message "  Config reloaded..".
-bind ^r refresh-client
-#+END_SRC
-
-** Theme
-Load the theme
-#+BEGIN_SRC sh
-# -- THEME -------------------------------
-
-# The statusbar
-set -g status-position bottom
-set -g status-justify centre
-set -g status-bg default
-set -g status-fg colour15
-set -g status-interval 10
-# set -g status-attr dim
-# set -g status-left '#[fg=colour236]_________________________'
-set -g status-left '#[fg=colour236]―――――――――――――――――――――――――'
-# set -g status-right "#[fg=colour236]#{prefix_highlight} #[fg=colour5] #S #[fg=colour236]──"
-# set -g status-right '#[fg=colour236]_________________________'
-set -g status-right '#[fg=colour236]―――――――――――――――――――――――――'
-set -g status-right-length 12
-set -g status-left-length 12
-
-# The messages
-# set -g message-fg colour4
-# set -g message-bg colour237
-# set -g message-command-fg blue
-# set -g message-command-bg black
-
-# loud or quiet?
-set-option -g visual-activity off
-set-option -g visual-bell off
-set-option -g visual-silence off
-set-window-option -g monitor-activity on
-set-option -g bell-action none
-
-# The modes
-setw -g clock-mode-colour colour135
-# setw -g mode-attr bold
-# setw -g mode-fg colour196
-# setw -g mode-bg colour238
-
-# The panes
-# set -g pane-border-fg colour235
-# set -g pane-border-bg default
-# set -g pane-active-border-fg colour5
-# set -g pane-active-border-bg default
-
-# setw -g window-status-current-fg colour2
-# setw -g window-status-current-bg default
-# setw -g window-status-current-attr none
-setw -g window-status-current-format ' #W '
-
-#setw -g window-status-fg colour236
-#setw -g window-status-bg default
-#setw -g window-status-attr none
-# setw -g window-status-format '#[fg=colour8] #I #[fg=default]#W '
-setw -g window-status-format ' #W '
-
-#setw -g window-status-activity-bg default
-#setw -g window-status-activity-fg colour240
-#setw -g window-status-activity-attr none
-
-#setw -g window-status-bell-attr bold
-#setw -g window-status-bell-fg colour255
-#setw -g window-status-bell-bg colour1
-
-
-#+END_SRC
-
-** Load plugins
-
-*** Plugin manager
-~Plugin manager~
-https://github.com/tmux-plugins/tpm
-#+BEGIN_SRC sh
-set -g @plugin 'tmux-plugins/tpm'
-#+END_SRC
-
-| Command          | Action                      |
-|------------------+-----------------------------|
-| prefix + I       | Installs new plugins        |
-| prefix + U       | Updates plugins             |
-| prefix + alt + u | Removes/uninstalls plugins  |
-
-*** Custom plugins
-**** copy-cat
-[[https://github.com/tmux-plugins/tmux-copycat][tmux-copycat]] enables
-- regex searches
-- search result highlighting
-- predefined searches (especially if combined with tmux-yank)
-
-#+BEGIN_SRC sh
-set -g @plugin 'tmux-plugins/tmux-copycat'
-#+END_SRC
-
-**** yank
-In normal mode ~prefix + y~ copies the command line to clipboard.
-In copy mode ~y~ copies selection to clipboard.
-In copy mode ~Y~ copies and pastes it to the command line.
-#+BEGIN_SRC sh
-set -g @plugin 'tmux-plugins/tmux-yank'
-#+END_SRC
-
-#+RESULTS:
-**** open
-
-Key bindings
-#+BEGIN_QUOTE
-In tmux copy mode:
-
-    o - "open" a highlighted selection with the system default program
-    Ctrl-o - open a highlighted selection with the $EDITOR
-    Shift-s - search the highlighted selection directly inside a search engine (defaults to google).
-
-In copy mode:
-
-    highlight file.pdf and press o - file will open in the default PDF viewer.
-    highlight file.doc and press o - file will open in system default .doc file viewer.
-    highlight http://quote.com and press o - link will be opened in the default browser.
-    highlight file.txt and press Ctrl-o - file will open in $EDITOR.
-    highlight TypeError: 'undefined' is not a function and press Shift-s - the text snipped will be searched directly inside google by default
-#+END_QUOTE
-
-#+BEGIN_SRC sh
-set -g @plugin 'tmux-plugins/tmux-open'
-#+END_SRC
-
-**** others
-#+BEGIN_SRC sh
-# set -g @plugin 'tmux-plugins/tmux-prefix-highlight'
-
-# set -g @prefix_highlight_fg colour4
-# set -g @prefix_highlight_output_suffix ' #[bg=colour8] '
-
-#+END_SRC
-
-*** start pluings
-Start the plugin manager
-#+BEGIN_SRC sh
-# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-run -b '~/.tmux/plugins/tpm/tpm'
-#+END_SRC
-
-* (n)vim :deprecated:
-** neovim
+* Editors
+** Neovim
 :PROPERTIES:
 :header-args: :tangle ~/.config/nvim/init.vim :mkdirp yes
 :END:
 
-#+BEGIN_SRC vimrc
+[[https://github.com/neovim/neovim][Vim-fork focused on extensibility and usability]]
+
+#+BEGIN_SRC text
 " vim: foldmethod=marker
 
 " {{{1 Easy configuration
@@ -2506,87 +2215,878 @@ set background=dark
 colorscheme wal
 #+END_SRC
 
-* Command-line shells :deprecated:
-** Bash
-:PROPERTIES:
-:header-args: :tangle (my/tangle-os '(arch) "~/.bashrc") :mkdirp yes :comments link
-:END:
-*** default
-This is the default content that where in the rc file at start
-#+BEGIN_SRC sh
-#
-# ~/.bashrc
-#
+** Emacs
 
-# If not running interactively, don't do anything
-[[ $- != *i* ]] && return
+How to install doom and setup my private configuration goes here. And Emacs
+anywhere as well.
 
-alias ls='ls --color=auto'
-PS1='[\u@\h \W]\$ '
+#+BEGIN_SRC sh :tangle no :dir ~/src :mkdirp yes
+git clone https://github.com/hlissner/doom-emacs
+git clone git@github.com:niklascarlsson/doom-private
+ln -s ~/src/doom-emacs ~/.emacs.d
+ln -s ~/src/doom-private ~/.doom.d
 #+END_SRC
 
-*** external harddrive
-Mount external
-#+BEGIN_SRC sh
-# mount ssd
-alias mountssd='sudo ldm -d -u niklascarlsson'
-#+END_SRC
-*** inputrc
+*** Anywhere
 :PROPERTIES:
-:header-args: :tangle (my/tangle-app '(zsh) "~/.inputrc") :mkdirp yes
+:header-args: :tangle ~/bin/emacs-anywhere :shebang "#!/bin/bash"
 :END:
 
-If zsh is not found on the computer this will create an inputrc file enabling
-vi-mode in bash. It will try to mimic emacs-mode(readline bindings) in insert
-mode but retain normal mode.
+[[https://github.com/zachcurry/emacs-anywhere][Emacs anywhere]] brings Emacs into new realms. Use it to edit text in ~Firefox~.
+
+0) Download the Emacs anywhere project:
+#+BEGIN_SRC sh :tangle no
+git clone git@github.com:niklascarlsson/emacs-anywhere ~/.emacs-anywhere
+#+END_SRC
+
+1) Make sure it's called from Firefox. Get the name of the calling application
+#+BEGIN_SRC sh
+WINDOW=$( xdotool getactivewindow )
+APP_NAME=$( xprop -id "$WINDOW WM_CLASS")
+x=$( echo "$APP_NAME" | awk -F ',' '{print $2}' )
+x2=$(echo "$x" | tr -d '"')
+Make comparison
+if [[ "$x2" == *"Firefox"* ]]; then
+    :
+else
+    exit 1;
+fi
+#+END_SRC
+
+2) Mark the content in Firefox and copy it to the default clipboard
+#+BEGIN_SRC sh
+# clear the clipboard
+echo -n | xclip
+# make selection
+sleep 0.2
+xdotool key --clearmodifiers ctrl+a
+xdotool key --clearmodifiers ctrl+c
+# clear modifiers to avoid registering them
+sleep 0.2 && xdotool keyup Super_L Super_R
+#+END_SRC
+
+I encountered issues that the xdotool sometimes makes the super key stuck
+after I use the clearmodifiers flag. To mitigate that I found this issue on
+github: https://github.com/jordansissel/xdotool/issues/43. Which is why I have
+the keyup command.
+
+3) Lastly export the copied content to a variable that will be accessible in the
+   called run scrip.
+#+BEGIN_SRC sh
+content=$(xclip -selection c -o)
+export EA_CLIPBOARD=$content
+
+"/home/nikcar/.emacs_anywhere/bin/run"
+#+END_SRC
+
+* Encryption
+** gpg
+
+Increase the cache validity for the ~gpg-agent~.
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu) "~/.gnupg/gpg-agent.conf") :mkdirp yes
+default-cache-ttl 86400
+max-cache-ttl 86400
+#+END_SRC
+** rofi-pass
+:PROPERTIES:
+:header-args: :tangle ~/.config/rofi-pass/config :mkdirp yes
+:END:
+
+There is an extension to rofi for handling passwords, [[https://github.com/carnager/rofi-pass][rofi-pass]]. I have used the
+default configuration that was present in the github repository.
+
+I have added the ~-m -1~ flag to synchronize the window behavior between the
+rofi-pass and rofi.
+#+BEGIN_SRC sh
+# permanently set alternative root dir. Use ":" to separate multiple roots
+# which can be switched at runtime with shift+left/right
+# root=/path/to/root
+_rofi () {
+    rofi -i -no-auto-select -m -1 "$@"
+}
+#+END_SRC
 
 #+BEGIN_SRC sh
-# Found these settings here:
-# https://unix.stackexchange.com/questions/303631/how-can-i-setup-a-hybrid-readline-with-emacs-insert-mode-and-vi-command-mode/409866
-# using vi mode in bash and emulate emacs keybindings in vim-insert mode
-set editing-mode vi
+# default command to generate passwords
+_pwgen () {
+	pwgen -y "$@"
+}
 
-set keymap emacs
-"\ee": vi-editing-mode
+# image viewer to display qrcode of selected entry
+# qrencode is needed to generate the image and a viewer
+# that can read from pipes. Known viewers to work are feh and display
+_image_viewer () {
+    feh -
+#    display
+}
 
-set keymap vi-command
-"\ee": emacs-editing-mode
+# xdotool needs the keyboard layout to be set using setxkbmap
+# You can do this in your autostart scripts (e.g. xinitrc)
 
-# key bindings to get out of vi-editing-mode
-set keymap vi-insert
-"\ee": emacs-editing-mode
+# If for some reason, you cannot do this, you can set the command here.
+# and set fix_layout to true
+fix_layout=false
 
-# emacs keybindings in vi-insert mode
-"\C-@": set-mark
-"\C-]": character-search
-"\C-_": undo
-"\C-a": beginning-of-line
-"\C-b": backward-char
-"\C-d": delete-char
-"\C-e": end-of-line
-"\C-f": forward-char
-"\C-g": abort
-"\C-k": kill-line
-"\C-l": clear-screen
-"\C-o": operate-and-get-next
-"\C-q": quoted-insert
-"\C-n": next-history
-"\C-p": previous-history
+layout_cmd () {
+  setxkbmap us
+}
 
-# Change the color of the cursor depending on mode
-# https://stackoverflow.com/questions/44534678/how-to-change-cursor-shape-depending-on-vi-mode-in-bash
-set show-mode-in-prompt on
-set vi-cmd-mode-string "\1\e[2 q\2"
-set vi-ins-mode-string "\1\e[6 q\2"
+# fields to be used
+URL_field='url'
+USERNAME_field='user'
+AUTOTYPE_field='autotype'
 
-# Enable Readline not waiting for additional input when a key is pressed.
-# Needed for the mappings below.
-# https://unix.stackexchange.com/questions/318433/bash-urxvt-delay-after-esc-in-vi-mode
-set keyseq-timeout 0
+# delay to be used for :delay keyword
+delay=2
+
+# rofi-pass needs to close itself before it can type passwords. Set delay here.
+wait=0.2
+
+# delay between keypresses when typing (in ms)
+xdotool_delay=12
+
+## Programs to be used
+# Editor
+EDITOR='gvim -f'
+
+# Browser
+BROWSER='xdg-open'
+
+## Misc settings
+
+default_do='menu' # menu, autotype, copyPass, typeUser, typePass, copyUser, copyUrl, viewEntry, typeMenu, actionMenu, copyMenu, openUrl
+auto_enter='false'
+notify='false'
+default_autotype='user :tab pass'
+
+# color of the help messages
+# leave empty for autodetection
+help_color="#4872FF"
+
+# Clipboard settings
+# Possible options: primary, clipboard, both
+# clip=primary
+clip=both
+
+# Seconds before clearing pass from clipboard
+clip_clear=45
+
+## Options for generating new password entries
+
+# open new password entries in editor
+edit_new_pass="true"
+
+# default_user is also used for password files that have no user field.
+#default_user="${ROFI_PASS_DEFAULT_USER-$(whoami)}"
+#default_user2=mary_ann
+#password_length=12
+
+# Custom Keybindings
+autotype="Alt+1"
+type_user="Alt+2"
+type_pass="Alt+3"
+open_url="Alt+4"
+copy_name="Alt+u"
+copy_url="Alt+l"
+copy_pass="Alt+p"
+show="Alt+o"
+copy_entry="Alt+2"
+type_entry="Alt+1"
+copy_menu="Alt+c"
+action_menu="Alt+a"
+type_menu="Alt+t"
+help="Alt+h"
+switch="Alt+x"
+insert_pass="Alt+n"
+#+END_SRC
+
+** rofi-pinentry :arch-linux:
+
+The default pinentry is ~gtk-2~, which with the arc-dark theme looks alright.
+However since I use rofi as the program launcher that is even better looking.
+[[https://github.com/plattfot/pinentry-rofi][The pinentry-rofi]] package by ~plattfot~ makes it possible to use rofi as the
+pinentry.
+
+#+BEGIN_SRC sh :tangle no
+git clone git@github.com:plattfot/pinentry-rofi-aur.git
+cd pinentry-rofi-aur
+makepkg -ic
+#+END_SRC
+
+I added the ~pinentry-rofi-guile~ as my first pinentry to use in the
+~/usr/bin/pinentry~ file.
+#+BEGIN_SRC sh :tangle no
+#!/bin/sh
+
+test -e /usr/lib/libgtk-x11-2.0.so.0 &&
+exec /usr/bin/pinentry-rofi-guile  "$@"
+
+exec /usr/bin/pinentry-gtk-2  "$@"
+
+exec /usr/bin/pinentry-curses "$@"
+#+END_SRC
+
+* Media
+** Browser
+
+For now Firefox is my browser. I keep my eyes on the development of the
+common-lisp based [[https://github.com/atlas-engineer/next][next browser]].
+
+*** Finding the profile directory
+
+The tricky aspect with tangling this configuration file is that the path to the
+~profile directory~, in which this file should be tangled, is dynamic. It varies
+from computer to computer. Now maybe I could have done this with some regexp
+directly, I am not sure, but it was quite easy to just write an ~Elisp~ function
+that could be used in the tangling process.
+
+#+BEGIN_SRC elisp :tangle no
+(defun my/firefox-profile-directory ()
+  "Find the path to the Firefox profile directory where settings recide."
+  (let ((profile-directory '())
+        (firefox-path (expand-file-name "~/.mozilla/firefox/")))
+    (with-temp-buffer (shell-command (concat "ls " firefox-path) t)
+                      (goto-char (point-min))
+                      (while (not (eobp))
+                          (let ((content (string-trim (thing-at-point 'line))))
+                            (if (string-match "default" content)
+                                (setq profile-directory (concat firefox-path content))))
+                          (forward-line 1)))
+    profile-directory))
+#+END_SRC
+
+*** Minimal looks
+:PROPERTIES:
+:header-args: :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes
+:END:
+
+I created [[https://niklascarlsson.github.io/posts/a-minimalists-firefox/][a blog post]] on where I found this configuration and what it does.
+
+#+BEGIN_SRC sh
+/*
+ * Do not remove the @namespace line -- it's required for correct functioning
+ */
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* set default namespace to XUL */
+
+/*
+ * Hide tab bar, navigation bar and scrollbars
+ * !important may be added to force override, but not necessary
+ */
+#TabsToolbar {visibility: collapse;}
+#navigator-toolbox {visibility: collapse;}
+#content browser {margin-right: -14px; margin-bottom: -14px;}
+#+END_SRC
+
+Getting rid of the status bar
+#+BEGIN_SRC sh
+/* Suppress Connecting/Waiting/Reading/Transerring */
+#statuspanel[type="status"] {
+  display: none !important;
+}
+/* Suppress Link Destination Overlay */
+#statuspanel[type="overLink"] {
+  display: none !important;
+}
+
+window[inFullscreen="true"] #statuspanel {
+bottom: 0px !important; /* adjust*/
+height: 0px !important; /* adjust */
+}
+#+END_SRC
+
+#+BEGIN_SRC sh
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* only needed once */
+
+statuspanel[type="status"] .statuspanel-label {display:none!important;}
+#+END_SRC
+
+*** Keyboard driven
+
+Tridactyl. Need to add how to customize the colors.
+
+** Music
+*** Tizonia
+
+[[https://github.com/tizonia/tizonia-openmax-il][Tizonia, command-line music player]]
+
+Tizonia and the remote control goes here.
+
+**** configuration
+:PROPERTIES:
+:header-args: :tangle (my/tangle-os '(arch ubuntu) "~/.config/tizonia/tizonia.conf") :mkdirp yes :padline no
+:END:
+
+[[https://github.com/tizonia/tizonia-openmax-il][Tizonia]] is a command-line cloud music player for Linux with support for
+~Youtube~, ~Spotify~ and ~SoundCloud~.
+
+***** Start
+#+BEGIN_SRC sh
+# -*-Mode: conf; -*-
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+# tizonia-config v0.16.0 configuration file
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+# tizonia-config v0.17.0 configuration file
+#+END_SRC
+
+#+BEGIN_SRC sh
+[ilcore]
+# Tizonia OpenMAX IL Core section
+
+# Component plugins discovery
+# -------------------------------------------------------------------------
+# A comma-separated list of paths to be scanned by the Tizonia IL Core when
+# searching for component plugins
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+component-paths = /usr/lib/tizonia0-plugins12;
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+component-paths = /usr/lib/x86_64-linux-gnu/tizonia0-plugins12;
+#+END_SRC
+
+#+BEGIN_SRC sh
+# IL Core extension plugins discovery
+# -------------------------------------------------------------------------
+# A comma-separated list of paths to be scanned by the Tizonia IL Core when
+# searching for IL Core extensions (not implemented yet)
+extension-paths =
+
+
+[resource-management]
+# Tizonia OpenMAX IL Resource Management (RM) section
+
+# Resource Manager (RM) daemon interface enable/disable switch
+# -------------------------------------------------------------------------
+# Whether the IL RM functionality is enabled or not
+enabled = false
+
+# RM database
+# -------------------------------------------------------------------------
+# This is the path to the Resource Manager database
+rmdb = /usr/share/tizrmd/tizrm.db
+
+
+[plugins]
+# OpenMAX IL Component plugins section
+
+# Each key-value pair represents a list of any data that a
+# specific component might need. The entries here must honor the following
+# format: OMX.component.name.key = <semi-colon-separated list of items>
+
+# ALSA Audio Renderer
+# -------------------------------------------------------------------------
+#
+# OMX.Aratelia.audio_renderer.alsa.pcm.preannouncements_disabled.port0 = false
+OMX.Aratelia.audio_renderer.alsa.pcm.alsa_device = default
+OMX.Aratelia.audio_renderer.alsa.pcm.alsa_mixer = Master
+
+
+[tizonia]
+# Tizonia player section
+
+# The default audio renderer used by the tizonia player
+# -------------------------------------------------------------------------
+# Valid values are:
+# - OMX.Aratelia.audio_renderer.pulseaudio.pcm
+# - OMX.Aratelia.audio_renderer.alsa.pcm
+default-audio-renderer = OMX.Aratelia.audio_renderer.pulseaudio.pcm
+
+# MPRIS v2 interface enable/disable switch
+# -------------------------------------------------------------------------
+# Valid values are: true | false
+#
+mpris-enabled = true
 
 #+END_SRC
 
+***** Spotify
+#+BEGIN_SRC sh
+# Spotify configuration
+# -------------------------------------------------------------------------
+# To avoid passing this information on the command line, uncomment
+# and configure accordingly
+#
+spotify.user     = _downfall_
+spotify.password = $(pass web/spotify)
+# spotify.recover_lost_token = false (set to true to continue playback after
+#                                     the token has been [spuriously?] lost)
+
+#+END_SRC
+
+***** Google Play Music
+#+BEGIN_SRC sh
+# Google Play Music configuration
+# -------------------------------------------------------------------------
+# To avoid passing this information on the command line, uncomment and
+# configure here.
+#
+# gmusic.user       = user@gmail.com
+# gmusic.password   = pass (account password or app-specific password for
+#                          2-factor users)
+# gmusic.device_id  = deviceid (16 hex digits, e.g. '1234567890abcdef')
+
+
+#+END_SRC
+
+***** SoundCloud
+
+I got the token by following the link at the tizonia project's homepage.
+#+BEGIN_SRC sh
+# SoundCloud configuration
+# -------------------------------------------------------------------------
+# To avoid passing this information on the command line, uncomment and
+# configure your SoundCloud OAuth token here.
+#
+# To obtain your OAuth token, Tizonia needs to be granted access to your
+# SoundCloud account. Visit http://tizonia.org/docs/soundcloud/ for the
+# details.
+#
+# soundcloud.oauth_token = X-XXXXXX-XXXXXXXX-XXXXXXXXXXXXXX
+soundcloud.oauth_token = $(pass web/soundcloud | grep OAuth | cut -d ":" -f2)
+#+END_SRC
+
+***** Dirble
+
+#+BEGIN_SRC sh
+# Dirble configuration
+# -------------------------------------------------------------------------
+# To avoid passing this information on the command line, uncomment and
+# configure your Dirble Api Key here.
+#
+# To obtain your Dirble API key, go to https://dirble.com/developer/
+#
+# dirble.api_key = xxxxxxxxxxxxxx
+
+
+#+END_SRC
+
+***** Plex
+#+BEGIN_SRC sh
+# Plex configuration
+# -------------------------------------------------------------------------
+# To avoid passing this information on the command line, uncomment and
+# configure your Plex server and account auth token here.
+#
+# To find how to obtain a Plex user authentication token, see:
+# https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
+#
+# plex.base_url = xxxxxxxxxxxxxx (e.g. http://plexserver:32400)
+# plex.auth_token = xxxxxxxxxxxxxx (e.g. SrPEojhap3H5Qj2DmjhX)
+#+END_SRC
+
+**** remote control
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+Download the tizonia remote script which can use mpris2 to communicate with the
+running tizonia instance
+#+BEGIN_SRC sh
+wget -O /tmp/tizonia-remote https://raw.githubusercontent.com/tizonia/tizonia-openmax-il/master/player/tools/tizonia-remote.in /tmp/tizonia-remote.in
+#+END_SRC
+
+Move it to somewhere in path and make it executable
+#+BEGIN_SRC sh
+mv /tmp/tizonia-remote ~/bin/tizonia-remote
+chmod +x ~/bin/tizonia-remote
+#+END_SRC
+
+Make sure to also have mpris enabled in the configuration.
+
+** Reader
+*** Zathura
+:PROPERTIES:
+:header-args: :tangle ~/.config/zathura/zathurarc :mkdir p
+:END:
+
+[[https://github.com/pwmt/zathura][Zathura, a highly customizable document viewer]]. I got some inspiration from the
+[[https://wiki.archlinux.org/index.php/Zathura][the arch wiki]] and the video from Luke Smith [[https://www.youtube.com/watch?v=V_Iz4zdyRM4&t=315s][zathura: a vim based minimalist pdf
+reader]]
+
+Enable copy to clipboard
+#+BEGIN_SRC sh
+set selection-clipboard clipboard
+#+END_SRC
+
+Control the paddings
+#+BEGIN_SRC sh
+set statusbar-h-padding 0
+set statusbar-v-padding 0
+set page-padding 1
+#+END_SRC
+
+* Mail
+** retrieving
+:PROPERTIES:
+:header-args: :tangle ~/.mbsyncrc
+:END:
+
+On the [[https://wiki.archlinux.org/index.php/isync#Configuring][Arch Wiki]] there is an example configuration file. I have just modified
+the password and user section to my needs.
+
+This file behaves a little bit strange though. I tried to separate the content
+but when it tangled with some empty lines ~isync~ wasn't happy. That is why I
+decided to keep it as a big block.
+#+BEGIN_SRC sh
+IMAPAccount gmail
+# Address to connect to
+Host imap.gmail.com
+User carlsson.niklas@gmail.com
+PassCmd "pass email/gmail.com"
+# Pass your_password, if you don't have the pass application
+#
+# Use SSL
+SSLType IMAPS
+# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+#CertificateFile ~/.cert/imap.gmail.com.pem
+#CertificateFile ~/.cert/Equifax_Secure_CA.pem
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Subfolders Verbatim
+# The trailing "/" is important
+Path ~/.mail/gmail/
+Inbox ~/.mail/gmail/Inbox
+
+Channel gmail
+Master :gmail-remote:
+Slave :gmail-local:
+# Exclude everything under the internal [Gmail] folder, except the interesting folders
+Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
+# Or include everything
+#Patterns *
+# Automatically create missing mailboxes, both locally and on the server
+Create Both
+# Save the synchronization state files in the relevant directory
+SyncState *
+#+END_SRC
+
+Mail setup for work
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#
+# Zenuity
+#
+
+IMAPAccount     zenuity
+Host            "outlook.office365.com"
+User            "niklas.carlsson@zenuity.com"
+PassCmd         "pass show work/zenuity/login | sed -n 1p"
+AuthMechs       "PLAIN"
+SSLTYPE         "IMAPS"
+CertificateFile "/etc/ssl/certs/ca-certificates.crt"
+
+IMAPStore zenuity-remote
+Account   "zenuity"
+
+MaildirStore zenuity-local
+Path         "/home/nikcar/.mail/zenuity/"
+Inbox        "/home/nikcar/.mail/zenuity/Inbox"
+Trash        "/home/nikcar/.mail/zenuity/Trash"
+SubFolders   "Verbatim"
+
+
+Channel   zenuity-inbox
+Master    ":zenuity-remote:Inbox"
+Slave     ":zenuity-local:"
+Create    "Slave"
+SyncState "*"
+
+Channel   zenuity-sent
+Master    ":zenuity-remote:Sent Items"
+Slave     ":zenuity-local:Sent"
+Create    "Slave"
+SyncState "*"
+
+Channel   zenuity-trash
+Master    ":zenuity-remote:Deleted Items"
+Slave     ":zenuity-local:Trash"
+Create    "Slave"
+SyncState "*"
+
+Group   zenuity
+Channel "zenuity-inbox"
+Channel "zenuity-sent"
+Channel "zenuity-trash"
+#+END_SRC
+
+** indexing
+:PROPERTIES:
+:header-args: :tangle ~/.notmuch-config
+:END:
+
+~notmuch~ is an indexer providing a cli and ~Emacs~ interface. This
+configuration is the default gnerated config file.
+
+https://wiki.archlinux.org/index.php/Notmuch
+#+BEGIN_QUOTE
+Notmuch is a mail indexer. Essentially, is a very thin front end on top of
+xapian.
+#+END_QUOTE
+
+#+BEGIN_SRC sh
+# .notmuch-config - Configuration file for the notmuch mail system
+#
+# For more information about notmuch, see https://notmuchmail.org
+
+# Database configuration
+#
+# The only value supported here is 'path' which should be the top-level
+# directory where your mail currently exists and to where mail will be
+# delivered in the future. Files should be individual email messages.
+# Notmuch will store its database within a sub-directory of the path
+# configured here named ".notmuch".
+#
+[database]
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+path=/home/niklascarlsson/.mail
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+path=/home/nikcar/.mail
+#+END_SRC
+
+#+BEGIN_SRC sh
+# User configuration
+#
+# Here is where you can let notmuch know how you would like to be
+# addressed. Valid settings are
+#
+#	name		Your full name.
+#	primary_email	Your primary email address.
+#	other_email	A list (separated by ';') of other email addresses
+#			at which you receive email.
+#
+# Notmuch will use the various email addresses configured here when
+# formatting replies. It will avoid including your own addresses in the
+# recipient list of replies, and will set the From address based on the
+# address to which the original email was addressed.
+#
+[user]
+name=Niklas Carlsson
+primary_email=carlsson.niklas@gmail.com
+
+# Configuration for "notmuch new"
+#
+# The following options are supported here:
+#
+#	tags	A list (separated by ';') of the tags that will be
+#		added to all messages incorporated by "notmuch new".
+#
+#	ignore	A list (separated by ';') of file and directory names
+#		that will not be searched for messages by "notmuch new".
+#
+#		NOTE: *Every* file/directory that goes by one of those
+#		names will be ignored, independent of its depth/location
+#		in the mail store.
+#
+[new]
+tags=unread;inbox;
+ignore=
+
+# Search configuration
+#
+# The following option is supported here:
+#
+#	exclude_tags
+#		A ;-separated list of tags that will be excluded from
+#		search results by default.  Using an excluded tag in a
+#		query will override that exclusion.
+#
+[search]
+exclude_tags=deleted;spam;
+
+# Maildir compatibility configuration
+#
+# The following option is supported here:
+#
+#	synchronize_flags      Valid values are true and false.
+#
+#	If true, then the following maildir flags (in message filenames)
+#	will be synchronized with the corresponding notmuch tags:
+#
+#		Flag	Tag
+#		----	-------
+#		D	draft
+#		F	flagged
+#		P	passed
+#		R	replied
+#		S	unread (added when 'S' flag is not present)
+#
+#	The "notmuch new" command will notice flag changes in filenames
+#	and update tags, while the "notmuch tag" and "notmuch restore"
+#	commands will notice tag changes and update flags in filenames
+#
+[maildir]
+synchronize_flags=true
+
+# Cryptography related configuration
+#
+# The following *deprecated* option is currently supported:
+#
+#	gpg_path
+#		binary name or full path to invoke gpg.
+#		NOTE: In a future build, this option will be ignored.
+#		Setting $PATH is a better approach.
+#
+[crypto]
+gpg_path=gpg
+
+#+END_SRC
+
+** sending
+:PROPERTIES:
+:header-args: :tangle ~/.msmtprc :tangle-mode (identity #o600)
+:END:
+
+I use ~msmtp~ for sending my emails [[https://wiki.archlinux.org/index.php/msmtp][more information in arch wiki]]. One important
+aspect of the configuration file is that it needs to have the right permission.
+This can be found in the link above, it should have permission ~600~.
+
+#+BEGIN_QUOTE
+The user configuration file must be explicitly readable/writeable by its owner
+or msmtp will fail:
+#+END_QUOTE
+
+This is something that ~:tangle-mode~ handles, which I found information about
+in the [[https://orgmode.org/manual/tangle_002dmode.html][org-manual.]]
+
+Here is the default configuration found at the arch wiki, just with my gmail
+account instead of the default one.
+#+BEGIN_SRC conf
+# Set default values for all following accounts.
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile        ~/.msmtp.log
+
+# Gmail
+account        gmail
+host           smtp.gmail.com
+port           587
+from           carlsson.niklas@gmail.com
+user           carlsson.niklas@gmail.com
+#+END_SRC
+
+Now I have [[https://www.passwordstore.org/][Pass the standard unix password manager]] setup so I can call that
+directly:
+#+BEGIN_SRC conf
+passwordeval "pass email/gmail.com"
+#+END_SRC
+
+If you don't have the password-store, but have setup gpg then one can use:
+#+BEGIN_SRC conf :tangle no
+passwordeval   "gpg --use-agent --quiet --for-your-eyes-only --no-tty --decrypt path_to_gpg_file_with_password
+#+END_SRC
+
+This is the solution if you don't have set up neither ~pass~ nor ~gpg~. You need
+to store the password in plain text.
+#+BEGIN_SRC conf :tangle no
+password       my_password
+#+END_SRC
+
+#+BEGIN_SRC conf
+# Set a default account
+account default : gmail
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)))
+# Zenuity
+account        zenuity
+host           smtp.office365.com
+port           587
+from           niklas.carlsson@zenuity.com
+user           niklas.carlsson@zenuity.com
+passwordeval "pass show work/zenuity/login | sed -n 1p"
+#+END_SRC
+
+** systemd automation
+*** timer
+
+#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.timer :mkdirp t :tangle-mode (identity #o644)
+[Unit]
+Description=Mailbox synchronization timer
+
+[Timer]
+OnBootSec=2m
+OnUnitActiveSec=5m
+Unit=mbsync.service
+
+[Install]
+WantedBy=timers.target
+#+END_SRC
+*** service
+:PROPERTIES:
+:header-args: :tangle ~/.config/systemd/user/mbsync.service :mkdirp t :tangle-mode (identity #o644) :padline no
+:END:
+
+#+BEGIN_SRC sh
+[Unit]
+Description=Mailbox synchronization service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/mbsync -Va
+ExecStartPost=/usr/bin/notmuch new
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+ExecStartPre=/home/niklascarlsson/bin/notmuch-pre
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+ExecStartPre=/home/nikcar/bin/notmuch-pre
+#+END_SRC
+
+*** start
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+Start the service
+#+BEGIN_SRC sh
+sudo systemctl daemon-reload # reload systemd
+# user services don't need elevated rights
+systemctl --user enable mbsync.timer
+systemctl --user start mbsync.timer
+#+END_SRC
+*** utility
+:PROPERTIES:
+:header-args: :tangle ~/bin/notmuch-pre :shebang "#!/bin/bash"
+:END:
+
+Remove mails that has been taged as deleted the --no-run -if-empty prevents the
+rm to run if no files are piped otherwise the command will fail due to lack of
+input arguments.
+#+BEGIN_SRC sh
+notmuch search --output=files --format=text0 tag:deleted | xargs -0 --no-run-if-empty /bin/rm
+#+END_SRC
+
+If the above fails due to index filed taged with deleted doesn't exist this will
+remove the tag making sure that the above statement doesn't keep failing.
+#+BEGIN_SRC sh
+if [ $? -ne 0 ]; then
+    notmuch tag -deleted tag:deleted
+fi
+#+END_SRC
+
+~Improvement:~ add a smart function for deletion in Emacs to avoid
+deleting mails that have been flagged.
+
+* Shells
 ** Zsh
+
 *** zshrc
 :PROPERTIES:
 :header-args: :tangle ~/.zshrc :mkdirp yes :comments link
@@ -2985,4110 +3485,11 @@ if command -v pyenv 1>/dev/null 2>&1; then
 fi
 #+END_SRC
 
-* GTK+ :deprecated:
-
-Both of these configuration files has been copied from hlissers-setup. I have
-also looked at the arch wiki https://wiki.archlinux.org/index.php/GTK%2B#Examples.
-
-** GTK+ 2.x
-:PROPERTIES:
-:header-args: :tangle ~/.gtkrc-2.0 :mkdirp yes
-:END:
-
-#+BEGIN_SRC sh
-include "/usr/share/themes/Arc-Dark/gtk-2.0/gtkrc"
-#+END_SRC
-
-** GTK+ 3.x
-:PROPERTIES:
-:header-args: :tangle ~/.config/gtk-3.0/settings.ini :mkdirp yes
-:END:
-
-#+BEGIN_SRC sh
-[Settings]
-gtk-application-prefer-dark-theme = true
-gtk-theme-name = Arc-Dark
-gtk-icon-theme-name = Arc-Dark
-#+END_SRC
-* mail :deprecated:
-** msbsync
-:PROPERTIES:
-:header-args: :tangle ~/.mbsyncrc
-:END:
-
-On the [[https://wiki.archlinux.org/index.php/isync#Configuring][Arch Wiki]] there is an example configuration file. I have just modified
-the password and user section to my needs.
-
-This file behaves a little bit strange though. I tried to separate the content
-but when it tangled with some empty lines ~isync~ wasn't happy. That is why I
-decided to keep it as a big block.
-#+BEGIN_SRC sh
-IMAPAccount gmail
-# Address to connect to
-Host imap.gmail.com
-User carlsson.niklas@gmail.com
-PassCmd "pass email/gmail.com"
-# Pass your_password, if you don't have the pass application
-#
-# Use SSL
-SSLType IMAPS
-# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
-CertificateFile /etc/ssl/certs/ca-certificates.crt
-#CertificateFile ~/.cert/imap.gmail.com.pem
-#CertificateFile ~/.cert/Equifax_Secure_CA.pem
-
-IMAPStore gmail-remote
-Account gmail
-
-MaildirStore gmail-local
-Subfolders Verbatim
-# The trailing "/" is important
-Path ~/.mail/gmail/
-Inbox ~/.mail/gmail/Inbox
-
-Channel gmail
-Master :gmail-remote:
-Slave :gmail-local:
-# Exclude everything under the internal [Gmail] folder, except the interesting folders
-Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
-# Or include everything
-#Patterns *
-# Automatically create missing mailboxes, both locally and on the server
-Create Both
-# Save the synchronization state files in the relevant directory
-SyncState *
-#+END_SRC
-
-Mail setup for work
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-#
-# Zenuity
-#
-
-IMAPAccount     zenuity
-Host            "outlook.office365.com"
-User            "niklas.carlsson@zenuity.com"
-PassCmd         "pass show work/zenuity/login | sed -n 1p"
-AuthMechs       "PLAIN"
-SSLTYPE         "IMAPS"
-CertificateFile "/etc/ssl/certs/ca-certificates.crt"
-
-IMAPStore zenuity-remote
-Account   "zenuity"
-
-MaildirStore zenuity-local
-Path         "/home/nikcar/.mail/zenuity/"
-Inbox        "/home/nikcar/.mail/zenuity/Inbox"
-Trash        "/home/nikcar/.mail/zenuity/Trash"
-SubFolders   "Verbatim"
-
-
-Channel   zenuity-inbox
-Master    ":zenuity-remote:Inbox"
-Slave     ":zenuity-local:"
-Create    "Slave"
-SyncState "*"
-
-Channel   zenuity-sent
-Master    ":zenuity-remote:Sent Items"
-Slave     ":zenuity-local:Sent"
-Create    "Slave"
-SyncState "*"
-
-Channel   zenuity-trash
-Master    ":zenuity-remote:Deleted Items"
-Slave     ":zenuity-local:Trash"
-Create    "Slave"
-SyncState "*"
-
-Group   zenuity
-Channel "zenuity-inbox"
-Channel "zenuity-sent"
-Channel "zenuity-trash"
-#+END_SRC
-
-** notmuch
-:PROPERTIES:
-:header-args: :tangle ~/.notmuch-config
-:END:
-
-~notmuch~ is an indexer providing a cli and ~Emacs~ interface. This
-configuration is the default gnerated config file.
-
-https://wiki.archlinux.org/index.php/Notmuch
-#+BEGIN_QUOTE
-Notmuch is a mail indexer. Essentially, is a very thin front end on top of
-xapian.
-#+END_QUOTE
-
-#+BEGIN_SRC sh
-# .notmuch-config - Configuration file for the notmuch mail system
-#
-# For more information about notmuch, see https://notmuchmail.org
-
-# Database configuration
-#
-# The only value supported here is 'path' which should be the top-level
-# directory where your mail currently exists and to where mail will be
-# delivered in the future. Files should be individual email messages.
-# Notmuch will store its database within a sub-directory of the path
-# configured here named ".notmuch".
-#
-[database]
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-path=/home/niklascarlsson/.mail
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-path=/home/nikcar/.mail
-#+END_SRC
-
-#+BEGIN_SRC sh
-# User configuration
-#
-# Here is where you can let notmuch know how you would like to be
-# addressed. Valid settings are
-#
-#	name		Your full name.
-#	primary_email	Your primary email address.
-#	other_email	A list (separated by ';') of other email addresses
-#			at which you receive email.
-#
-# Notmuch will use the various email addresses configured here when
-# formatting replies. It will avoid including your own addresses in the
-# recipient list of replies, and will set the From address based on the
-# address to which the original email was addressed.
-#
-[user]
-name=Niklas Carlsson
-primary_email=carlsson.niklas@gmail.com
-
-# Configuration for "notmuch new"
-#
-# The following options are supported here:
-#
-#	tags	A list (separated by ';') of the tags that will be
-#		added to all messages incorporated by "notmuch new".
-#
-#	ignore	A list (separated by ';') of file and directory names
-#		that will not be searched for messages by "notmuch new".
-#
-#		NOTE: *Every* file/directory that goes by one of those
-#		names will be ignored, independent of its depth/location
-#		in the mail store.
-#
-[new]
-tags=unread;inbox;
-ignore=
-
-# Search configuration
-#
-# The following option is supported here:
-#
-#	exclude_tags
-#		A ;-separated list of tags that will be excluded from
-#		search results by default.  Using an excluded tag in a
-#		query will override that exclusion.
-#
-[search]
-exclude_tags=deleted;spam;
-
-# Maildir compatibility configuration
-#
-# The following option is supported here:
-#
-#	synchronize_flags      Valid values are true and false.
-#
-#	If true, then the following maildir flags (in message filenames)
-#	will be synchronized with the corresponding notmuch tags:
-#
-#		Flag	Tag
-#		----	-------
-#		D	draft
-#		F	flagged
-#		P	passed
-#		R	replied
-#		S	unread (added when 'S' flag is not present)
-#
-#	The "notmuch new" command will notice flag changes in filenames
-#	and update tags, while the "notmuch tag" and "notmuch restore"
-#	commands will notice tag changes and update flags in filenames
-#
-[maildir]
-synchronize_flags=true
-
-# Cryptography related configuration
-#
-# The following *deprecated* option is currently supported:
-#
-#	gpg_path
-#		binary name or full path to invoke gpg.
-#		NOTE: In a future build, this option will be ignored.
-#		Setting $PATH is a better approach.
-#
-[crypto]
-gpg_path=gpg
-
-#+END_SRC
-
-** msmtp
-:PROPERTIES:
-:header-args: :tangle ~/.msmtprc :tangle-mode (identity #o600)
-:END:
-
-I use ~msmtp~ for sending my emails [[https://wiki.archlinux.org/index.php/msmtp][more information in arch wiki]]. One important
-aspect of the configuration file is that it needs to have the right permission.
-This can be found in the link above, it should have permission ~600~.
-
-#+BEGIN_QUOTE
-The user configuration file must be explicitly readable/writeable by its owner
-or msmtp will fail:
-#+END_QUOTE
-
-This is something that ~:tangle-mode~ handles, which I found information about
-in the [[https://orgmode.org/manual/tangle_002dmode.html][org-manual.]]
-
-Here is the default configuration found at the arch wiki, just with my gmail
-account instead of the default one.
-#+BEGIN_SRC conf
-# Set default values for all following accounts.
-defaults
-auth           on
-tls            on
-tls_trust_file /etc/ssl/certs/ca-certificates.crt
-logfile        ~/.msmtp.log
-
-# Gmail
-account        gmail
-host           smtp.gmail.com
-port           587
-from           carlsson.niklas@gmail.com
-user           carlsson.niklas@gmail.com
-#+END_SRC
-
-Now I have [[https://www.passwordstore.org/][Pass the standard unix password manager]] setup so I can call that
-directly:
-#+BEGIN_SRC conf
-passwordeval "pass email/gmail.com"
-#+END_SRC
-
-If you don't have the password-store, but have setup gpg then one can use:
-#+BEGIN_SRC conf :tangle no
-passwordeval   "gpg --use-agent --quiet --for-your-eyes-only --no-tty --decrypt path_to_gpg_file_with_password
-#+END_SRC
-
-This is the solution if you don't have set up neither ~pass~ nor ~gpg~. You need
-to store the password in plain text.
-#+BEGIN_SRC conf :tangle no
-password       my_password
-#+END_SRC
-
-#+BEGIN_SRC conf
-# Set a default account
-account default : gmail
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)))
-# Zenuity
-account        zenuity
-host           smtp.office365.com
-port           587
-from           niklas.carlsson@zenuity.com
-user           niklas.carlsson@zenuity.com
-passwordeval "pass show work/zenuity/login | sed -n 1p"
-#+END_SRC
-
-* music :deprecated:
-** tizonia arch
-:PROPERTIES:
-:header-args: :tangle (my/tangle-os '(arch) "~/.config/tizonia/tizonia.conf~") :mkdirp yes :comments link
-:END:
-
-[[https://github.com/tizonia/tizonia-openmax-il][Tizonia]] is a command-line cloud music player for Linux with support for
-~Youtube~, ~Spotify~ and ~SoundCloud~.
-
-*** Start
-#+BEGIN_SRC sh
-# -*-Mode: conf; -*-
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-# tizonia-config v0.16.0 configuration file
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-# tizonia-config v0.17.0 configuration file
-#+END_SRC
-
-#+BEGIN_SRC sh
-[ilcore]
-# Tizonia OpenMAX IL Core section
-
-# Component plugins discovery
-# -------------------------------------------------------------------------
-# A comma-separated list of paths to be scanned by the Tizonia IL Core when
-# searching for component plugins
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-component-paths = /usr/lib/tizonia0-plugins12;
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-component-paths = /usr/lib/x86_64-linux-gnu/tizonia0-plugins12;
-#+END_SRC
-
-#+BEGIN_SRC sh
-# IL Core extension plugins discovery
-# -------------------------------------------------------------------------
-# A comma-separated list of paths to be scanned by the Tizonia IL Core when
-# searching for IL Core extensions (not implemented yet)
-extension-paths =
-
-
-[resource-management]
-# Tizonia OpenMAX IL Resource Management (RM) section
-
-# Resource Manager (RM) daemon interface enable/disable switch
-# -------------------------------------------------------------------------
-# Whether the IL RM functionality is enabled or not
-enabled = false
-
-# RM database
-# -------------------------------------------------------------------------
-# This is the path to the Resource Manager database
-rmdb = /usr/share/tizrmd/tizrm.db
-
-
-[plugins]
-# OpenMAX IL Component plugins section
-
-# Each key-value pair represents a list of any data that a
-# specific component might need. The entries here must honor the following
-# format: OMX.component.name.key = <semi-colon-separated list of items>
-
-# ALSA Audio Renderer
-# -------------------------------------------------------------------------
-#
-# OMX.Aratelia.audio_renderer.alsa.pcm.preannouncements_disabled.port0 = false
-OMX.Aratelia.audio_renderer.alsa.pcm.alsa_device = default
-OMX.Aratelia.audio_renderer.alsa.pcm.alsa_mixer = Master
-
-
-[tizonia]
-# Tizonia player section
-
-# The default audio renderer used by the tizonia player
-# -------------------------------------------------------------------------
-# Valid values are:
-# - OMX.Aratelia.audio_renderer.pulseaudio.pcm
-# - OMX.Aratelia.audio_renderer.alsa.pcm
-default-audio-renderer = OMX.Aratelia.audio_renderer.pulseaudio.pcm
-
-# MPRIS v2 interface enable/disable switch
-# -------------------------------------------------------------------------
-# Valid values are: true | false
-#
-mpris-enabled = true
-
-#+END_SRC
-
-*** Spotify
-#+BEGIN_SRC sh
-# Spotify configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment
-# and configure accordingly
-#
-spotify.user     = _downfall_
-spotify.password = $(pass web/spotify)
-# spotify.recover_lost_token = false (set to true to continue playback after
-#                                     the token has been [spuriously?] lost)
-
-#+END_SRC
-
-*** Google Play Music
-#+BEGIN_SRC sh
-# Google Play Music configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure here.
-#
-# gmusic.user       = user@gmail.com
-# gmusic.password   = pass (account password or app-specific password for
-#                          2-factor users)
-# gmusic.device_id  = deviceid (16 hex digits, e.g. '1234567890abcdef')
-
-
-#+END_SRC
-
-*** SoundCloud
-
-I got the token by following the link at the tizonia project's homepage.
-#+BEGIN_SRC sh
-# SoundCloud configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure your SoundCloud OAuth token here.
-#
-# To obtain your OAuth token, Tizonia needs to be granted access to your
-# SoundCloud account. Visit http://tizonia.org/docs/soundcloud/ for the
-# details.
-#
-# soundcloud.oauth_token = X-XXXXXX-XXXXXXXX-XXXXXXXXXXXXXX
-soundcloud.oauth_token = $(pass web/soundcloud | grep OAuth | cut -d ":" -f2)
-#+END_SRC
-
-*** Dirble
-
-#+BEGIN_SRC sh
-# Dirble configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure your Dirble Api Key here.
-#
-# To obtain your Dirble API key, go to https://dirble.com/developer/
-#
-# dirble.api_key = xxxxxxxxxxxxxx
-
-
-#+END_SRC
-
-*** Plex
-#+BEGIN_SRC sh
-# Plex configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure your Plex server and account auth token here.
-#
-# To find how to obtain a Plex user authentication token, see:
-# https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
-#
-# plex.base_url = xxxxxxxxxxxxxx (e.g. http://plexserver:32400)
-# plex.auth_token = xxxxxxxxxxxxxx (e.g. SrPEojhap3H5Qj2DmjhX)
-#+END_SRC
-** tizonia ubuntu
-:PROPERTIES:
-:header-args: :tangle "~/tmp/tizonia_ubuntu" :mkdirp yes
-:END:
-
-#+BEGIN_SRC sh
-# -*-Mode: conf; -*-
-# tizonia-config v0.17.0 configuration file
-
-[ilcore]
-# Tizonia OpenMAX IL Core section
-
-# Component plugins discovery
-# -------------------------------------------------------------------------
-# A comma-separated list of paths to be scanned by the Tizonia IL Core when
-# searching for component plugins
-component-paths = /usr/lib/x86_64-linux-gnu/tizonia0-plugins12;
-
-# IL Core extension plugins discovery
-# -------------------------------------------------------------------------
-# A comma-separated list of paths to be scanned by the Tizonia IL Core when
-# searching for IL Core extensions (not implemented yet)
-extension-paths =
-
-
-[resource-management]
-# Tizonia OpenMAX IL Resource Management (RM) section
-
-# Resource Manager (RM) daemon interface enable/disable switch
-# -------------------------------------------------------------------------
-# Whether the IL RM functionality is enabled or not
-enabled = false
-
-# RM database
-# -------------------------------------------------------------------------
-# This is the path to the Resource Manager database
-rmdb = /usr/share/tizrmd/tizrm.db
-
-
-[plugins]
-# OpenMAX IL Component plugins section
-
-# Each key-value pair represents a list of any data that a
-# specific component might need. The entries here must honor the following
-# format: OMX.component.name.key = <semi-colon-separated list of items>
-
-# ALSA Audio Renderer
-# -------------------------------------------------------------------------
-#
-# OMX.Aratelia.audio_renderer.alsa.pcm.preannouncements_disabled.port0 = false
-OMX.Aratelia.audio_renderer.alsa.pcm.alsa_device = default
-OMX.Aratelia.audio_renderer.alsa.pcm.alsa_mixer = Master
-
-
-[tizonia]
-# Tizonia player section
-
-# The default audio renderer used by the tizonia player
-# -------------------------------------------------------------------------
-# Valid values are:
-# - OMX.Aratelia.audio_renderer.pulseaudio.pcm
-# - OMX.Aratelia.audio_renderer.alsa.pcm
-default-audio-renderer = OMX.Aratelia.audio_renderer.pulseaudio.pcm
-
-# MPRIS v2 interface enable/disable switch
-# -------------------------------------------------------------------------
-# Valid values are: true | false
-#
-mpris-enabled = true
-
-# Spotify configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment
-# and configure accordingly
-#
-spotify.user     = _downfall_
-spotify.password = $(pass web/spotify)
-# spotify.recover_lost_token = false (set to true to continue playback after
-#                                     the token has been [spuriously?] lost)
-
-# Google Play Music configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure here.
-#
-# gmusic.user       = user@gmail.com
-# gmusic.password   = pass (account password or app-specific password for
-#                          2-factor users)
-# gmusic.device_id  = deviceid (16 hex digits, e.g. '1234567890abcdef')
-
-
-# SoundCloud configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure your SoundCloud OAuth token here.
-#
-# To obtain your OAuth token, Tizonia needs to be granted access to your
-# SoundCloud account. Visit http://tizonia.org/docs/soundcloud/ for the
-# details.
-#
-# soundcloud.oauth_token = X-XXXXXX-XXXXXXXX-XXXXXXXXXXXXXX
-
-
-# Dirble configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure your Dirble Api Key here.
-#
-# To obtain your Dirble API key, go to https://dirble.com/developer/
-#
-# dirble.api_key = xxxxxxxxxxxxxx
-
-
-# Plex configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure your Plex server and account auth token here.
-#
-# To find how to obtain a Plex user authentication token, see:
-# https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
-#
-# plex.base_url = xxxxxxxxxxxxxx (e.g. http://plexserver:32400)
-# plex.auth_token = xxxxxxxxxxxxxx (e.g. SrPEojhap3H5Qj2DmjhX)
-
-
-#+END_SRC
-:header-args: :tangle (my/tangle-os '(arch) "~/.config/tizonia/tizonia.conf~") :mkdirp yes :comments link
-
-* New dotfiles structure
-** Background
-
-This dotfile setup is heavily inspired/borderline stolen from [[https://github.com/hlissner/dotfiles][hlissner's
-dotfiles]]. I have also taken inspiration from others such as [[https://github.com/noctuid][noctuid]]. My ambition
-has been to craft a setup that is highly focused on being ~minimalistic~,
-~keyboardriven~, and ~highly customizable~.
-
-** Desktop environment
-*** X server
-
-[[https://wiki.archlinux.org/index.php/xorg][Xorg in ArchWiki]]
-#+BEGIN_QUOTE
-Xorg (commonly referred as simply X) is the most popular display server among
-Linux users. Its ubiquity has led to making it an ever-present requisite for GUI
-applications, resulting in massive adoption from most distributions.
-#+END_QUOTE
-
-**** Xinitrc
-:PROPERTIES:
-:header-args: :tangle (my/tangle-not-app '(lightdm) "~/.xinitrc") :shebang "#! /bin/sh" :mkdirp yes
-:END:
-
-If my os doesn't have a display manager I will utilize this setup. Hence I let
-the ~xinitrc~ be the configuration file where I specify the settings and
-programs to launch upon startup. Currently assumes that if ~lightdm~ exists that
-it is enabled and properly configured. ~xinitrc~ will then not tangle but
-instead ~xprofile~ will, and vice versa.
-
-***** Load xresources
-
-Loading the Xresources file which contains the configuration parameters for some
-X client applications like the terminal emulator ~urxvt~.
-#+BEGIN_SRC sh
-# customize xresources
-[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
-# set wallpaper
-[[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
-#+END_SRC
-
-***** DONE HIDPI screen support
-CLOSED: [2019-06-07 Fri 17:32]
-
-I found an example configuration for the retina display at
-https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
-Currently I have commented out the gdk and qt settings until I read up on what
-they actually does. The xrandr command however I needed because by default the
-output of the ~xrandr -q~ said the dpi was 96 which was clearly incorrect. I
-verified that the 227 was correct by consulting the apple website for the
-macbook specs.
-
-Some more information on the matter:
-https://wiki.archlinux.org/index.php/HiDPI#GDK_3_(GTK+_3)
-
-#+BEGIN_SRC sh
-# hidpi settings
-export GDK_SCALE=2
-export GDK_DPI_SCALE=0.5
-#export QT_SCREEN_SCALE_FACTORS=0.9
-#export QT_AUTO_SCREEN_SCALE_FACTOR=2
-#export QT_SCALE_FACTOR=2
-
-#+END_SRC
-
-Previously I scaled up the non hidpi external monitor. A better approach was
-what was suggested at the [[https://wiki.archlinux.org/index.php/HiDPI#Multiple_external_monitors][arch wiki]], namely scale down the hidpi screen. Since
-this only applies when I have the computer connected to the external monitor I
-am not using the built in screen primarly so scaling it down should be a better
-strategy.
-
-#+BEGIN_SRC sh
-# Setup screen scaling/resolutions
-if [ "$(xrandr -q | grep ' connected' -c)" -eq "1" ]; then
-    xrandr --output eDP-1 --dpi 227
-else
-    xrandr --output eDP-1 --dpi 227 --scale 0.75x0.75
-    xrandr --output DP-2 --right-of eDP-1 --auto
-fi
-#+END_SRC
-
-***** Keyboard settings
-
-These are the settings for the keyboard.
-#+BEGIN_SRC sh
-# keyboard settings
-setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
-#+END_SRC
-
-I learnt about the ~setxkbmap~ at the [[https://wiki.archlinux.org/index.php/Xorg/Keyboard_configuration#Using_setxkbmap][arch wiki]], where else. Let's break down
-the line. The ~layout~ specifies ~American~ and ~Swedish~ layouts. One can
-switch between these two keyboard layouts by pressing both ~shifts~ at
-time. Last I swap ctrl to caps and remove capslock.
-***** Pywall
-
-#+BEGIN_SRC sh :tangle no
-# Add this to your .xinitrc or whatever file starts programs on startup.
-# -R restores the last colorscheme that was in use.
-wal -R
-#+END_SRC
-
-***** Launch programs
-
-I need to launch sxhkd since bspwm is relying upon that program to handle the
-keybindings. I launch the terminal as well at startup. It can be convinent at
-times when I hadn't installed rofi. Can probably be removed now.
-
-#+BEGIN_SRC sh
-# start programs
-sxhkd &
-urxvt &
-# redshift &
-compton &
-exec bspwm
-#+END_SRC
-
-**** Xresources
-:PROPERTIES:
-:header-args: :tangle ~/.Xresources :mkdirp yes
-:END:
-
-[[https://wiki.archlinux.org/index.php/x_resources#Usage][Xresources in ArchWiki]]
-#+BEGIN_QUOTE
-Xresources is a user-level configuration dotfile, typically located at
-~/.Xresources. It can be used to set X resources, which are configuration
-parameters for X client applications.
-#+END_QUOTE
-
-***** TODO HIDPI
-
-The configuration of hidpi parameters originate from the blogpost
-[[https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/][installing-arch-linux-on-a-macbook-with-retina-hidpi]], but the [[https://wiki.archlinux.org/index.php/HiDPI#X_Resources][ArchWiki]] also has
-some hints for what to configure these values to.
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-!! hidpi
-Xft.dpi: 227
-Xft.rgba: rgb
-Xft.antialias: true
-Xft.hinting: false
-Xft.lcdfilter: lcddefault
-#+END_SRC
-
-***** TODO Colors
-
-The colors originate from ~hlissners~ dotfiles setup. Another source for color
-schemes might be
-
-I found these colors in [[https://github.com/hlissner/dotfiles/blob/master/base/arch-desktop/Xresources][hlissner/dotfiles]], and thought they would make a good
-start. For changes in the future the [[https://terminal.sexy/][terminal.sexy]] has some color schemes that
-can be directly exported to Xresources format.
-#+BEGIN_SRC sh
-!! Colors
-#define blk  #141517
-#define bblk #969896
-#define red  #cc6666
-#define bred #de935f
-#define grn  #b5bd68
-#define bgrn #757d28
-#define ylw  #f0c674
-#define bylw #f9a03f
-#define blu  #81a2be
-#define bblu #2a8fed
-#define mag  #b294bb
-#define bmag #bc77a8
-#define cyn  #8abeb7
-#define bcyn #a3685a
-#define wht  #c5c8c6
-#define bwht #ffffff
-#define bg blk
-#define fg wht
-
-,*.foreground:  fg
-,*.background:  bg
-,*.cursorColor: mag
-
-,*.color0:  blk
-,*.color8:  bblk
-,*.color1:  red
-,*.color9:  bred
-,*.color2:  grn
-,*.color10: bgrn
-,*.color3:  ylw
-,*.color11: bylw
-,*.color4:  blu
-,*.color12: bblu
-,*.color5:  mag
-,*.color13: bmag
-,*.color6:  cyn
-,*.color14: bcyn
-,*.color7:  wht
-,*.color15: bwht
-
-! greys
-,*.color234: #1d2021
-,*.color235: #282828
-,*.color236: #32302f
-,*.color237: #3c3836
-,*.color239: #504945
-,*.color240: #544c49
-,*.color241: #665c54
-
-!! cursor
-Xcursor.theme: default
-Xcursor.size: 32
-#+END_SRC
-
-***** urxvt
-
-These settings originates from the the same link as the above block.
-#+BEGIN_SRC sh
-!! urxvt
-URxvt*.background:             [96]blk
-URxvt*.termName:               xterm-256color
-URxvt*.geometry:               81x20
-URxvt*.buffered:               true
-URxvt*.cursorBlink:            true
-URxvt*.underlineColor:         grey
-URxvt*.depth:                  32
-URxvt*.borderless:             1
-URxvt.iso14755:                false
-URxvt.iso14755_52:             false
-URxvt*.internalBorder:         14
-URxvt*.scrollBar:              false
-URxvt*.saveLines:              5000
-URxvt*.loginShell:             false
-URxvt*.matcher.button:         1
-URxvt*.matcher.rend.0:         Uline Bold fg5
-URxvt*.url-launcher:           firefox
-
-URxvt*.lineSpace:              0
-URxvt*.letterSpace:            0
-#+END_SRC
-
-***** Fonts
-
-Choosing fonts are never easy. These are my current setup.
-
-~Arch~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-URxvt.font: xft:Iosevka Term:style=regular:size=6
-URxvt.boldFont: xft:Iosevka Term:style=bold:size=6
-#+END_SRC
-
-~Ubuntu~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-!URxvt.font: xft:Roboto Mono:style=regular:size=12
-!URxvt.boldFont: xft:Roboto Mono:style=bold:size=12
-URxvt.font: xft:Iosevka Term:style=Regular:size=12
-URxvt.boldFont: xft:Iosevka Term:style=Bold:size=12
-#+END_SRC
-
-**** Xprofile
-:PROPERTIES:
-:header-args: :tangle (my/tangle-app '(lightdm) "~/.xprofile") :mkdirp yes
-:END:
-
-***** About
-
-In the [[https://wiki.archlinux.org/index.php/xprofile][ArchWiki]] this is said about the ~xprofile~.
-#+BEGIN_QUOTE
-An xprofile file, ~/.xprofile and /etc/xprofile, allows you to execute commands
-at the beginning of the X user session - before the window manager is started.
-#+END_QUOTE
-
-When configuring ~bspwm~ for ~Ubuntu~ the [[https://github.com/windelicato/dotfiles/wiki/bspwm-for-dummies][bspwm-for-dummies]] guide explicitly
-said that if you have a display manager, like the one in Ubuntu, then you
-shouldn't use the ~xinitrc~. So instead I am using the ~xprofile~ to configure
-what applications and settings to configure upon startup.
-
-****** TODO Improvement
-
-One improvement here would be to use xprofile if I have a display manager or
-not. In the case when I don't have one I can source the xprofile from the
-xinitrc. I should consider this in the future. Maybe after switching to
-Ubuntu18.
-***** hidpi and non-hidpi solution
-
-This is my hacky solution for dealing with hidpi and non-hidpi screen mix. If
-only the internal screen is used I use sed commands to adjust dpi/font settings
-to hidpi mode.
-
-If the external monitor is connected I however downscale the internal one and
-use sed commands to set non hidpi dpi/font settings.
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-# Customize settings for non/hidpi setup
-if [ "$(bspc query -M | wc -l)" -eq "1" ]; then
-    # no external monitor connected, adjust to hidpi settings
-    sed -i '/font-[[:digit:]]./ {s/size=[[:digit:]]\+/size=8/; }' ~/.config/polybar/config
-    sed -i '/dpi-./ {s/[[:digit:]]\+/227/; }' ~/.config/polybar/config
-    sed -i '/Xft.dpi:./ {s/[[:digit:]]\+/227/; }' ~/.Xresources
-    sed -i '/URxvt*.\+ont./ {s/[[:digit:]]\+/8/; }' ~/.Xresources
-    sed -i '/rofi.font./ {s/[[:digit:]]\+/8/; }' ~/.config/rofi/config
-    sed -i '/layout.css.devPixelsPerPx./ {s/[[:digit:]]*\.[[:digit:]]/1.5/; }' /home/niklascarlsson/.mozilla/firefox/eeakdoa8.default'/prefs.js'
-
-    # hidpi settings
-    export GDK_SCALE=1.5
-    export GDK_DPI_SCALE=0.5
-    export QT_SCREEN_SCALE_FACTORS=0.9
-    export QT_AUTO_SCREEN_SCALE_FACTOR=2
-    export QT_SCALE_FACTOR=2
-
-    xrandr --output eDP-1 --dpi 227
-else
-    # external monitor connected, adjust to non hidpi settings
-    sed -i '/font-[[:digit:]]./ {s/size=[[:digit:]]\+/size=10/; }' ~/.config/polybar/config
-    sed -i '/dpi-./ {s/[[:digit:]]\+/96/; }' ~/.config/polybar/config
-    sed -i '/Xft.dpi:./ {s/[[:digit:]]\+/96/; }' ~/.Xresources
-    sed -i '/URxvt*.\+ont./ {s/[[:digit:]]\+/10/; }' ~/.Xresources
-    sed -i '/rofi.font./ {s/[[:digit:]]\+/10/; }' ~/.config/rofi/config
-    sed -i '/layout.css.devPixelsPerPx./ {s/[[:digit:]]*\.[[:digit:]]/1/; }' /home/niklascarlsson/.mozilla/firefox/eeakdoa8.default'/prefs.js'
-
-    xrandr --output eDP-1 --dpi 227 --scale 0.75x0.75
-    xrandr --output DP-2 --right-of eDP-1 --auto
-fi
-#+END_SRC
-
-***** Xresources
-
-#+BEGIN_SRC sh
-# customize xresources
-[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
-#+END_SRC
-
-***** Pywall
-
-#+BEGIN_SRC sh
-# set wallpaper
-[[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle no
-# Add this to your .xinitrc or whatever file starts programs on startup.
-# -R restores the last colorscheme that was in use.
-wal -R
-#+END_SRC
-
-***** TODO Keyboard
-
-I want to have a smarter solution in place here. Maybe one that utilizes udev
-rules to set this automatically depending on wether I have a specfic external
-keyboard in use.
-
-Essentially this is only valuable when I run on my Ubuntu computer or having a
-non keyboardio external keyboard attached to the computer.
-
-Set the keyboard mapping. I enable ~Swedish~ and ~English~ and switch languages
-by pressing both of the ~shift~ keys.
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-# set keyboard layouts
-setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_lwin
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-# set keyboard layouts
-setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
-#+END_SRC
-
-***** Programs
-
-Launch the hotkey daemon.
-#+BEGIN_SRC sh
-sxhkd &
-#+END_SRC
-
-Launch the compositor compton to enable semi-trasparency.
-#+BEGIN_SRC sh
-# Start compositor
-compton &
-#+END_SRC
-
-Wait some before launching before launching the other, non-critical, applications
-#+BEGIN_SRC sh
-xcape &
-unclutter &
-#+END_SRC
-**** Profile
-:PROPERTIES:
-:header-args: :tangle ~/.profile :mkdirp yes
-:END:
-
-In the [[https://wiki.archlinux.org/index.php/bspwm][configuration section for bspwm in the ArchWiki]] it is stated that:
-#+BEGIN_EXAMPLE
-Important: Make sure your environment variable $XDG_CONFIG_HOME is set or your
-bspwmrc will not be found
-#+END_EXAMPLE
-
-It's therefore important to set this environmental variable, which I do in
-~profile~.
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-XDG_CONFIG_HOME="$HOME/.config"
-export XDG_CONFIG_HOME
-#+END_SRC
-
-*** Window manager
-
-[[https://github.com/baskerville/bspwm][bspwm, a tiling window manager]]. The ~bspwm~ window manager relies upon
-[[https://github.com/baskerville/sxhkd][sxhkd, an X daemon]] which is where the keybindings are specified.
-
-**** TODO bspwm
-**** sxhkd
-:PROPERTIES:
-:header-args: :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes
-:END:
-
-I followed the instructions from the manual and copied over the example
-configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
-
-***** Independent hotkeys
-
-#+BEGIN_SRC sh
-#
-# wm independent hotkeys
-#
-
-# terminal emulator
-super + Return
-	urxvt
-#+END_SRC
-
-A dropdown terminal can come in handy, [[https://github.com/noctuid/tdrop][tdrop]] provides that. The parameters are
-the following, a for autodection of the window manager, m for monitor awareness,
-s for creating a session named scratch and urxvt is the program that launches.
-#+BEGIN_SRC sh
-# dropdown terminal
-super + grave
-    tdrop -ma -s scratch urxvt
-#+END_SRC
-
-#+BEGIN_SRC sh
-# make sxhkd reload its configuration files:
-super + Escape
-	pkill -USR1 -x sxhkd
-#+END_SRC
-
-Add a shortcut for launching a floating org-capture window
-#+BEGIN_SRC sh
-mod4 + ctrl + shift + grave
-	bspc rule -a 'Emacs' -o state=floating && org-capture
-#+END_SRC
-
-Add a shortcut for Emacs anywhere. Make it always appear tiled at the bottom
-#+BEGIN_SRC sh
-mod4 + apostrophe
-    emacsclient -e nil && bspc rule -a 'Emacs' -o split_ratio=0.7 state=tiled split_dir=south && emacs-anywhere
-#+END_SRC
-
-****** Application launcher
-
-I have changed the application launcher from ~dmenu~ to ~rofi~.
-#+BEGIN_SRC sh
-super + @space
-	rofi -show run
-
-#+END_SRC
-
-****** Lock
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-@F2
-    lock -n -p
-#+END_SRC
-****** Password
-
-Quickly search through my passwords
-
-#+BEGIN_SRC sh
-super + backslash
-    rofi-pass
-#+END_SRC
-
-***** Hotkeys
-#+BEGIN_SRC sh
-#
-# bspwm hotkeys
-#
-
-# quit bspwm normally
-super + alt + Escape
-	bspc quit
-
-# close and kill
-super + {_,shift + }w
-	bspc node -{c,k}
-
-# alternate between the tiled and monocle layout
-super + m
-	bspc desktop -l next
-
-# send the newest marked node to the newest preselected node
-super + y
-	bspc node newest.marked.local -n newest.!automatic.local
-
-# swap the current node and the biggest node
-super + g
-	bspc node -s biggest
-
-#+END_SRC
-
-***** State flags
-
-#+BEGIN_SRC sh
-#
-# state/flags
-#
-
-# set the window state
-super + {t,shift + t,s,f}
-	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
-
-# set the node flags
-super + ctrl + {m,x,y,z}
-	bspc node -g {marked,locked,sticky,private}
-
-#+END_SRC
-
-***** Focus and swapping
-#+BEGIN_SRC sh
-#
-# focus/swap
-#
-
-# focus the node in the given direction
-super + {_,shift + }{h,j,k,l}
-	bspc node -{f,s} {west,south,north,east}
-
-# focus the node for the given path jump
-super + {p,b,comma,period}
-	bspc node -f @{parent,brother,first,second}
-
-# focus the next/previous node in the current desktop
-super + {_,shift + }c
-	bspc node -f {next,prev}.local
-
-# focus the next/previous desktop in the current monitor
-super + bracket{left,right}
-	bspc desktop -f {prev,next}.local
-
-# focus the last node/desktop
-super + {grave,Tab}
-	bspc {node,desktop} -f last
-
-# focus the older or newer node in the focus history
-super + {o,i}
-	bspc wm -h off; \
-	bspc node {older,newer} -f; \
-	bspc wm -h on
-
-# focus or send to the given desktop
-super + {_,shift + }{1-9,0}
-	bspc {desktop -f,node -d} '^{1-9,10}'
-
-#+END_SRC
-
-***** Preselect
-
-#+BEGIN_SRC sh
-#
-# preselect
-#
-
-# preselect the direction
-super + ctrl + {h,j,k,l}
-	bspc node -p {west,south,north,east}
-
-# preselect the ratio
-super + ctrl + {1-9}
-	bspc node -o 0.{1-9}
-
-# cancel the preselection for the focused node
-super + ctrl + space
-	bspc node -p cancel
-
-# cancel the preselection for the focused desktop
-super + ctrl + shift + space
-	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
-
-#+END_SRC
-
-***** Move/resize
-#+BEGIN_SRC sh
-#
-# move/resize
-#
-
-# expand a window by moving one of its side outward
-super + alt + {h,j,k,l}
-	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
-
-# contract a window by moving one of its side inward
-super + alt + shift + {h,j,k,l}
-	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
-
-# move a floating window
-super + {Left,Down,Up,Right}
-	bspc node -v {-20 0,0 20,0 -20,20 0}
-#+END_SRC
-
-Resize the gaps in tiled layout. Found inspiration [[https://github.com/desyncr/bspwmrc/blob/master/sxhkdrc ][here]]
-#+BEGIN_SRC sh
-#
-# gaps
-#
-
-# change window gap at run time
-super + plus
-    bspc config -d focused window_gap $((`bspc config -d focused window_gap` + 5 ))
-
-# Restore original gap
-super + equal
-    bspc config top_padding 6; bspc config -d focused window_gap 15
-
-# decrease gap
-super + minus
-    bspc config -d focused window_gap $((`bspc config -d focused window_gap` - 5 ))
-#+END_SRC
-
-***** Brightness
-
-I want to be able to control the brightness of the screen. To my help I have
-[[https://haikarainen.github.io/light/][light]].
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-#
-# Brightness
-#
-XF86MonBrightnessDown
-	light -U 5
-XF86MonBrightnessUp
-	light -A 5
-#+END_SRC
-
-:PROPERTIES:
-:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :mkdirp yes
-:END:
-
-With ~bspwmrc~ it's important that the file is executable. With tangle there are
-two different ways of making a tangled file executable
-https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
-argument which will org will make sure to add the shebang and make the file
-executable.
-
-***** sxhkd
-
-The example file starts with ~sxhkd~. I am unsure if I need it both here and in
-the ~xinitrc~.
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-sxhkd &
-#+END_SRC
-
-***** Monitors and desktops
-****** [X] Set the primary monitor
-CLOSED: [2019-01-27 Sun 13:38]
-
-I will start by setting up the correct monitor to be primary using ~randr~. The
-benefit of that is that I later can just refer to the primary monitor, for
-example to only put the polybar on the primary. Or use other type of bars for
-the ones that ain't primary.
-
-First step is to define the name of the primary. If there are no screens
-connected then the internal screen will automatically be set to primary which
-means that I don't need to do antyhing more.
-
-This is my primary monitor for my ~ubuntu~ setup
-#+BEGIN_SRC sh
-EXTERNAL_MONITOR="DP-1-1-8"
-#+END_SRC
-
-This is my primary monitor for my ~arch~ setup
-#+BEGIN_SRC sh
-EXTERNAL_MONITOR="DP-2"
-#+END_SRC
-
-Setup for external monitors. I found inspiration on how to find out wether the
-external monitor is among the items in the list [[https://stackoverflow.com/questions/8063228/how-do-i-check-if-a-variable-exists-in-a-list-in-bash][here]]
-#+BEGIN_SRC sh
-MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
-if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
-    # if external monitor is connected set it to primary
-    xrandr --output $EXTERNAL_MONITOR --primary
-fi
-#+END_SRC
-****** TODO Distribute workspaces on the different displays
-
-With bspwm I can have different amount of workspaces on different displays. The
-workspaces are not connected either which is a nice feature making it possible
-to change workspace on one screen whilst keeping the other workspaces unchanged.
-
-******* Uniform distribution
-
-Each display gets the same amount of workspaces.
-
-******* Primary distribution
-
-The primary display get's more workspaces whilst the others have one each.
-
-****** first solution
-******* randr
-
-#+BEGIN_SRC sh :tangle no
-xrandr --output DP-1-1-8 --primary
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle no
-xrandr -q | grep DP-1-1-8
-#+END_SRC
-
-#+RESULTS:
-
-Trying to improve setting primary
-#+BEGIN_SRC sh :tangle no
-MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
-echo $MONITORS
-if [[ $MONITORS == *DP* ]];
-then
-    echo "Connected"
-else
-    echo "Not connected"
-fi
-#+END_SRC
-
-#+RESULTS:
-| eDP-1-1 |           |
-| Not     | connected |
-
-#+BEGIN_SRC sh :tangle no :results output
-EXTERNAL_CONNECTED=$(xrandr -q | grep DP-1-1-8 | wc -l)
-
-echo $EXTERNAL_CONNECTED
-if [ $EXTERNAL_CONNECTED -eq "0"]; then
-echo "External not connnected"
-else
-echo "External connnected"
-fi
-#+END_SRC
-
-#+RESULTS:
-: 0
-: External connnected
-
-#+BEGIN_SRC sh :tangle no :results output
-INTERNAL_CONNECTED=$(xrandr -q | grep "eDP-1-1" | wc -l)
-echo $INTERNAL_CONNECTED
-if [ $INTERNAL_CONNECTED -eq "0"]; then
-echo "Internal not connnected"
-else
-echo "Internal connnected"
-fi
-#+END_SRC
-
-#+RESULTS:
-: 1
-: Internal connnected
-
-******* Simple hardcoded solution
-This is the setup for monitors in the example configuration
-#+BEGIN_SRC sh :tangle no
-bspc monitor -d I II III IV V VI VII VIII IX X
-#+END_SRC
-
-This is the first attempt to use multiple monitors on my macArch
-#+BEGIN_SRC sh :tangle no
-# bspc monitor DP-1 I II III IV V
-# bspc monitor eDP-1 VI VII VIII IX X
-bspc monitor 0x00600002 -d I II III IV V
-bspc monitor 0x00600004 -d VI VII VIII IX X
-#+END_SRC
-
-******* Generic solution
-This is the more generic solution. It splits up the ten workspaces on the number
-of monitors that exists. In the case of three screens 3 workspaces will be
-assigned to each monitor.
-#+BEGIN_SRC sh
-# Different strategy if there is only one screen
-if [ "$(bspc query -M | wc -l)" -eq "1" ]; then
-    bspc monitor $(bspc query -M) -d $(seq 1 5)
-else
-    i=0
-    n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
-    per=$(( 10 / n ))          # number of desktops per monitor
-    for monitor in `bspc query -M`; do
-        bspc monitor $monitor -d `seq $i $(( i + per - 1 ))`
-        # seq is end-inclusive; `seq 1 $((1+2))` returns "1 2 3"
-        i=$(( i + per ))
-    done
-fi
-#+END_SRC
-
-******* Specific 3 monitor solution :wip:
-This solution finds the primary display and allocates five workspaces on that
-one and leaves the other screens with 1 workspace each. Maybe this is a good
-approach, I will evaluate it.
-#+BEGIN_SRC sh :tangle no
-export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
-export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
-MONITOR=${MONITOR:-${MONITORS[0]}}
-# Multiple workspaces for main monitor, but only one for others
-bspc monitor $MONITOR -d {1,2,3,4,5}
-for mon in ${MONITORS[@]/${MONITOR}}; do
-    bspc monitor $mon -d $mon/1
-done
-
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle no
-export CENTER_MONITOR=$(xrandr -q | grep " connected" | sed -n '1p' | cut -d' ' -f1)
-export LEFT_MONITOR=$(xrandr -q | grep " connected" | sed -n '2p' | cut -d' ' -f1)
-export RIGHT_MONITOR=$(xrandr -q | grep " connected" | sed -n '3p' | cut -d' ' -f1)
-
-bspc monitor $LEFT_MONITOR -d {1}
-bspc monitor $CENTER_MONITOR -d {2,3,4,5,6}
-bspc monitor $RIGHT_MONITOR -d {7}
-#+END_SRC
-
-******* Multiple monitors improved
-
-******** Finding out the monitors with xrandr
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-Find the primary monitor (this is the built in one in the laptop)
-#+BEGIN_SRC sh :results output
-xrandr -q | grep primary | grep 'connected'
-#+END_SRC
-
-#+RESULTS:
-: eDP-1-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 309mm x 175mm
-
-#+BEGIN_SRC sh :results output
-xrandr -q | grep primary | grep 'connected' | cut -d' ' -f1
-#+END_SRC
-
-#+RESULTS:
-: eDP-1-1
-
-Find the other connected monitors
-#+BEGIN_SRC sh :results output
-xrandr -q | grep 'connected'
-#+END_SRC
-
-#+RESULTS:
-: DP-0 disconnected (normal left inverted right x axis y axis)
-: DP-1 disconnected (normal left inverted right x axis y axis)
-: eDP-1-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 309mm x 175mm
-: DP-1-1 disconnected (normal left inverted right x axis y axis)
-: HDMI-1-1 disconnected (normal left inverted right x axis y axis)
-: DP-1-1-8 connected 1920x1200+1920+0 (normal left inverted right x axis y axis) 518mm x 324mm
-: DP-1-1-1 connected 1920x1200+3840+0 (normal left inverted right x axis y axis) 518mm x 324mm
-
-The problem here is that I find a lot of disconnected monitors. I want to get
-rid of those
-
-In the grep manual there is an ~invert~ entry
-#+BEGIN_SRC sh :results output
-grep --help | grep invert
-#+END_SRC
-
-#+RESULTS:
-:   -v, --invert-match        select non-matching lines
-
-If I use that then
-#+BEGIN_SRC sh :results output
-xrandr -q | grep 'connected' | grep -v 'disconnected' | cut -d' ' -f1
-#+END_SRC
-
-#+RESULTS:
-: eDP-1-1
-: DP-1-1-8
-: DP-1-1-1
-
-Or use awk https://stackoverflow.com/questions/3548453/negative-matching-using-grep-match-lines-that-do-not-contain-foo
-#+BEGIN_SRC sh :results output
-xrandr -q | grep 'connected' | awk '!/disconnected/' | cut -d' ' -f1
-#+END_SRC
-
-#+RESULTS:
-: eDP-1-1
-: DP-1-1-8
-: DP-1-1-1
-******** Finding out the monitors with bspc
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-
-I found this post on the matter, [[https://www.reddit.com/r/unixporn/comments/5lxecy/bspwm_with_two_monitors/][bspwm with two monitors]].
-
-This solution evenly distributes the monitors. So with a 3 monitor setup the
-workspaces becomes. In this setup there will be 3 monitors per monitor meaning 9
-desktops in total.
-#+BEGIN_SRC sh
-i=0
-n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
-per=$(( 10 / n ))          # number of desktops per monitor
-for monitor in `bspc query -M`; do
-    bspc monitor $monitor -d `seq $i $(( i + per - 1 ))`
-    # seq is end-inclusive; `seq 1 $((1+2))` returns "1 2 3"
-    i=$(( i + per ))
-done
-#+END_SRC
-
-***** bspwm look
-
-These settings are from hlissner's setup
-#+BEGIN_SRC sh
-bspc config split_ratio          0.50
-bspc config gapless_monocle      true
-bspc config borderless_monocle   true
-bspc config paddingless_monocle  true
-
-bspc config pointer_modifier mod4
-bspc config pointer_action1 move
-bspc config pointer_action2 resize_side
-bspc config pointer_action3 resize_corner
-
-bspc config remove_disabled_monitors false
-bspc config remove_unplugged_monitors true
-
-bspc config border_width    0
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-bspc config window_gap      50
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-bspc config window_gap      12
-#+END_SRC
-
-#+BEGIN_SRC sh
-bspc config top_padding     0
-bspc config bottom_padding  0
-bspc config left_padding    0
-bspc config right_padding   0
-#+END_SRC
-
-To make it possible to use youtube in fullscreen tiled mode
-[[https://www.reddit.com/r/bspwm/comments/a4ju19/youtube_video_in_fullscreen_tiled_mode/][a thread about the issue]]
-#+BEGIN_SRC sh
-bspc config ignore_ewmh_fullscreen all
-#+END_SRC
-
-Settings for the primary monitor
-#+BEGIN_SRC sh
-export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
-
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-bspc config -m $MONITOR window_gap     50
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-bspc config -m $MONITOR window_gap     60
-#+END_SRC
-
-This sets the padding value. If it's matched to the ~height~ value in ~polybar~
-config the bar will be shown even if the window is in a full screen mode.
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-bspc config -m $MONITOR bottom_padding 60
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-bspc config -m $MONITOR bottom_padding 30
-#+END_SRC
-
-#+BEGIN_SRC sh
-bspc config -m $MONITOR top_padding    0
-bspc config -m $MONITOR left_padding   0
-bspc config -m $MONITOR right_padding  0
-#+END_SRC
-
-***** Default rules
-
-#+BEGIN_SRC sh
-bspc rule -a 'Emacs:org*' state=floating
-bspc rule -a Gimp desktop='^8' state=floating follow=on
-bspc rule -a Chromium desktop='^2'
-bspc rule -a mplayer2 state=floating
-bspc rule -a Kupfer.py focus=on
-bspc rule -a Screenkey manage=off
-#+END_SRC
-***** Custom rules
-
-****** Emacs
-#+BEGIN_SRC sh
-bspc rule -a 'Emacs:org*' state=floating
-bspc rule -a Emacs split_ratio=0.5 border=off state=tiled
-#+END_SRC
-
-****** Peek
-I want peek to be floating as it's suppose to record what is underneath it.
-This code did however not work
-#+BEGIN_SRC sh :tangle no
-bspc rule -a peek state=floating
-#+END_SRC
-
-But consulting the [[https://wiki.archlinux.org/index.php/bspwm#Rules][arch wiki]] I found that I need to make sure I provide the
-right class name. To figure that out run the following command and click on the
-window of the application you want to add a rule for.
-#+BEGIN_SRC sh :tangle no
-# run it in the terminal not here
-xprop | grep WM_CLASS                                                                                                                                                                  ~
-#+END_SRC
-
-The output when clicking on the top of the ~Peek~ window is
-#+BEGIN_EXAMPLE
-WM_CLASS(STRING) = "peek", "Peek"
-#+END_EXAMPLE
-
-#+BEGIN_SRC sh
-bspc rule -a Peek state=floating
-#+END_SRC
-****** Zathura
-
-#+BEGIN_SRC sh
-bspc rule -a Zathura state=tiled
-#+END_SRC
-
-***** TODO Window issues
-
-I have had an issue with the ~Emacs~ window that the box is rendered larger than
-actual ~Emacs~. The issue seems to be this
-https://wiki.archlinux.org/index.php/bspwm#Window_box_larger_than_the_actual_application.
-
-#+BEGIN_EXAMPLE
-M-x emacs-version
-#+END_EXAMPLE
-
-States that ~Emacs~ is built with ~GTK+~ so it might be worth seeing if this can
-be fixed.
-
-Had no effect what I could see but I am also unsure how this is loaded?
-It might actually have had effect after I rebooted the computer. Unfortunately I
-don't think that it worked.
-
-#+BEGIN_SRC sh :tangle ~/.config/gtk-3.0/gtk.css :shebang :comments
-.window-frame, .window-frame:backdrop {
-  box-shadow: 0 0 0 black;
-  border-style: none;
-  margin: 0;
-  border-radius: 0;
-}
-
-.titlebar {
-  border-radius: 0;
-}
-#+END_SRC
-
-***** Background
-I found this post about how to configure feh when using bspwm,
-http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.html.
-I tried to use xinitrc first to set the background but that approach seemed to
-have implications when running dual screens.
-
-#+BEGIN_SRC sh :tangle no
-feh --bg-scale ~/src/dotfiles/assets/ghostinshell.jpg
-#+END_SRC
-
-***** Status bar
-It was recomended in the polybar wiki,
-https://github.com/jaagr/polybar/wiki, to add a launch file which could be
-called from the ~bspwmrc~.
-
-#+BEGIN_SRC sh
-$HOME/.config/polybar/launch.sh
-#+END_SRC
-
-***** Pywal color
-#+BEGIN_SRC sh :tangle no
-# source the colors.
-. "${HOME}/.cache/wal/colors.sh"
-
-# Set the border colors.
-# bspc config normal_border_color "$color1"
-# bspc config active_border_color "$color2"
-# bspc config focused_border_color "$color15"
-# Use the line below if you are on bspwm >= 0.9.4
-bspc config presel_feedback_color "$color1"
-# Use the line below if you are on bspwm < 0.9.4
-#bspc config presel_border_color "$color1"
-#+END_SRC
-
-***** TODO Drop down scrach terminal
-
-The ~scratchpad~ might be a useful feature
-https://wiki.archlinux.org/index.php/bspwm#Scratchpad
-
-***** Mouse control
-I want to be able to hide my mouse cursor automatically after a while of non-usage
-https://wiki.archlinux.org/index.php/unclutter
-#+BEGIN_SRC sh :no
-unclutter &
-#+END_SRC
-
-***** Keyboard control
-I want to switch caps lock to ctrl when pressed in conjunction with another key,
-and escape when pressed by itself. This functionality is provided by the program
-~xcape~.
-#+BEGIN_SRC sh :no
-xcape &
-#+END_SRC
-
-****** TODO Differentiate between internal and external keyboard
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-An improvement will be to make this conditional. I want to only start
-xcape as long as the keyboardio can't be detected that it is plugged in. Cause
-in that case this modification is not needed.
-
-https://askubuntu.com/questions/337411/how-to-permanently-assign-a-different-keyboard-layout-to-a-usb-keyboard
-
-I should probably have a strategy that when there is a usb keyboard detected.
-Investigate if it is my special external keyboard. If so don't do any remaping.
-Otherwise do it since I will only have the internal keyboard at my disposal.
-
-#+BEGIN_SRC sh :results output
-xinput -list | grep "Keyboard"
-#+END_SRC
-
-#+RESULTS:
-: ⎜   ↳ USB Keyboard                            	id=11	[slave  pointer  (2)]
-:     ↳ USB Keyboard                            	id=12	[slave  keyboard (3)]
-
-*** Compositor
-:PROPERTIES:
-:header-args: :tangle ~/.config/compton.conf :mkdirp yes
-:END:
-
-[[https://github.com/chjj/compton][Compton, a compositor for X]]
-
-**** Shadows
-I disabled the shadows. I need to understand better how these shadows work
-before I use them.
-
-#+BEGIN_SRC sh
-shadow = false;
-shadow-radius = 7;
-shadow-offset-x = -7;
-shadow-offset-y = -7;
-log-level = "warn";
-# log-file = "/path/to/your/log/file";
-# shadow-opacity = 0.7;
-# shadow-red = 0.0;
-# shadow-green = 0.0;
-# shadow-blue = 0.0;
-shadow-exclude = [
-	"name = 'Notification'",
-	"class_g = 'Conky'",
-	"class_g ?= 'Notify-osd'",
-	"class_g = 'Cairo-clock'",
-	"_GTK_FRAME_EXTENTS@:c"
-];
-# shadow-exclude = "n:e:Notification";
-# shadow-exclude-reg = "x10+0+0";
-# xinerama-shadow-crop = true;
-#+END_SRC
-
-**** Opacity and blur
-It seems like compton gives emacs some kind of dark frame on the right side,
-which dissapears if I go to monocle view and back. Need to investigate that.
-
-#+BEGIN_SRC sh
-# Opacity
-inactive-opacity = 1.0;
-# active-opacity = 0.8;
-frame-opacity = 0.7;
-inactive-opacity-override = false;
-#+END_SRC
-
-#+BEGIN_SRC sh
-inactive-dim = 0.2;
-# inactive-dim-fixed = true;
-#+END_SRC
-
-#+BEGIN_SRC sh
-# blur-background = true;
-# blur-background-frame = true;
-blur-kern = "3x3box";
-# blur-kern = "5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
-# blur-background-fixed = true;
-blur-background-exclude = [
-	"window_type = 'dock'",
-	"window_type = 'desktop'",
-	"_GTK_FRAME_EXTENTS@:c"
-];
-#+END_SRC
-
-**** Application opacity rules
-I have here the example opacity rule from the arch wiki,
-https://wiki.archlinux.org/index.php/compton.
-
-In the ~man~ pages there is information about how to further customize the
-rules. By adding a ~*=~ one can make a wildcard match and a ~!~ prefix will
-negate the match. Currently there are three different rules for URxvt. One that
-applies for a scratch buffer, one that applys for windows that isn't named
-scratch and for the windows that are not in focus.
- #+BEGIN_SRC sh :padline no
- opacity-rule = [
-   "90:class_g = 'URxvt' && WM_NAME@:s *= 'scratch'",
-   "80:class_g = 'URxvt' && !focused && WM_NAME@:s !*= 'scratch'",
-   "90:class_g = 'URxvt' && focused && WM_NAME@:s !*= 'scratch'",
- #+END_SRC
-
- Making rofi a little bit transparent too
- #+BEGIN_SRC sh :padline no
-   "100:class_g = 'Rofi'",
- #+END_SRC
-
-One improvement for bspwm is also making the preselected areas transparent, the
-default opaque look is a bit distracting.
-#+BEGIN_SRC sh :padline no
-  "40:class_g = 'Bspwm' && class_i = 'presel_feedback'",
-#+END_SRC
-
-It's also possible to make a program transparent depending on it's content. For
-example the global org-capture window is launched with a title of ~org-capture~.
-This can be seen by using the utility function ~xprop~ and clicking on the
-window. So if the program is Emacs and the wm_name is org-capture then make it
-transparent.
-#+BEGIN_SRC sh :padline no
-  "40:class_g = 'Emacs' && WM_NAME@:s = 'org-capture'",
-#+END_SRC
-
-#+BEGIN_SRC sh :padline no
-];
-#+END_SRC
-
-**** TODO Different alpha value for inactive windows
-
-I want to have the alpha value lowered for the other windows, not the active
-one. This will make it easier to know which window currently has the focus.
-
-**** Rest
-#+BEGIN_SRC sh
-# Fading
-fading = true;
-# fade-delta = 30;
-fade-in-step = 0.03;
-fade-out-step = 0.03;
-# no-fading-openclose = true;
-# no-fading-destroyed-argb = true;
-fade-exclude = [ ];
-
-# Other
-backend = "xrender";
-mark-wmwin-focused = false;
-mark-ovredir-focused = false;
-# use-ewmh-active-win = true;
-detect-rounded-corners = true;
-detect-client-opacity = true;
-refresh-rate = 0;
-vsync = "none";
-# sw-opti = true;
-# unredir-if-possible = true;
-# unredir-if-possible-delay = 5000;
-# unredir-if-possible-exclude = [ ];
-focus-exclude = [ "class_g = 'Cairo-clock'" ];
-#+END_SRC
-
-https://github.com/chjj/compton/issues/392
-#+BEGIN_SRC sh
-detect-transient = false;
-detect-client-leader = false;
-#+END_SRC
-
-#+BEGIN_SRC sh
-invert-color-include = [ ];
-# resize-damage = 1;
-
-# GLX backend
-# glx-no-stencil = true;
-# glx-no-rebind-pixmap = true;
-glx-swap-method = "undefined";
-# glx-use-gpushader4 = true;
-# xrender-sync = true;
-# xrender-sync-fence = true;
-
-# Window type settings
-wintypes:
-{
-  tooltip = { fade = true; shadow = true; opacity = 0.75; focus = true; full-shadow = false; };
-  dock = { shadow = false; }
-  dnd = { shadow = false; }
-  popup_menu = { opacity = 0.8; }
-  dropdown_menu = { opacity = 0.8; }
-};
-#+END_SRC
-
-*** Status bar
-
-[[https://github.com/polybar/polybar][Polybar, a fast and easy-to-use tool for creating status bars]]
-
-**** launch script
-:PROPERTIES:
-:header-args: :tangle ~/.config/polybar/launch.sh :shebang "#! /bin/sh" :mkdirp yes
-:END:
-
-***** Kill active bars
-#+BEGIN_SRC sh
-#!/usr/bin/env bash
-
-# Terminate already running bar instances
-killall -q polybar
-
-# Wait until the processes have been shut down
-while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
-
-#+END_SRC
-
-***** Kick of the bar(s)
-I add the ~reload~ option to have the bar automatically reloaded when I change
-the configuration file.
-#+BEGIN_QUOTE
-       -r, --reload
-              Reload the application when the config file has been modified
-#+END_QUOTE
-
-This is my first attempt
-#+BEGIN_SRC sh :tangle no
-# Launch example bar
-polybar -r example &
-
-echo "Bar launched..."
-#+END_SRC
-
-****** Multiple monitors :wip:
-https://github.com/jaagr/polybar/issues/763
-#+BEGIN_SRC sh :tangle no
-if type "xrandr"; then
-  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
-    MONITOR=$m polybar --reload example &
-  done
-else
-  polybar --reload example &
-fi
-#+END_SRC
-
-Slimmed down version
-#+BEGIN_SRC sh :tangle no
-for m in $(polybar --list-monitors | cut -d":" -f1); do
-    MONITOR=$m polybar --reload example &
-done
-#+END_SRC
-
-****** Center monitor only
-
-#+BEGIN_SRC sh
-if type "xrandr"; then
-  for m in $(xrandr --query | grep "primary" | cut -d" " -f1); do
-  # for m in $(xrandr --query | grep "DP-1-1-8" | cut -d" " -f1); do
-    MONITOR=$m polybar --reload main &
-  done
-else
-  polybar --reload main &
-fi
-#+END_SRC
-
-
-**** configuration
-:PROPERTIES:
-:header-args: :tangle ~/.config/polybar/config :mkdirp yes
-:END:
-
-Ideas:
-- how to make sure that the centered module is actually centered. It seems to
-  move depending on the size of the right/left module. I would prefer having it
-  centered straight in the middle.
-
-***** Colors
-#+BEGIN_SRC sh
-;==========================================================
-;
-;
-;   ██████╗  ██████╗ ██╗  ██╗   ██╗██████╗  █████╗ ██████╗
-;   ██╔══██╗██╔═══██╗██║  ╚██╗ ██╔╝██╔══██╗██╔══██╗██╔══██╗
-;   ██████╔╝██║   ██║██║   ╚████╔╝ ██████╔╝███████║██████╔╝
-;   ██╔═══╝ ██║   ██║██║    ╚██╔╝  ██╔══██╗██╔══██║██╔══██╗
-;   ██║     ╚██████╔╝███████╗██║   ██████╔╝██║  ██║██║  ██║
-;   ╚═╝      ╚═════╝ ╚══════╝╚═╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-;
-;
-;   To learn more about how to configure Polybar
-;   go to https://github.com/jaagr/polybar
-;
-;   The README contains alot of information
-;
-;==========================================================
-
-[colors]
-; background = ${xrdb:color0:#222}
-background =
-background-alt = ${xrdb:color9:#444}
-foreground = ${xrdb:color7:#222}
-foreground-alt = ${xrdb:color7:#222}
-primary = ${xrdb:color1:#222}
-secondary = ${xrdb:color2:#222}
-alert = ${xrdb:color3:#222}
-
-bg = ${xrdb:background}
-fg = ${xrdb:foreground}
-black = ${xrdb:color0}
-bblack = ${xrdb:color8}
-red = ${xrdb:color1}
-bred = ${xrdb:color9}
-green = ${xrdb:color2}
-bgreen = ${xrdb:color10}
-yellow = ${xrdb:color3}
-byellow = ${xrdb:color11}
-blue = ${xrdb:color4}
-bblue = ${xrdb:color12}
-magenta = ${xrdb:color5}
-bmagenta = ${xrdb:color13}
-cyan = ${xrdb:color6}
-bcyan = ${xrdb:color14}
-white = ${xrdb:color7}
-bwhite = ${xrdb:color15}
-
-bg-alt = #0F1013
-fg-alt = #25282a
-icons = #555856
-
-#+END_SRC
-
-***** Main bar
-#+BEGIN_SRC sh
-[bar/main]
-monitor = ${env:MONITOR:}
-wm-restack = bspwm
-override-redirect = true
-
-width = 100%
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-height = 40
-offset-x = 0
-offset-y = 10
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-height = 20
-offset-x = 0
-offset-y = 5
-#+END_SRC
-
-#+BEGIN_SRC sh
-;offset-x = 1%
-;offset-y = 1%
-
-radius = 0.0
-
-fixed-center = false
-
-bottom = 1
-
-background = ${colors.background}
-foreground = ${colors.foreground}
-
-line-size = 0
-
-line-color = #f00
-
-border-size = 0
-
-border-color = #00000000
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-padding-left = 4
-padding-right = 4
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-padding-left = 2
-padding-right = 2
-#+END_SRC
-
-#+BEGIN_SRC sh
-module-margin-left = 1
-module-margin-right = 1
-#+END_SRC
-
-***** Resolution
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-dpi-x = 227
-dpi-y = 227
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-dpi-x = 96
-dpi-y = 96
-#+END_SRC
-
-***** Fonts
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-font-0 = "Roboto Mono:style=Regular:size=6"
-font-1 = unifont:fontformat=truetype:size=6:antialias=false;0
-font-2 = "Material Icons:style=Regular:size=6"
-font-3 = "Wuncon Siji:style=Regular:pixelsize=8;1"
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-font-0 = "Roboto Mono:style=Regular:size=10"
-font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
-font-2 = siji:pixelsize=8;1
-font-3 = "Material Icons:style=Regular:size=10"
-#+END_SRC
-
-***** Modules setup
-#+BEGIN_SRC sh
-modules-left = cpu memory pad pulseaudio app-mail app-pad-volume pad-left
-modules-center = bspwm
-modules-right = battery app-bluetooth app-vpn wlan app-redshift pad date
-#+END_SRC
-
-***** Modules
-
-****** Misc features
-
-#+BEGIN_SRC sh
-tray-position = right
-tray-padding = 2
-;tray-background = #0063ff
-
-;wm-restack = bspwm
-
-;override-redirect = true
-
-;scroll-up = bspwm-desknext
-;scroll-down = bspwm-deskprev
-
-cursor-click = pointer
-cursor-scroll = ns-resize
-#+END_SRC
-
-****** Padding
-
-#+BEGIN_SRC sh
-[module/pad]
-type = custom/text
-content = "   "
-content-foreground = ${colors.fg-alt}
-
-[module/pad-left]
-type = custom/text
-content = "         "
-
-[module/app-pad-volume]
-type = custom/script
-exec = ~/.config/polybar/modules/app-pad-volume.sh
-interval = 1
-
-#+END_SRC
-
-****** mail
-#+BEGIN_SRC sh
-[module/app-mail]
-type = custom/script
-exec = ~/.config/polybar/modules/app-mail.sh
-interval = 10
-#+END_SRC
-
-****** bluetooth
-#+BEGIN_SRC sh
-[module/app-bluetooth]
-type = custom/script
-exec = ~/.config/polybar/modules/app-bluetooth.sh
-interval = 10
-#+END_SRC
-
-****** vpn
-#+BEGIN_SRC sh
-[module/app-vpn]
-type = custom/script
-exec = ~/.config/polybar/modules/app-vpn.sh
-interval = 10
-#+END_SRC
-
-****** keyboard
-#+BEGIN_SRC sh :tangle no
-[module/xkeyboard]
-type = internal/xkeyboard
-blacklist-0 = num lock
-blacklist-1 = caps lock
-blacklist-2 = scroll lock
-
-format-prefix = " "
-format-prefix-foreground = ${colors.foreground-alt}
-format-prefix-underline = ${colors.secondary}
-
-label-layout = %layout%
-label-layout-underline = ${colors.secondary}
-
-label-indicator-padding = 2
-label-indicator-margin = 1
-label-indicator-background = ${colors.secondary}
-label-indicator-underline = ${colors.secondary}
-
-#+END_SRC
-
-****** bspwm
-#+BEGIN_SRC sh
-[module/bspwm]
-type = internal/bspwm
-
-ws-icon-0 = 1;
-ws-icon-1 = 2;
-ws-icon-2 = 3;
-ws-icon-3 = 4;
-ws-icon-4 = 5;
-ws-icon-5 = 6;
-ws-icon-6 = 7;
-ws-icon-7 = 8;
-ws-icon-8 = 9;
-ws-icon-default = x
-
-format = <label-state> <label-mode>
-label-padding = 1
-
-label-focused = %icon%
-label-focused-background = #33000000
-label-focused-foreground = ${colors.green}
-label-focused-padding = 1
-;label-focused = %icon%
-;label-focused-foreground = ${colors.red}
-;label-focused-padding = 1
-
-label-occupied = %icon%
-label-occupied-foreground = ${colors.icons}
-label-occupied-padding = 1
-;label-occupied = %icon%
-;label-occupied-foreground = ${colors.red}
-;label-occupied-padding = 1
-
-label-urgent-foreground = ${colors.red}
-;label-urgent-padding = 1
-;label-urgent = %icon%!
-;label-urgent-background = ${colors.red}
-;label-urgent-padding = 1
-
-label-empty = %icon%
-label-empty-foreground = ${colors.fg-alt}
-label-empty-padding = 1
-;label-empty = %icon%
-;label-empty-foreground = ${colors.bg-alt}
-;; label-empty-background = ${xrdb:color0:#222}
-;label-empty-padding = 1
-
-; Separator in between workspaces
-; label-separator = |
-#+END_SRC
-
-****** wifi
-#+BEGIN_SRC sh
-[module/wlan]
-type = internal/network
-interface = wlp3s0
-interval = 3.0
-
-format-connected = <ramp-signal>
-
-format-disconnected = 
-format-disconnected-foreground = ${colors.red}
-label-disconnected = %ifname% disconnected
-
-ramp-signal-0 = 
-ramp-signal-0-foreground = ${colors.foreground-alt}
-ramp-signal-1 = 
-ramp-signal-1-foreground = ${colors.foreground-alt}
-ramp-signal-2 = 
-ramp-signal-2-foreground = ${colors.foreground-alt}
-ramp-signal-3 = 
-ramp-signal-3-foreground = ${colors.foreground-alt}
-ramp-signal-4 = 
-ramp-signal-4-foreground = ${colors.foreground-alt}
-#+END_SRC
-
-****** ethernet
-#+BEGIN_SRC sh :tangle no
-[module/eth]
-type = internal/network
-interface = net0
-interval = 3.0
-
-format-connected-underline = #55aa55
-format-connected-prefix = " "
-format-connected-prefix-foreground = ${colors.foreground-alt}
-label-connected = %local_ip%
-
-format-disconnected =
-;format-disconnected = <label-disconnected>
-;format-disconnected-underline = ${self.format-connected-underline}
-;label-disconnected = %ifname% disconnected
-;label-disconnected-foreground = ${colors.foreground-alt}
-
-#+END_SRC
-
-****** date
-#+BEGIN_SRC sh
-[module/date]
-type = internal/date
-interval = 5
-
-label = %date%  %time%
-date = %A, %h %d
-date-alt = %Y-%m-%d
-time = %I:%M %p
-time-alt = %H:%M:%S
-;format-prefix = ""
-format-prefix = 
-format-prefix-padding = 1
-; format-prefix-background = ${colors.bg-alt}
-format-prefix-foreground = ${colors.icons}
-; format-underline = ${xrdb:color4}
-
-;date =
-;date-alt = " %Y-%m-%d"
-;
-;time = %H:%M
-;time-alt = %H:%M:%S
-;
-;format-prefix = 
-;format-prefix-foreground = ${colors.foreground-alt}
-;format-underline = #0a6cf5
-;
-;label = %date% %time%
-#+END_SRC
-
-****** pulseaudio
-#+BEGIN_SRC sh
-[module/pulseaudio]
-type = internal/pulseaudio
-
-; format-volume = <label-volume> <bar-volume>
-format-volume = <ramp-volume> <bar-volume>
-label-volume-foreground = ${colors.fg}
-
-format-muted-foreground = ${colors.red}
-label-muted = ""
-
-bar-volume-width = 8
-bar-volume-foreground-0 = ${colors.blue}
-bar-volume-foreground-1 = ${colors.blue}
-bar-volume-foreground-2 = ${colors.blue}
-bar-volume-foreground-3 = ${colors.blue}
-bar-volume-foreground-4 = ${colors.blue}
-bar-volume-foreground-5 = ${colors.blue}
-bar-volume-foreground-6 = ${colors.blue}
-bar-volume-gradient = false
-bar-volume-indicator = |
-bar-volume-indicator-font = 2
-bar-volume-indicator-foreground = #ff
-bar-volume-fill = ─
-bar-volume-fill-font = 2
-bar-volume-empty = ─
-bar-volume-empty-font = 2
-bar-volume-empty-foreground = ${colors.fg-alt}
-
-; Only applies if <ramp-volume> is used
-ramp-volume-0 = 
-ramp-volume-1 = 
-ramp-volume-2 = 
-
-#+END_SRC
-
-****** battery
-#+BEGIN_SRC sh
-[module/battery]
-type = internal/battery
-battery = BAT0
-adapter = ADP1
-full-at = 96
-
-format-charging = <animation-charging> <label-charging>
-format-charging-underline = #ffb52a
-
-format-discharging = <ramp-capacity> <label-discharging>
-format-discharging-underline = ${self.format-charging-underline}
-
-format-full-prefix = " "
-format-full-prefix-foreground = ${colors.fg-alt}
-format-full-underline = ${self.format-charging-underline}
-
-ramp-capacity-0 = 
-ramp-capacity-1 = 
-ramp-capacity-2 = 
-ramp-capacity-foreground = ${colors.fg-alt}
-
-animation-charging-0 = 
-animation-charging-1 = 
-animation-charging-2 = 
-animation-charging-foreground = ${colors.fg-alt}
-animation-charging-framerate = 750
-#+END_SRC
-
-****** cpu
-#+BEGIN_SRC sh
-[module/cpu]
-type = internal/cpu
-interval = 2
-format = <bar-load>
-format-prefix = ""
-format-foreground = ${colors.icons}
-format-padding = 1
-
-bar-load-indicator =
-bar-load-width = 6
-bar-load-foreground-0 = ${colors.green}
-bar-load-foreground-1 = ${colors.green}
-bar-load-foreground-2 = ${colors.yellow}
-bar-load-foreground-3 = ${colors.red}
-bar-load-foreground-4 = ${colors.red}
-bar-load-fill = |
-bar-load-empty = ¦
-bar-load-empty-foreground = ${colors.fg-alt}
-
-#+END_SRC
-
-****** memory
-#+BEGIN_SRC sh
-[module/memory]
-type = internal/memory
-interval = 3
-format = <bar-used>
-format-prefix = ""
-format-prefix-foreground = ${colors.icons}
-format-padding-left = 1
-
-; Only applies if <bar-used> is used
-bar-used-indicator =
-bar-used-width = 6
-bar-used-foreground-0 = ${colors.green}
-bar-used-foreground-1 = ${colors.green}
-bar-used-foreground-2 = ${colors.yellow}
-bar-used-foreground-3 = ${colors.red}
-bar-used-foreground-4 = ${colors.red}
-bar-used-fill = |
-bar-used-empty = ¦
-bar-used-empty-foreground = ${colors.fg-alt}
-#+END_SRC
-
-****** redshift
-
-#+BEGIN_SRC sh
-[module/app-redshift]
-type = custom/script
-exec = echo 1
-exec-if = pgrep -x redshift
-format = ""
-format-foreground = ${colors.icons}
-interval = 2
-#+END_SRC
-
-****** global settings
-#+BEGIN_SRC sh
-[settings]
-screenchange-reload = true
-;compositing-background = xor
-;compositing-background = screen
-;compositing-foreground = source
-;compositing-border = over
-;pseudo-transparency = false
-
-[global/wm]
-margin-top = 0
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-margin-bottom = 60
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-margin-bottom = 30
-#+END_SRC
-
-#+BEGIN_SRC sh
-; vim:ft=dosini
-#+END_SRC
-
-
-
-**** custom modules
-
-***** bluetooth
-
-#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-bluetooth.sh :shebang "#! /bin/sh" :mkdirp yes
-# source ~/.cache/wal/colors.sh
-
-# Determine if bluetooth is active
-active=$(systemctl is-active bluetooth.service)
-
-# Determine if bluetooth is connected
-connected="no"
-if [ "$active" = "active" ]; then
-    devices=$(echo -e 'paired-devices' | bluetoothctl)
-    for device in $devices; do
-        if [[ $device == [0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F] ]] ; then
-            # Value of field Connected
-            is_connected=$(echo -e 'info ' $i '\n' | bluetoothctl | grep 'Connected' | cut -d' ' -f2)
-            if [[ "$is_connected" == "yes" ]]; then
-               connected="yes"
-            fi
-        fi
-    done
-fi
-
-# Set the color and icon
-if [ "$connected" = "yes" ]; then
-    echo "%{F#81a2be}" # fg-blue
-elif [ "$active" = "active" ]; then
-    echo "%{F#c5c8c6}" # white
-else
-    echo "%{F#555856}" # grey
-fi
-
-#+END_SRC
-
-***** vpn
-
-#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-vpn.sh :shebang "#! /bin/sh" :mkdirp yes
-
-# Type is the third column, looking for type vpn
-connection=$(nmcli connection show --active | awk '{print $3}' | grep vpn)
-
-if [ "$connection" = "vpn" ]; then
-    # active
-    echo "%{F#81a2be}" # fg-blue
-else
-    # inactive
-    echo "%{F#555856}" # grey
-fi
-#+END_SRC
-***** mail
-
-#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-mail.sh :shebang "#! /bin/sh" :mkdirp yes
-
-unread=$(notmuch search tag:unread | wc -l)
-
-if [ "$unread" -eq "0" ]; then
-    echo "%{F#555856}" # grey
-else
-    echo "%{F#f0c674}$unread" # yellow
-fi
-#+END_SRC
-***** redshift
-
-#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-redshift :shebang "#! /bin/bash" :mkdirp yes
-
-# Specifying the icon(s) in the script
-# This allows us to change its appearance conditionally
-pgrep -x redshift &> /dev/null
-if [[ $? -eq 0 ]]; then
-    temp=$(redshift -p 2>/dev/null | grep temp | cut -d' ' -f3)
-    temp=${temp//K/}
-fi
-
-# OPTIONAL: Append ' ${temp}K' after $icon
-if [[ -z $temp ]]; then
-    echo "%{F#65737E}$icon"       # Greyed out (not running)
-elif [[ $temp -ge 5000 ]]; then
-    echo "%{F#8FA1B3}$icon"       # Blue
-elif [[ $temp -ge 4000 ]]; then
-    echo "%{F#EBCB8B}$icon"       # Yellow
-else
-    echo "%{F#D08770}$icon"       # Orange
-fi
-
-#+END_SRC
-
-***** screen recording
-
-Start with the symbol
-#+BEGIN_SRC sh :tangle no
-
-#+END_SRC
-***** pad-volume
-
-#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-pad-volume.sh :shebang "#!/usr/bin/env bash" :mkdirp yes
-muted=$(pacmd list-sinks | grep muted | cut -d' ' -f2)
-# Set the color and icon
-if [ "$muted" = "yes" ]; then
-    echo "%{F#81a2be}         " # blue
-else
-    echo "%{F#81a2be}" # blue
-fi
-#+END_SRC
-
-*** Application launcher
-:PROPERTIES:
-:header-args: :tangle ~/.config/rofi/config :mkdirp yes
-:END:
-
-[[https://github.com/davatorium/rofi][Rofi, a window switcher and application launcher]].
-
-The configuration here is something that I have copied from ~Matt Dobson~.
-Unfortunately I don't remember where I found his config.
-#+BEGIN_SRC sh
-! ------------------------------------------------------------------------------
-!                          ROFI THEME
-! ------------------------------------------------------------------------------
-rofi.color-window: argb:f2171717, #535c5c,         #a4a4a4
-rofi.color-normal: argb:00171717, #a4a4a4, argb:00535c5c, argb:00171717, #535c5c
-rofi.color-urgent: argb:00171717, #cc6666, argb:e54b5160, argb:00171717, #535c5c
-rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
-#+END_SRC
-
-Tweaked for ~Arch~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-rofi.width: 1500
-rofi.lines: 10
-rofi.font: Roboto Mono 14
-rofi.bw: 0
-rofi.padding: 50
-rofi.line-margin: 5
-rofi.eh: 1
-#+END_SRC
-
-Tweaked for ~Ubuntu~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-rofi.width: 1500
-rofi.lines: 10
-rofi.font: Roboto Mono 10
-rofi.bw: 0
-rofi.padding: 50
-rofi.line-margin: 5
-rofi.eh: 1
-#+END_SRC
-
-The ~-m~ option determines the behavior of ~rofi~ where the rofi window should
-appear. I want to set this globally to -1. That setting makes most sense to me.
-It will be the display that I have currently focus on.
-#+BEGIN_SRC sh
-rofi.m: -1
-#+END_SRC
-
-Other settings
-#+BEGIN_SRC sh
-rofi.sidebar-mode: true
-rofi.separator-style: none
-rofi.hide-scrollbar: true
-rofi.show-icons: false
-rofi.location: 0
-!rofi.modi: window,run,drun
-rofi.modi: window,run
-rofi.matching: fuzzy
-
-#+END_SRC
-
-*** Looks
-
-Both of these configuration files has been copied from hlissers-setup. I have
-also looked at the [[https://wiki.archlinux.org/index.php/GTK%2B#Examples][arch wiki examples]].
-
-**** GTK+ 2.x
-:PROPERTIES:
-:header-args: :tangle ~/.gtkrc-2.0 :mkdirp yes
-:END:
-
-#+BEGIN_SRC sh
-include "/usr/share/themes/Arc-Dark/gtk-2.0/gtkrc"
-#+END_SRC
-
-**** GTK+ 3.x
-:PROPERTIES:
-:header-args: :tangle ~/.config/gtk-3.0/settings.ini :mkdirp yes
-:END:
-
-#+BEGIN_SRC sh
-[Settings]
-gtk-application-prefer-dark-theme = true
-gtk-theme-name = Arc-Dark
-gtk-icon-theme-name = Arc-Dark
-#+END_SRC
-
-** Editors
-*** Neovim
-:PROPERTIES:
-:header-args: :tangle ~/.config/nvim/init.vim :mkdirp yes
-:END:
-
-[[https://github.com/neovim/neovim][Vim-fork focused on extensibility and usability]]
-
-#+BEGIN_SRC text
-" vim: foldmethod=marker
-
-" {{{1 Easy configuration
-let color_config = 'dark' " light/dark
-
-" Vim-Plug (Plugin manager) {{{1
-" Installation {{{2
-if empty(glob('~/.config/nvim/autoload/plug.vim'))
-  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source ~/.config/nvim/init.vim
-endif
-
-" Setup plugins {{{2
-call plug#begin(expand('~/.config/nvim/plugged'))
-
-" Define plugins
-Plug 'tpope/vim-commentary' " Comments
-Plug 'tpope/vim-surround' " Change surrounding chars
-Plug 'tpope/vim-unimpaired' " Improve navigation
-Plug 'kana/vim-textobj-user' " Enable custom text objects
-Plug 'kana/vim-textobj-indent' " Indentation text object
-Plug 'sgur/vim-textobj-parameter' " Function argument text object
-Plug 'justinmk/vim-sneak' " Snipe characters with greater precision
-Plug 'tommcdo/vim-exchange' " Provide exchange object
-Plug 'qpkorr/vim-bufkill' " Improve buffer handling
-Plug 'Konfekt/FastFold' " Improve folding performance
-Plug 'dylanaraps/wal.vim' " Pywall colorscheme
-call plug#end()
-
-" Vim core {{{1
-" Settings {{{2
-syntax enable " Enable syntax highlighting
-set number " Show line number
-set updatetime=100 " Decrease update time from 4s to 0.1 s, useful for gutter
-set undofile " Enables persistent undo
-set noswapfile " Disables swapfile
-set spelllang=en_us " Sets spelling language to english
-filetype plugin indent on " Enable filetype detection
-set hidden " Enable hidden buffers, buffers must not be saved
-set splitbelow splitright " Set Split behavior
-set mouse=a "Enable mouse interaction
-set clipboard+=unnamedplus " Enable clipboard paste from other sources
-set equalalways " Keep windows equal
-set foldmethod=syntax " determine fold method
-set foldlevelstart=99 " start unfolded
-set tabstop=4 shiftwidth=4 expandtab
-set ignorecase smartcase " smart case enabled
-set inccommand=nosplit " Get live visualization of substitution (Neovim exclusive)
-
-" Define leader key
-let mapleader=","
-
-" Autoread when switching buffer or Vim got the focus again
-au FocusGained,BufEnter * :checktime
-
-" Mappings {{{2
-" Harmonize Y behavior with (C, D)
-map Y y$
-"" Remap t/f movement in reverse direction
-noremap \ ,
-" Change mark behavior to position rather than line
-" Improve search behavior
-nnoremap n nzzzv
-nnoremap N Nzzzv
-" Command-line history with C-p/C-n
-cnoremap <C-p> <up>
-cnoremap <C-n> <down>
-" Easier than escape
-inoremap jk <ESC>
-inoremap Jk <ESC>
-inoremap JK <ESC>
-inoremap jK <ESC>
-" Macro, fast access to macro q
-nmap Q @q
-" Windows
-nnoremap <silent> <leader>wh <C-w>h
-nnoremap <silent> <leader>wj <C-w>j
-nnoremap <silent> <leader>wk <C-w>k
-nnoremap <silent> <leader>wl <C-w>l
-nnoremap <silent> <leader>wc <C-w>c
-nnoremap <silent> <leader>wo <C-w>o
-nnoremap <silent> <leader>wO <C-w>o
-nnoremap <silent> <leader>wr <C-w>r
-nnoremap <silent> <leader>wv <C-w>v
-nnoremap <silent> <leader>wV <C-w>v <C-w>p
-nnoremap <silent> <leader>w= <C-w>=
-nnoremap <silent> <leader>wp <C-w>p
-nnoremap <silent> <leader>ws <C-w>s <C-w>p
-nnoremap <silent> <leader>wS <C-w>s
-nnoremap <silent> <leader>wd <C-w>c
-" Built in terminal
-nnoremap <leader>ot :term<CR>
-" Open a terminal in a popup window
-" Quiting
-nnoremap <silent> <leader>qq :qall!<CR>
-" Disable current highlight search
-nnoremap <silent> <Esc> :noh<CR>
-
-" Plugins {{{1
-" Mappings {{{2
-" BuffKill {{{3
-" Kill current buffer
-nnoremap <silent> <leader>bk :BD!<CR>
-" Move to previous buffer
-nnoremap <silent> <leader>b[ :BB<CR>
-" Move to next buffer
-nnoremap <silent> <leader>b] :BF<CR>
-" Create a new empty buffer
-nnoremap <silent> <leader>bn :enew<CR>
-
-" Settings {{{2
-" vim-textobj-parameter {{{3
-let g:vim_textobj_parameter_mapping = 'a'
-
-" Exchange {{{3
-nmap gx <Plug>(Exchange)
-nmap gxc <Plug>(ExchangeClear)
-nmap gxx <Plug>(ExchangeLine)
-
-" Statusline {{{1
-set statusline=
-set statusline+=%#Identifier#\ %F " Use %f for shorter name
-set statusline+=%m
-set statusline+=%=
-set statusline+=%2c
-
-" Color tweaking
-set background=dark
-colorscheme wal
-#+END_SRC
-
-*** Emacs
-
-How to install doom and setup my private configuration goes here. And Emacs
-anywhere as well.
-
-#+BEGIN_SRC sh :tangle no :dir ~/src :mkdirp yes
-git clone https://github.com/hlissner/doom-emacs
-git clone git@github.com:niklascarlsson/doom-private
-ln -s ~/src/doom-emacs ~/.emacs.d
-ln -s ~/src/doom-private ~/.doom.d
-#+END_SRC
-
-**** Anywhere
-:PROPERTIES:
-:header-args: :tangle ~/bin/emacs-anywhere :shebang "#!/bin/bash"
-:END:
-
-[[https://github.com/zachcurry/emacs-anywhere][Emacs anywhere]] brings Emacs into new realms. Use it to edit text in ~Firefox~.
-
-0) Download the Emacs anywhere project:
-#+BEGIN_SRC sh :tangle no
-git clone git@github.com:niklascarlsson/emacs-anywhere ~/.emacs-anywhere
-#+END_SRC
-
-1) Make sure it's called from Firefox. Get the name of the calling application
-#+BEGIN_SRC sh
-WINDOW=$( xdotool getactivewindow )
-APP_NAME=$( xprop -id "$WINDOW WM_CLASS")
-x=$( echo "$APP_NAME" | awk -F ',' '{print $2}' )
-x2=$(echo "$x" | tr -d '"')
-Make comparison
-if [[ "$x2" == *"Firefox"* ]]; then
-    :
-else
-    exit 1;
-fi
-#+END_SRC
-
-2) Mark the content in Firefox and copy it to the default clipboard
-#+BEGIN_SRC sh
-# clear the clipboard
-echo -n | xclip
-# make selection
-sleep 0.2
-xdotool key --clearmodifiers ctrl+a
-xdotool key --clearmodifiers ctrl+c
-# clear modifiers to avoid registering them
-sleep 0.2 && xdotool keyup Super_L Super_R
-#+END_SRC
-
-I encountered issues that the xdotool sometimes makes the super key stuck
-after I use the clearmodifiers flag. To mitigate that I found this issue on
-github: https://github.com/jordansissel/xdotool/issues/43. Which is why I have
-the keyup command.
-
-3) Lastly export the copied content to a variable that will be accessible in the
-   called run scrip.
-#+BEGIN_SRC sh
-content=$(xclip -selection c -o)
-export EA_CLIPBOARD=$content
-
-"/home/nikcar/.emacs_anywhere/bin/run"
-#+END_SRC
-
-** Encryption
-*** gpg
-
-Increase the cache validity for the ~gpg-agent~.
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu) "~/.gnupg/gpg-agent.conf") :mkdirp yes
-default-cache-ttl 86400
-max-cache-ttl 86400
-#+END_SRC
-*** rofi-pass
-:PROPERTIES:
-:header-args: :tangle ~/.config/rofi-pass/config :mkdirp yes
-:END:
-
-There is an extension to rofi for handling passwords, [[https://github.com/carnager/rofi-pass][rofi-pass]]. I have used the
-default configuration that was present in the github repository.
-
-I have added the ~-m -1~ flag to synchronize the window behavior between the
-rofi-pass and rofi.
-#+BEGIN_SRC sh
-# permanently set alternative root dir. Use ":" to separate multiple roots
-# which can be switched at runtime with shift+left/right
-# root=/path/to/root
-_rofi () {
-    rofi -i -no-auto-select -m -1 "$@"
-}
-#+END_SRC
-
-#+BEGIN_SRC sh
-# default command to generate passwords
-_pwgen () {
-	pwgen -y "$@"
-}
-
-# image viewer to display qrcode of selected entry
-# qrencode is needed to generate the image and a viewer
-# that can read from pipes. Known viewers to work are feh and display
-_image_viewer () {
-    feh -
-#    display
-}
-
-# xdotool needs the keyboard layout to be set using setxkbmap
-# You can do this in your autostart scripts (e.g. xinitrc)
-
-# If for some reason, you cannot do this, you can set the command here.
-# and set fix_layout to true
-fix_layout=false
-
-layout_cmd () {
-  setxkbmap us
-}
-
-# fields to be used
-URL_field='url'
-USERNAME_field='user'
-AUTOTYPE_field='autotype'
-
-# delay to be used for :delay keyword
-delay=2
-
-# rofi-pass needs to close itself before it can type passwords. Set delay here.
-wait=0.2
-
-# delay between keypresses when typing (in ms)
-xdotool_delay=12
-
-## Programs to be used
-# Editor
-EDITOR='gvim -f'
-
-# Browser
-BROWSER='xdg-open'
-
-## Misc settings
-
-default_do='menu' # menu, autotype, copyPass, typeUser, typePass, copyUser, copyUrl, viewEntry, typeMenu, actionMenu, copyMenu, openUrl
-auto_enter='false'
-notify='false'
-default_autotype='user :tab pass'
-
-# color of the help messages
-# leave empty for autodetection
-help_color="#4872FF"
-
-# Clipboard settings
-# Possible options: primary, clipboard, both
-# clip=primary
-clip=both
-
-# Seconds before clearing pass from clipboard
-clip_clear=45
-
-## Options for generating new password entries
-
-# open new password entries in editor
-edit_new_pass="true"
-
-# default_user is also used for password files that have no user field.
-#default_user="${ROFI_PASS_DEFAULT_USER-$(whoami)}"
-#default_user2=mary_ann
-#password_length=12
-
-# Custom Keybindings
-autotype="Alt+1"
-type_user="Alt+2"
-type_pass="Alt+3"
-open_url="Alt+4"
-copy_name="Alt+u"
-copy_url="Alt+l"
-copy_pass="Alt+p"
-show="Alt+o"
-copy_entry="Alt+2"
-type_entry="Alt+1"
-copy_menu="Alt+c"
-action_menu="Alt+a"
-type_menu="Alt+t"
-help="Alt+h"
-switch="Alt+x"
-insert_pass="Alt+n"
-#+END_SRC
-
-*** rofi-pinentry :arch-linux:
-
-The default pinentry is ~gtk-2~, which with the arc-dark theme looks alright.
-However since I use rofi as the program launcher that is even better looking.
-[[https://github.com/plattfot/pinentry-rofi][The pinentry-rofi]] package by ~plattfot~ makes it possible to use rofi as the
-pinentry.
-
-#+BEGIN_SRC sh :tangle no
-git clone git@github.com:plattfot/pinentry-rofi-aur.git
-cd pinentry-rofi-aur
-makepkg -ic
-#+END_SRC
-
-I added the ~pinentry-rofi-guile~ as my first pinentry to use in the
-~/usr/bin/pinentry~ file.
-#+BEGIN_SRC sh :tangle no
-#!/bin/sh
-
-test -e /usr/lib/libgtk-x11-2.0.so.0 &&
-exec /usr/bin/pinentry-rofi-guile  "$@"
-
-exec /usr/bin/pinentry-gtk-2  "$@"
-
-exec /usr/bin/pinentry-curses "$@"
-#+END_SRC
-
-** Media
-*** Browser
-
-For now Firefox is my browser. I keep my eyes on the development of the
-common-lisp based [[https://github.com/atlas-engineer/next][next browser]].
-
-**** Finding the profile directory
-
-The tricky aspect with tangling this configuration file is that the path to the
-~profile directory~, in which this file should be tangled, is dynamic. It varies
-from computer to computer. Now maybe I could have done this with some regexp
-directly, I am not sure, but it was quite easy to just write an ~Elisp~ function
-that could be used in the tangling process.
-
-#+BEGIN_SRC elisp :tangle no
-(defun my/firefox-profile-directory ()
-  "Find the path to the Firefox profile directory where settings recide."
-  (let ((profile-directory '())
-        (firefox-path (expand-file-name "~/.mozilla/firefox/")))
-    (with-temp-buffer (shell-command (concat "ls " firefox-path) t)
-                      (goto-char (point-min))
-                      (while (not (eobp))
-                          (let ((content (string-trim (thing-at-point 'line))))
-                            (if (string-match "default" content)
-                                (setq profile-directory (concat firefox-path content))))
-                          (forward-line 1)))
-    profile-directory))
-#+END_SRC
-
-**** Minimal looks
-:PROPERTIES:
-:header-args: :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes
-:END:
-
-I created [[https://niklascarlsson.github.io/posts/a-minimalists-firefox/][a blog post]] on where I found this configuration and what it does.
-
-#+BEGIN_SRC sh
-/*
- * Do not remove the @namespace line -- it's required for correct functioning
- */
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* set default namespace to XUL */
-
-/*
- * Hide tab bar, navigation bar and scrollbars
- * !important may be added to force override, but not necessary
- */
-#TabsToolbar {visibility: collapse;}
-#navigator-toolbox {visibility: collapse;}
-#content browser {margin-right: -14px; margin-bottom: -14px;}
-#+END_SRC
-
-Getting rid of the status bar
-#+BEGIN_SRC sh
-/* Suppress Connecting/Waiting/Reading/Transerring */
-#statuspanel[type="status"] {
-  display: none !important;
-}
-/* Suppress Link Destination Overlay */
-#statuspanel[type="overLink"] {
-  display: none !important;
-}
-
-window[inFullscreen="true"] #statuspanel {
-bottom: 0px !important; /* adjust*/
-height: 0px !important; /* adjust */
-}
-#+END_SRC
-
-#+BEGIN_SRC sh
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* only needed once */
-
-statuspanel[type="status"] .statuspanel-label {display:none!important;}
-#+END_SRC
-
-**** Keyboard driven
-
-Tridactyl. Need to add how to customize the colors.
-
-*** Music
-**** Tizonia
-
-[[https://github.com/tizonia/tizonia-openmax-il][Tizonia, command-line music player]]
-
-Tizonia and the remote control goes here.
-
-***** configuration
-:PROPERTIES:
-:header-args: :tangle (my/tangle-os '(arch ubuntu) "~/.config/tizonia/tizonia.conf") :mkdirp yes :padline no
-:END:
-
-[[https://github.com/tizonia/tizonia-openmax-il][Tizonia]] is a command-line cloud music player for Linux with support for
-~Youtube~, ~Spotify~ and ~SoundCloud~.
-
-****** Start
-#+BEGIN_SRC sh
-# -*-Mode: conf; -*-
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-# tizonia-config v0.16.0 configuration file
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-# tizonia-config v0.17.0 configuration file
-#+END_SRC
-
-#+BEGIN_SRC sh
-[ilcore]
-# Tizonia OpenMAX IL Core section
-
-# Component plugins discovery
-# -------------------------------------------------------------------------
-# A comma-separated list of paths to be scanned by the Tizonia IL Core when
-# searching for component plugins
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-component-paths = /usr/lib/tizonia0-plugins12;
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-component-paths = /usr/lib/x86_64-linux-gnu/tizonia0-plugins12;
-#+END_SRC
-
-#+BEGIN_SRC sh
-# IL Core extension plugins discovery
-# -------------------------------------------------------------------------
-# A comma-separated list of paths to be scanned by the Tizonia IL Core when
-# searching for IL Core extensions (not implemented yet)
-extension-paths =
-
-
-[resource-management]
-# Tizonia OpenMAX IL Resource Management (RM) section
-
-# Resource Manager (RM) daemon interface enable/disable switch
-# -------------------------------------------------------------------------
-# Whether the IL RM functionality is enabled or not
-enabled = false
-
-# RM database
-# -------------------------------------------------------------------------
-# This is the path to the Resource Manager database
-rmdb = /usr/share/tizrmd/tizrm.db
-
-
-[plugins]
-# OpenMAX IL Component plugins section
-
-# Each key-value pair represents a list of any data that a
-# specific component might need. The entries here must honor the following
-# format: OMX.component.name.key = <semi-colon-separated list of items>
-
-# ALSA Audio Renderer
-# -------------------------------------------------------------------------
-#
-# OMX.Aratelia.audio_renderer.alsa.pcm.preannouncements_disabled.port0 = false
-OMX.Aratelia.audio_renderer.alsa.pcm.alsa_device = default
-OMX.Aratelia.audio_renderer.alsa.pcm.alsa_mixer = Master
-
-
-[tizonia]
-# Tizonia player section
-
-# The default audio renderer used by the tizonia player
-# -------------------------------------------------------------------------
-# Valid values are:
-# - OMX.Aratelia.audio_renderer.pulseaudio.pcm
-# - OMX.Aratelia.audio_renderer.alsa.pcm
-default-audio-renderer = OMX.Aratelia.audio_renderer.pulseaudio.pcm
-
-# MPRIS v2 interface enable/disable switch
-# -------------------------------------------------------------------------
-# Valid values are: true | false
-#
-mpris-enabled = true
-
-#+END_SRC
-
-****** Spotify
-#+BEGIN_SRC sh
-# Spotify configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment
-# and configure accordingly
-#
-spotify.user     = _downfall_
-spotify.password = $(pass web/spotify)
-# spotify.recover_lost_token = false (set to true to continue playback after
-#                                     the token has been [spuriously?] lost)
-
-#+END_SRC
-
-****** Google Play Music
-#+BEGIN_SRC sh
-# Google Play Music configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure here.
-#
-# gmusic.user       = user@gmail.com
-# gmusic.password   = pass (account password or app-specific password for
-#                          2-factor users)
-# gmusic.device_id  = deviceid (16 hex digits, e.g. '1234567890abcdef')
-
-
-#+END_SRC
-
-****** SoundCloud
-
-I got the token by following the link at the tizonia project's homepage.
-#+BEGIN_SRC sh
-# SoundCloud configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure your SoundCloud OAuth token here.
-#
-# To obtain your OAuth token, Tizonia needs to be granted access to your
-# SoundCloud account. Visit http://tizonia.org/docs/soundcloud/ for the
-# details.
-#
-# soundcloud.oauth_token = X-XXXXXX-XXXXXXXX-XXXXXXXXXXXXXX
-soundcloud.oauth_token = $(pass web/soundcloud | grep OAuth | cut -d ":" -f2)
-#+END_SRC
-
-****** Dirble
-
-#+BEGIN_SRC sh
-# Dirble configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure your Dirble Api Key here.
-#
-# To obtain your Dirble API key, go to https://dirble.com/developer/
-#
-# dirble.api_key = xxxxxxxxxxxxxx
-
-
-#+END_SRC
-
-****** Plex
-#+BEGIN_SRC sh
-# Plex configuration
-# -------------------------------------------------------------------------
-# To avoid passing this information on the command line, uncomment and
-# configure your Plex server and account auth token here.
-#
-# To find how to obtain a Plex user authentication token, see:
-# https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
-#
-# plex.base_url = xxxxxxxxxxxxxx (e.g. http://plexserver:32400)
-# plex.auth_token = xxxxxxxxxxxxxx (e.g. SrPEojhap3H5Qj2DmjhX)
-#+END_SRC
-
-***** remote control
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-
-Download the tizonia remote script which can use mpris2 to communicate with the
-running tizonia instance
-#+BEGIN_SRC sh
-wget -O /tmp/tizonia-remote https://raw.githubusercontent.com/tizonia/tizonia-openmax-il/master/player/tools/tizonia-remote.in /tmp/tizonia-remote.in
-#+END_SRC
-
-Move it to somewhere in path and make it executable
-#+BEGIN_SRC sh
-mv /tmp/tizonia-remote ~/bin/tizonia-remote
-chmod +x ~/bin/tizonia-remote
-#+END_SRC
-
-Make sure to also have mpris enabled in the configuration.
-
-*** Reader
-**** Zathura
-:PROPERTIES:
-:header-args: :tangle ~/.config/zathura/zathurarc :mkdir p
-:END:
-
-[[https://github.com/pwmt/zathura][Zathura, a highly customizable document viewer]]. I got some inspiration from the
-[[https://wiki.archlinux.org/index.php/Zathura][the arch wiki]] and the video from Luke Smith [[https://www.youtube.com/watch?v=V_Iz4zdyRM4&t=315s][zathura: a vim based minimalist pdf
-reader]]
-
-Enable copy to clipboard
-#+BEGIN_SRC sh
-set selection-clipboard clipboard
-#+END_SRC
-
-Control the paddings
-#+BEGIN_SRC sh
-set statusbar-h-padding 0
-set statusbar-v-padding 0
-set page-padding 1
-#+END_SRC
-
-** Mail
-*** retrieving
-:PROPERTIES:
-:header-args: :tangle ~/.mbsyncrc
-:END:
-
-On the [[https://wiki.archlinux.org/index.php/isync#Configuring][Arch Wiki]] there is an example configuration file. I have just modified
-the password and user section to my needs.
-
-This file behaves a little bit strange though. I tried to separate the content
-but when it tangled with some empty lines ~isync~ wasn't happy. That is why I
-decided to keep it as a big block.
-#+BEGIN_SRC sh
-IMAPAccount gmail
-# Address to connect to
-Host imap.gmail.com
-User carlsson.niklas@gmail.com
-PassCmd "pass email/gmail.com"
-# Pass your_password, if you don't have the pass application
-#
-# Use SSL
-SSLType IMAPS
-# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
-CertificateFile /etc/ssl/certs/ca-certificates.crt
-#CertificateFile ~/.cert/imap.gmail.com.pem
-#CertificateFile ~/.cert/Equifax_Secure_CA.pem
-
-IMAPStore gmail-remote
-Account gmail
-
-MaildirStore gmail-local
-Subfolders Verbatim
-# The trailing "/" is important
-Path ~/.mail/gmail/
-Inbox ~/.mail/gmail/Inbox
-
-Channel gmail
-Master :gmail-remote:
-Slave :gmail-local:
-# Exclude everything under the internal [Gmail] folder, except the interesting folders
-Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
-# Or include everything
-#Patterns *
-# Automatically create missing mailboxes, both locally and on the server
-Create Both
-# Save the synchronization state files in the relevant directory
-SyncState *
-#+END_SRC
-
-Mail setup for work
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-#
-# Zenuity
-#
-
-IMAPAccount     zenuity
-Host            "outlook.office365.com"
-User            "niklas.carlsson@zenuity.com"
-PassCmd         "pass show work/zenuity/login | sed -n 1p"
-AuthMechs       "PLAIN"
-SSLTYPE         "IMAPS"
-CertificateFile "/etc/ssl/certs/ca-certificates.crt"
-
-IMAPStore zenuity-remote
-Account   "zenuity"
-
-MaildirStore zenuity-local
-Path         "/home/nikcar/.mail/zenuity/"
-Inbox        "/home/nikcar/.mail/zenuity/Inbox"
-Trash        "/home/nikcar/.mail/zenuity/Trash"
-SubFolders   "Verbatim"
-
-
-Channel   zenuity-inbox
-Master    ":zenuity-remote:Inbox"
-Slave     ":zenuity-local:"
-Create    "Slave"
-SyncState "*"
-
-Channel   zenuity-sent
-Master    ":zenuity-remote:Sent Items"
-Slave     ":zenuity-local:Sent"
-Create    "Slave"
-SyncState "*"
-
-Channel   zenuity-trash
-Master    ":zenuity-remote:Deleted Items"
-Slave     ":zenuity-local:Trash"
-Create    "Slave"
-SyncState "*"
-
-Group   zenuity
-Channel "zenuity-inbox"
-Channel "zenuity-sent"
-Channel "zenuity-trash"
-#+END_SRC
-
-*** indexing
-:PROPERTIES:
-:header-args: :tangle ~/.notmuch-config
-:END:
-
-~notmuch~ is an indexer providing a cli and ~Emacs~ interface. This
-configuration is the default gnerated config file.
-
-https://wiki.archlinux.org/index.php/Notmuch
-#+BEGIN_QUOTE
-Notmuch is a mail indexer. Essentially, is a very thin front end on top of
-xapian.
-#+END_QUOTE
-
-#+BEGIN_SRC sh
-# .notmuch-config - Configuration file for the notmuch mail system
-#
-# For more information about notmuch, see https://notmuchmail.org
-
-# Database configuration
-#
-# The only value supported here is 'path' which should be the top-level
-# directory where your mail currently exists and to where mail will be
-# delivered in the future. Files should be individual email messages.
-# Notmuch will store its database within a sub-directory of the path
-# configured here named ".notmuch".
-#
-[database]
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-path=/home/niklascarlsson/.mail
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-path=/home/nikcar/.mail
-#+END_SRC
-
-#+BEGIN_SRC sh
-# User configuration
-#
-# Here is where you can let notmuch know how you would like to be
-# addressed. Valid settings are
-#
-#	name		Your full name.
-#	primary_email	Your primary email address.
-#	other_email	A list (separated by ';') of other email addresses
-#			at which you receive email.
-#
-# Notmuch will use the various email addresses configured here when
-# formatting replies. It will avoid including your own addresses in the
-# recipient list of replies, and will set the From address based on the
-# address to which the original email was addressed.
-#
-[user]
-name=Niklas Carlsson
-primary_email=carlsson.niklas@gmail.com
-
-# Configuration for "notmuch new"
-#
-# The following options are supported here:
-#
-#	tags	A list (separated by ';') of the tags that will be
-#		added to all messages incorporated by "notmuch new".
-#
-#	ignore	A list (separated by ';') of file and directory names
-#		that will not be searched for messages by "notmuch new".
-#
-#		NOTE: *Every* file/directory that goes by one of those
-#		names will be ignored, independent of its depth/location
-#		in the mail store.
-#
-[new]
-tags=unread;inbox;
-ignore=
-
-# Search configuration
-#
-# The following option is supported here:
-#
-#	exclude_tags
-#		A ;-separated list of tags that will be excluded from
-#		search results by default.  Using an excluded tag in a
-#		query will override that exclusion.
-#
-[search]
-exclude_tags=deleted;spam;
-
-# Maildir compatibility configuration
-#
-# The following option is supported here:
-#
-#	synchronize_flags      Valid values are true and false.
-#
-#	If true, then the following maildir flags (in message filenames)
-#	will be synchronized with the corresponding notmuch tags:
-#
-#		Flag	Tag
-#		----	-------
-#		D	draft
-#		F	flagged
-#		P	passed
-#		R	replied
-#		S	unread (added when 'S' flag is not present)
-#
-#	The "notmuch new" command will notice flag changes in filenames
-#	and update tags, while the "notmuch tag" and "notmuch restore"
-#	commands will notice tag changes and update flags in filenames
-#
-[maildir]
-synchronize_flags=true
-
-# Cryptography related configuration
-#
-# The following *deprecated* option is currently supported:
-#
-#	gpg_path
-#		binary name or full path to invoke gpg.
-#		NOTE: In a future build, this option will be ignored.
-#		Setting $PATH is a better approach.
-#
-[crypto]
-gpg_path=gpg
-
-#+END_SRC
-
-*** sending
-:PROPERTIES:
-:header-args: :tangle ~/.msmtprc :tangle-mode (identity #o600)
-:END:
-
-I use ~msmtp~ for sending my emails [[https://wiki.archlinux.org/index.php/msmtp][more information in arch wiki]]. One important
-aspect of the configuration file is that it needs to have the right permission.
-This can be found in the link above, it should have permission ~600~.
-
-#+BEGIN_QUOTE
-The user configuration file must be explicitly readable/writeable by its owner
-or msmtp will fail:
-#+END_QUOTE
-
-This is something that ~:tangle-mode~ handles, which I found information about
-in the [[https://orgmode.org/manual/tangle_002dmode.html][org-manual.]]
-
-Here is the default configuration found at the arch wiki, just with my gmail
-account instead of the default one.
-#+BEGIN_SRC conf
-# Set default values for all following accounts.
-defaults
-auth           on
-tls            on
-tls_trust_file /etc/ssl/certs/ca-certificates.crt
-logfile        ~/.msmtp.log
-
-# Gmail
-account        gmail
-host           smtp.gmail.com
-port           587
-from           carlsson.niklas@gmail.com
-user           carlsson.niklas@gmail.com
-#+END_SRC
-
-Now I have [[https://www.passwordstore.org/][Pass the standard unix password manager]] setup so I can call that
-directly:
-#+BEGIN_SRC conf
-passwordeval "pass email/gmail.com"
-#+END_SRC
-
-If you don't have the password-store, but have setup gpg then one can use:
-#+BEGIN_SRC conf :tangle no
-passwordeval   "gpg --use-agent --quiet --for-your-eyes-only --no-tty --decrypt path_to_gpg_file_with_password
-#+END_SRC
-
-This is the solution if you don't have set up neither ~pass~ nor ~gpg~. You need
-to store the password in plain text.
-#+BEGIN_SRC conf :tangle no
-password       my_password
-#+END_SRC
-
-#+BEGIN_SRC conf
-# Set a default account
-account default : gmail
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)))
-# Zenuity
-account        zenuity
-host           smtp.office365.com
-port           587
-from           niklas.carlsson@zenuity.com
-user           niklas.carlsson@zenuity.com
-passwordeval "pass show work/zenuity/login | sed -n 1p"
-#+END_SRC
-
-*** systemd automation
-**** timer
-
-#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.timer :mkdirp t :tangle-mode (identity #o644)
-[Unit]
-Description=Mailbox synchronization timer
-
-[Timer]
-OnBootSec=2m
-OnUnitActiveSec=5m
-Unit=mbsync.service
-
-[Install]
-WantedBy=timers.target
-#+END_SRC
-**** service
-:PROPERTIES:
-:header-args: :tangle ~/.config/systemd/user/mbsync.service :mkdirp t :tangle-mode (identity #o644) :padline no
-:END:
-
-#+BEGIN_SRC sh
-[Unit]
-Description=Mailbox synchronization service
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/mbsync -Va
-ExecStartPost=/usr/bin/notmuch new
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-ExecStartPre=/home/niklascarlsson/bin/notmuch-pre
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-ExecStartPre=/home/nikcar/bin/notmuch-pre
-#+END_SRC
-
-**** start
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-
-Start the service
-#+BEGIN_SRC sh
-sudo systemctl daemon-reload # reload systemd
-# user services don't need elevated rights
-systemctl --user enable mbsync.timer
-systemctl --user start mbsync.timer
-#+END_SRC
-**** utility
-:PROPERTIES:
-:header-args: :tangle ~/bin/notmuch-pre :shebang "#!/bin/bash"
-:END:
-
-Remove mails that has been taged as deleted the --no-run -if-empty prevents the
-rm to run if no files are piped otherwise the command will fail due to lack of
-input arguments.
-#+BEGIN_SRC sh
-notmuch search --output=files --format=text0 tag:deleted | xargs -0 --no-run-if-empty /bin/rm
-#+END_SRC
-
-If the above fails due to index filed taged with deleted doesn't exist this will
-remove the tag making sure that the above statement doesn't keep failing.
-#+BEGIN_SRC sh
-if [ $? -ne 0 ]; then
-    notmuch tag -deleted tag:deleted
-fi
-#+END_SRC
-
-~Improvement:~ add a smart function for deletion in Emacs to avoid
-deleting mails that have been flagged.
-
-** Shells
-*** Zsh
-
-**** zshrc
-:PROPERTIES:
-:header-args: :tangle ~/.zshrc :mkdirp yes :comments link
-:END:
-
-***** zgen
-
-Following the setup details on [[https://github.com/tarjoilija/zgen][zgen wiki]]. Starting with sourcing zgen on start
-in zshrc.
-
-#+BEGIN_SRC sh
-# load zgen
-source "${HOME}/.zgen/zgen.zsh"
-#+END_SRC
-
-Further down on the github page there is an example zshrc. I have taken that
-content and slimmed it down.
-#+BEGIN_SRC sh
-# if the init scipt doesn't exist
-if ! zgen saved; then
-    echo "Creating a zgen save"
-
-    # plugins
-    zgen load zsh-users/zsh-syntax-highlighting
-    zgen load hlissner/zsh-autopair autopair.zsh develop
-    zgen load zsh-users/zsh-history-substring-search
-    zgen load zdharma/history-search-multi-word
-    zgen load zsh-users/zsh-completions src
-    zgen load zsh-users/zsh-autosuggestions
-    zgen load rupa/z z.sh
-
-    # save all to init script
-    zgen save
-fi
-#+END_SRC
-
-***** keybindings
-
-Make sure to set the timeout to a low value to avoid delays when pressing escape
-https://www.johnhawthorn.com/2012/09/vi-escape-delays/
-#+BEGIN_SRC sh
-export KEYTIMEOUT=10
-#+END_SRC
-
-Enable vi-mode and set the keybindings
-I grabbed this from https://github.com/hlissner/dotfiles/tree/master/shell/zsh
-#+BEGIN_SRC sh
-## vi-mode
-bindkey -v
-bindkey -M viins 'jk' vi-cmd-mode
-bindkey -M viins ' ' magic-space
-
-bindkey -M viins '^n' history-substring-search-down
-bindkey -M viins '^p' history-substring-search-up
-bindkey -M viins '^s' history-incremental-pattern-search-backward
-bindkey -M viins '^u' backward-kill-line
-bindkey -M viins '^w' backward-kill-word
-bindkey -M viins '^b' backward-word
-bindkey -M viins '^f' forward-word
-bindkey -M viins '^g' push-line-or-edit
-bindkey -M viins '^a' beginning-of-line
-bindkey -M viins '^e' end-of-line
-bindkey -M viins '^d' push-line-or-edit
-
-bindkey -M vicmd '^k' kill-line
-bindkey -M vicmd 'H'  run-help
-
-# Shift + Tab
-bindkey -M viins '^[[Z' reverse-menu-complete
-#+END_SRC
-
-There is an example zshrc found in the arch wiki
-https://github.com/MrElendig/dotfiles-alice/blob/master/.zshrc
-
-I use this to get colored directories
-#+BEGIN_SRC sh
-#------------------------------
-# History stuff
-#------------------------------
-HISTFILE=~/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
-
-#------------------------------
-# Variables
-#------------------------------
-export BROWSER="firefox"
-export EDITOR="nvim"
-#+END_SRC
-
-I found this set in the arch ~bashrc~ file. Seems like a good alias to set, this
-gave me colored output of my ls commands.
-#+BEGIN_SRC sh
-alias ls='ls --color=auto'
-#+END_SRC
-***** prompt
-
-https://github.com/hlissner/dotfiles/blob/master/shell/zsh/prompt.zsh
-
-#+BEGIN_SRC sh
-# Loosely based off Pure <https://github.com/sindresorhus/pure>
-
-_strlen() { echo ${#${(S%%)1//$~%([BSUbfksu]|([FB]|){*})/}}; }
-
-# fastest possible way to check if repo is dirty
-prompt_git_dirty() {
-
-  # check if we're in a git repo
-  [[ "$(command git rev-parse --is-inside-work-tree 2>/dev/null)" == "true" ]] || return
-  # check if it's dirty
-  command test -n "$(git status --porcelain --ignore-submodules -unormal)" || return
-
-  local r=$(command git rev-list --right-only --count HEAD...@'{u}' 2>/dev/null)
-  local l=$(command git rev-list --left-only --count HEAD...@'{u}' 2>/dev/null)
-
-  (( ${r:-0} > 0 )) && echo -n " %F{red}${r}-"
-  (( ${l:-0} > 0 )) && echo -n " %F{green}${l}+"
-  echo -n '%f'
-}
-
-## Hooks ###############################
-prompt_hook_precmd() {
-  vcs_info # get git info
-  # Newline before prompt, except on init
-  [[ -n $PROMPT_DONE ]] && print ""; PROMPT_DONE=1
-}
-
-## Initialization ######################
-prompt_init() {
-  # prevent the extra space in the rprompt
-  [[ -n $EMACS ]] || ZLE_RPROMPT_INDENT=0
-  # prevent percentage showing up
-  # if output doesn't end with a newline
-  export PROMPT_EOL_MARK=
-
-  # prompt_opts=(cr subst percent)
-  setopt promptsubst
-  autoload -Uz add-zsh-hook
-  autoload -Uz vcs_info
-
-  add-zsh-hook precmd prompt_hook_precmd
-  # Updates cursor shape and prompt symbol based on vim mode
-  zle-keymap-select() {
-    case $KEYMAP in
-      vicmd)      PROMPT_SYMBOL="%F{magenta}« " ;;
-      main|viins) PROMPT_SYMBOL="%(?.%F{green}.%F{red})λ " ;;
-    esac
-    zle reset-prompt
-    zle -R
-  }
-  zle -N zle-keymap-select
-  zle -A zle-keymap-select zle-line-init
-
-  zstyle ':vcs_info:*' enable git
-  zstyle ':vcs_info:*' use-simple true
-  zstyle ':vcs_info:*' max-exports 2
-  zstyle ':vcs_info:git*' formats ' %b'
-  zstyle ':vcs_info:git*' actionformats ' %b (%a)'
-
-  RPROMPT='%F{blue}%~%F{magenta}${vcs_info_msg_0_}$(prompt_git_dirty)%f'
-  PROMPT='%F{blue}${prompt_username}%f${PROMPT_SYMBOL:-$ }'
-}
-
-prompt_init "$@"
-#+END_SRC
-
-****** TODO Make zsh prompt look good in tty as well
-
-The prompt doesn't look that good when in the tty. Should I use
-something else then lambda when in such a console with a restricted font.
-
-This is a solution for how to detect if the shell is running in a virtual terminal
-https://unix.stackexchange.com/questions/96463/detect-if-running-in-a-virtual-terminal
-***** aliases
-****** Move/Copy/Remove
-#+BEGIN_SRC sh
-alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
-#+END_SRC
-
-****** List
-
-List content. ~LC_COLLATE=C~ sorts in upper case letters before lower.
-#+BEGIN_SRC sh
-alias ln="${aliases[ln]:-ln} -v"  # verbose ln
-alias l='ls -1'
-alias ll='ls -l'
-alias la='LC_COLLATE=C ls -la'
-#+END_SRC
-
-****** Tmux
-
-https://github.com/hlissner/dotfiles/blob/master/shell/tmux/tmux.conf
-#+BEGIN_SRC sh
-alias ta='tmux attach'
-alias tl='tmux ls'
-
-if [[ -n $TMUX ]]; then # From inside tmux
-    alias tf='tmux find-window'
-    # Detach all other clients to this session
-    alias mine='tmux detach -a'
-    # Send command to other tmux window
-    tt() { tmux send-keys -t .+ C-u && tmux set-buffer "$*" && tmux paste-buffer -t .+ && tmux send-keys -t .+ Enter; }
-    # Create new session (from inside one)
-    tn() {
-        local name="${1:-`basename $PWD`}"
-        TMUX= tmux new-session -d -s "$name"
-        tmux switch-client -t "$name"
-        tmux display-message "Session #S created"
-    }
-else # From outside tmux
-    # Start grouped session so I can be in two different windows in one session
-    tdup() { tmux new-session -t "${1:-`tmux display-message -p '#S'`}"; }
-fi
-#+END_SRC
-****** bat
-
-[[https://github.com/sharkdp/bat][Bat is the new cat]]
-#+BEGIN_SRC sh
-alias cat="bat"
-#+END_SRC
-
-***** settings
-
-This setting controls the hightlightstyle
-#+BEGIN_SRC sh
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
-#+END_SRC
-***** fzf
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-source /usr/share/fzf/key-bindings.zsh
-#+END_SRC
-
-#+BEGIN_SRC sh :tangel (my/tangle-os '(ubuntu))
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-#+END_SRC
-
-***** DONE remove duplicates history in zsh
-CLOSED: [2019-02-04 mån 10:28]
-
-Avoiding duplicate entries in history, [[https://github.com/junegunn/fzf/issues/600][I found the information here]]. However I
-will leave it disabled for the meantime. I sometimes found the history quite
-good to have in case I need to backtrack what I have done in the terminal.
-
-#+BEGIN_SRC sh :tangle no
-setopt HIST_IGNORE_ALL_DUPS
-#+END_SRC
-
-***** DONE Improve z with fzf
-CLOSED: [2019-02-04 mån 16:15]
-
-The plugin ~z~ to ~zsh~ makes navigating to known locations easier. However as
-the list of directories grows there might be multiple ones that share similar
-names. By combining ~fzf~ and ~z~ it's possible to fuzzy find among the
-directories.
-
-This unbinds ~z~ and redefines it as this function.
-#+BEGIN_SRC sh
-unalias z 2> /dev/null
-z() {
-  [ $# -gt 0 ] && _z "$*" && return
-  cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
-}
-#+END_SRC
-
-***** local configuration
-
-Load a local ~zshrc~ file if it exists. The benefit is that local settings could
-be stored here. For example aliases that are work specific that should not be
-publicly available.
-
-#+BEGIN_SRC sh
-[[ -f ~/.zshrc_local ]] && source "${HOME}/.zshrc_local"
-#+END_SRC
-
-Import colorscheme asynchronously for wal
-#+BEGIN_SRC sh :tangle no
-# https://github.com/dylanaraps/pywal/wiki/Getting-Started
-# Import colorscheme from 'wal' asynchronously
-# &   # Run the process in the background.
-# ( ) # Hide shell job control messages.
-(/usr/bin/cat ~/.cache/wal/sequences &)
-#+END_SRC
-
-I want to source the colors.sh in order to get the colors into FZF_DEFAULT_OPTS
-#+BEGIN_SRC sh :tangle no
-source ~/.cache/wal/colors.sh
-#+END_SRC
-
-***** DONE do not show duplicates in fzf history
-CLOSED: [2019-02-04 mån 10:30]
-
-A better for the history problem is to override the default behaviour of fzf
-when viewing the history. There is a solution in this issue,
-https://github.com/junegunn/fzf/pull/1287.
-
-#+BEGIN_SRC sh
-# CTRL-R - Paste the selected command from history into the command line
-fzf-history-widget() {
-  local selected num
-  setopt localoptions noglobsubst noposixbuiltins pipefail 2> /dev/null
-  selected=( $(fc -rl 1 | sort -uk2,1000 | sort -nr |
-    FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} $FZF_DEFAULT_OPTS -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)) )
-  local ret=$?
-  if [ -n "$selected" ]; then
-    num=$selected[1]
-    if [ -n "$num" ]; then
-      zle vi-fetch-history -n $num
-    fi
-  fi
-  zle redisplay
-  typeset -f zle-line-init >/dev/null && zle zle-line-init
-  return $ret
-}
-#+END_SRC
-***** fuzzy find and open
-
-I found this function in the [[https://github.com/junegunn/fzf/wiki/Examples#opening-files][fzf example section]]. This aligns with the
-functionality that I have in ~eshell~, making it more frictionless to move in
-between.
-#+BEGIN_SRC sh
-# ff [FUZZY PATTERN] - Open the selected file with the default editor
-#   - Bypass fuzzy finder if there's only one match (--select-1)
-#   - Exit if there's no match (--exit-0)
-ff() {
-  local files
-  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
-  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
-}
-#+END_SRC
-
-include those hidden files as well
-#+BEGIN_SRC sh
-fh() {
-  local files
-  IFS=$'\n' files=($(find . | fzf-tmux --query="$1" --multi --select-1 --exit-0))
-  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
-}
-#+END_SRC
-
-This makes it possible to fuzzy find and cd to selected directory
-#+BEGIN_SRC sh
-# fd - cd to selected directory
-fd() {
-  local dir
-  dir=$(find ${1:-.} -path '*/\.*' -prune \
-                  -o -type d -print 2> /dev/null | fzf +m) &&
-  cd "$dir"
-}
-#+END_SRC
-***** mounting
-
-Dealing with the sd card reader
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-alias mountsdcard="sudo mount $(lsblk -l -o PATH,MODEL,SIZE | grep -A1 "SD_Card_Reader" | sed -n 2p | cut -d' ' -f1) /mnt/sdcard"
-alias unmountsdcard="sudo umount /mnt/sdcard"
-#+END_SRC
-**** zshenv
-:PROPERTIES:
-:header-args: :tangle ~/.zshenv :mkdirp yes :comments link
-:END:
-
-Set the editors that I use. ~Emacs~ for the gui stuff and ~Neovim~ for the good
-old terminal.
-#+BEGIN_SRC sh
-export EDITOR=nvim
-export VISUAL=emacs
-
-#+END_SRC
-
-Add ~HOME/bin~ to ~PATH~ to find my local binaries. To ~prepend~ or ~append~ is
-exemplified [[https://stackoverflow.com/questions/11530090/adding-a-new-entry-to-the-path-variable-in-zsh ][here.]]
-#+BEGIN_SRC sh
-path=('/home/niklascarlsson/bin' $path) # prepend path
-#+END_SRC
-
-
-Solve issue with zsh-autosuggestions highlight
-https://github.com/zsh-users/zsh-autosuggestions/issues/229
-#+BEGIN_SRC sh
-export TERM=xterm-256color
-#+END_SRC
-
-Following the installation notes on [[https://github.com/pyenv/pyenv][pyenv]] one needs to setup the following paths
-#+BEGIN_SRC sh
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-#+END_SRC
-
-as well as initialize the pyenv environment which should preferably be done last
-#+BEGIN_SRC sh
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init - --no-rehash)"
-fi
-#+END_SRC
-
-*** Bash
+** Bash
 :PROPERTIES:
 :header-args: :tangle (my/tangle-os '(arch) "~/.bashrc") :mkdirp yes :comments link
 :END:
-**** default
+*** default
 This is the default content that where in the rc file at start
 #+BEGIN_SRC sh
 #
@@ -7102,13 +3503,13 @@ alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
 #+END_SRC
 
-**** external harddrive
+*** external harddrive
 Mount external
 #+BEGIN_SRC sh
 # mount ssd
 alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
-**** inputrc
+*** inputrc
 :PROPERTIES:
 :header-args: :tangle (my/tangle-app '(zsh) "~/.inputrc") :mkdirp yes
 :END:
@@ -7166,15 +3567,15 @@ set keyseq-timeout 0
 
 my bash configuration goes here.
 
-** Terminal
-*** Tmux
+* Terminal
+** Tmux
 :PROPERTIES:
 :header-args: :tangle ~/.tmux.conf :mkdirp yes
 :END:
 
 [[https://github.com/tmux/tmux][Tmux, a terminal multiplexer]]
 
-**** TODO Fix tmux settings incompatibility
+*** TODO Fix tmux settings incompatibility
 
 Version 2.9 introduced some breaking changes to the styling, here is some discussion:
 https://github.com/tmux/tmux/issues/1689
@@ -7191,12 +3592,12 @@ An example is here:
 set -g window-status-style bg=default,fg=colour236,none
 #+END_SRC
 
-**** General information
+*** General information
 
 I am trying to grasp the notations of ~tmux~. It seems like there is three
 important words to know. ~Sessions~, ~Windows~ and ~Panes~.
 
-**** TODO Start using relevant code from sensible
+*** TODO Start using relevant code from sensible
 
 The plugin [[https://github.com/tmux-plugins/tmux-sensible][tmux-sensible]] has many sane options as default. I will use many of
 them from there.
@@ -7252,7 +3653,7 @@ setw -g aggressive-resize off
 
 #+END_SRC
 
-**** Display
+*** Display
 
 #+BEGIN_SRC sh
 # # -- DISPLAY -----------------------------
@@ -7275,7 +3676,7 @@ set -g display-panes-time 800
 set -g focus-events on
 #+END_SRC
 
-**** Important keybindings
+*** Important keybindings
 #+BEGIN_SRC sh
 # # -- KEYBINDS ----------------------------
 
@@ -7303,7 +3704,7 @@ bind C-c send-prefix
 unbind C-b
 #+END_SRC
 
-**** Window management
+*** Window management
 These keybindings makes more sense from a Vim perspective.
 #+BEGIN_SRC sh
 unbind %
@@ -7313,7 +3714,7 @@ bind v split-window -c "#{pane_current_path}" -h
 bind c new-window -c "#{pane_current_path}"
 #+END_SRC
 
-**** Pane management
+*** Pane management
 
 Windows in tmux can be thougth of as tabs. So breaking a pane to a window
 basically takes, what I would call a window and makes it into a tab.
@@ -7395,7 +3796,7 @@ bind q kill-session
 bind Q kill-server
 #+END_SRC
 
-**** Copy mode
+*** Copy mode
 Enable vi bindings for Copy mode
 #+BEGIN_SRC sh
 # # -- COPY MODE ---------------------------
@@ -7414,14 +3815,14 @@ bind -T copy-mode-vi L send -X end-of-line
 
 #+END_SRC
 
-**** Reload configuration
+*** Reload configuration
 #+BEGIN_SRC sh
 # reload config without killing server
 bind r source-file $HOME/.tmux.conf \; display-message "  Config reloaded..".
 bind ^r refresh-client
 #+END_SRC
 
-**** Theme
+*** Theme
 Load the theme
 #+BEGIN_SRC sh
 # -- THEME -------------------------------
@@ -7488,9 +3889,9 @@ setw -g window-status-format ' #W '
 
 #+END_SRC
 
-**** Load plugins
+*** Load plugins
 
-***** Plugin manager
+**** Plugin manager
 ~Plugin manager~
 https://github.com/tmux-plugins/tpm
 #+BEGIN_SRC sh
@@ -7503,8 +3904,8 @@ set -g @plugin 'tmux-plugins/tpm'
 | prefix + U       | Updates plugins             |
 | prefix + alt + u | Removes/uninstalls plugins  |
 
-***** Custom plugins
-****** copy-cat
+**** Custom plugins
+***** copy-cat
 [[https://github.com/tmux-plugins/tmux-copycat][tmux-copycat]] enables
 - regex searches
 - search result highlighting
@@ -7514,7 +3915,7 @@ set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-copycat'
 #+END_SRC
 
-****** yank
+***** yank
 In normal mode ~prefix + y~ copies the command line to clipboard.
 In copy mode ~y~ copies selection to clipboard.
 In copy mode ~Y~ copies and pastes it to the command line.
@@ -7523,7 +3924,7 @@ set -g @plugin 'tmux-plugins/tmux-yank'
 #+END_SRC
 
 #+RESULTS:
-****** open
+***** open
 
 Key bindings
 #+BEGIN_QUOTE
@@ -7546,7 +3947,7 @@ In copy mode:
 set -g @plugin 'tmux-plugins/tmux-open'
 #+END_SRC
 
-****** others
+***** others
 #+BEGIN_SRC sh
 # set -g @plugin 'tmux-plugins/tmux-prefix-highlight'
 
@@ -7555,18 +3956,18 @@ set -g @plugin 'tmux-plugins/tmux-open'
 
 #+END_SRC
 
-***** start pluings
+**** start pluings
 Start the plugin manager
 #+BEGIN_SRC sh
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run -b '~/.tmux/plugins/tpm/tpm'
 #+END_SRC
 
-*** Scripts
+** Scripts
 
 These are my custom utility scripts that I use.
 
-**** Music player :tmux:tizonia:
+*** Music player :tmux:tizonia:
 
 A music player setup combining ~tizonia~ with the music visualizer ~cava~ and
 volume control ~ncpamixer~ into a three window setup with ~tmux~.
@@ -7582,7 +3983,7 @@ tmux new-session \; \
     select-pane -U \;
 #+END_SRC
 
-**** Glitch lock
+*** Glitch lock
 
 Glitch locking the screen utilizing ~videoglitch~
 
@@ -7595,7 +3996,7 @@ convert $OUTPUT -scale '200%' $OUTPUT
 i3lock -i $OUTPUT -t
 #+END_SRC
 
-**** Vpn utility :vpn:
+*** Vpn utility :vpn:
 :PROPERTIES:
 :header-args: :tangle ~/bin/vpn-toggle :shebang "#! /bin/zsh"
 :END:
@@ -7624,7 +4025,7 @@ fi
 
 ~Note:~ an idea for the future might be to utilize a rofi popup to select which
 vpn connection to use when activating. Currently one is hardcoded.
-**** Control monitor brightness :python:xrandr:
+*** Control monitor brightness :python:xrandr:
 
 Use xrandr and Python to adjust the monitor brightness.
 
@@ -7673,8 +4074,8 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         adjust_brightness(float(sys.argv[1]))
 #+END_SRC
-** Utility applications
-*** Screen color temperature
+* Utility applications
+** Screen color temperature
 :PROPERTIES:
 :header-args: :tangle (my/tangle-os '(arch) "~/.config/redshift/redshift.conf") :mkdirp yes
 :END:
@@ -7718,16 +4119,16 @@ Redshift
 
 [[https://github.com/jonls/redshift][Redshift, color temperature adjustor]]
 
-*** Notifications
+** Notifications
 
 [[https://github.com/dunst-project/dunst][Dunst, a lightweight and customizable notification daemon]]
 
-** WIP
+* WIP
 
 This work in progress section contains some ideas that I am exploring but where
 I haven't found a good solution or reached a conclusion.
 
-*** Right pad strings :zsh:
+** Right pad strings :zsh:
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -7747,12 +4148,12 @@ echo $y
 
 #+RESULTS:
 : 3xxxxxxxxx
-*** Detect if keyboard is plugged in :keyboard:
+** Detect if keyboard is plugged in :keyboard:
 
 Use something to detect if a keyboard is plugged in so I can update the
 ~setxkbmap~ command accordingly. This is currently a problem when my Macbook
 doesn't have an external keyboard plugged in.
-*** Mouse toggle
+** Mouse toggle
 
 The trackpad on my work computer sucks, I want a mouse toggle script that I can
 call from rofi, [[https://askubuntu.com/questions/199271/x11-disable-mouse][inspiration]]. This would make it easy to turn it off when I don't
