@@ -1283,7 +1283,7 @@ wintypes:
 };
 #+END_SRC
 
-* Polybar
+* Polybar :deprecated:
 ** configuration
 :PROPERTIES:
 :header-args: :tangle ~/.config/polybar/config :mkdirp yes
@@ -3635,8 +3635,699 @@ applications, resulting in massive adoption from most distributions.
 [[https://github.com/polybar/polybar][Polybar, a fast and easy-to-use tool for creating status bars]]
 
 **** launch script
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/launch.sh :shebang "#! /bin/sh" :mkdirp yes
+:END:
+
+***** Kill active bars
+#+BEGIN_SRC sh
+#!/usr/bin/env bash
+
+# Terminate already running bar instances
+killall -q polybar
+
+# Wait until the processes have been shut down
+while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
+
+#+END_SRC
+
+***** Kick of the bar(s)
+I add the ~reload~ option to have the bar automatically reloaded when I change
+the configuration file.
+#+BEGIN_QUOTE
+       -r, --reload
+              Reload the application when the config file has been modified
+#+END_QUOTE
+
+This is my first attempt
+#+BEGIN_SRC sh :tangle no
+# Launch example bar
+polybar -r example &
+
+echo "Bar launched..."
+#+END_SRC
+
+****** Multiple monitors :wip:
+https://github.com/jaagr/polybar/issues/763
+#+BEGIN_SRC sh :tangle no
+if type "xrandr"; then
+  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+    MONITOR=$m polybar --reload example &
+  done
+else
+  polybar --reload example &
+fi
+#+END_SRC
+
+Slimmed down version
+#+BEGIN_SRC sh :tangle no
+for m in $(polybar --list-monitors | cut -d":" -f1); do
+    MONITOR=$m polybar --reload example &
+done
+#+END_SRC
+
+****** Center monitor only
+
+#+BEGIN_SRC sh
+if type "xrandr"; then
+  for m in $(xrandr --query | grep "primary" | cut -d" " -f1); do
+  # for m in $(xrandr --query | grep "DP-1-1-8" | cut -d" " -f1); do
+    MONITOR=$m polybar --reload main &
+  done
+else
+  polybar --reload main &
+fi
+#+END_SRC
+
+
 **** configuration
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/config :mkdirp yes
+:END:
+
+Ideas:
+- how to make sure that the centered module is actually centered. It seems to
+  move depending on the size of the right/left module. I would prefer having it
+  centered straight in the middle.
+
+***** Colors
+#+BEGIN_SRC sh
+;==========================================================
+;
+;
+;   ██████╗  ██████╗ ██╗  ██╗   ██╗██████╗  █████╗ ██████╗
+;   ██╔══██╗██╔═══██╗██║  ╚██╗ ██╔╝██╔══██╗██╔══██╗██╔══██╗
+;   ██████╔╝██║   ██║██║   ╚████╔╝ ██████╔╝███████║██████╔╝
+;   ██╔═══╝ ██║   ██║██║    ╚██╔╝  ██╔══██╗██╔══██║██╔══██╗
+;   ██║     ╚██████╔╝███████╗██║   ██████╔╝██║  ██║██║  ██║
+;   ╚═╝      ╚═════╝ ╚══════╝╚═╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+;
+;
+;   To learn more about how to configure Polybar
+;   go to https://github.com/jaagr/polybar
+;
+;   The README contains alot of information
+;
+;==========================================================
+
+[colors]
+; background = ${xrdb:color0:#222}
+background =
+background-alt = ${xrdb:color9:#444}
+foreground = ${xrdb:color7:#222}
+foreground-alt = ${xrdb:color7:#222}
+primary = ${xrdb:color1:#222}
+secondary = ${xrdb:color2:#222}
+alert = ${xrdb:color3:#222}
+
+bg = ${xrdb:background}
+fg = ${xrdb:foreground}
+black = ${xrdb:color0}
+bblack = ${xrdb:color8}
+red = ${xrdb:color1}
+bred = ${xrdb:color9}
+green = ${xrdb:color2}
+bgreen = ${xrdb:color10}
+yellow = ${xrdb:color3}
+byellow = ${xrdb:color11}
+blue = ${xrdb:color4}
+bblue = ${xrdb:color12}
+magenta = ${xrdb:color5}
+bmagenta = ${xrdb:color13}
+cyan = ${xrdb:color6}
+bcyan = ${xrdb:color14}
+white = ${xrdb:color7}
+bwhite = ${xrdb:color15}
+
+bg-alt = #0F1013
+fg-alt = #25282a
+icons = #555856
+
+#+END_SRC
+
+***** Main bar
+#+BEGIN_SRC sh
+[bar/main]
+monitor = ${env:MONITOR:}
+wm-restack = bspwm
+override-redirect = true
+
+width = 100%
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+height = 40
+offset-x = 0
+offset-y = 10
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+height = 20
+offset-x = 0
+offset-y = 5
+#+END_SRC
+
+#+BEGIN_SRC sh
+;offset-x = 1%
+;offset-y = 1%
+
+radius = 0.0
+
+fixed-center = false
+
+bottom = 1
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+line-size = 0
+
+line-color = #f00
+
+border-size = 0
+
+border-color = #00000000
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+padding-left = 4
+padding-right = 4
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+padding-left = 2
+padding-right = 2
+#+END_SRC
+
+#+BEGIN_SRC sh
+module-margin-left = 1
+module-margin-right = 1
+#+END_SRC
+
+***** Resolution
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+dpi-x = 227
+dpi-y = 227
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+dpi-x = 96
+dpi-y = 96
+#+END_SRC
+
+***** Fonts
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+font-0 = "Roboto Mono:style=Regular:size=6"
+font-1 = unifont:fontformat=truetype:size=6:antialias=false;0
+font-2 = "Material Icons:style=Regular:size=6"
+font-3 = "Wuncon Siji:style=Regular:pixelsize=8;1"
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+font-0 = "Roboto Mono:style=Regular:size=10"
+font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
+font-2 = siji:pixelsize=8;1
+font-3 = "Material Icons:style=Regular:size=10"
+#+END_SRC
+
+***** Modules setup
+#+BEGIN_SRC sh
+modules-left = cpu memory pad pulseaudio app-mail app-pad-volume pad-left
+modules-center = bspwm
+modules-right = battery app-bluetooth app-vpn wlan app-redshift pad date
+#+END_SRC
+
+***** Modules
+
+****** Misc features
+
+#+BEGIN_SRC sh
+tray-position = right
+tray-padding = 2
+;tray-background = #0063ff
+
+;wm-restack = bspwm
+
+;override-redirect = true
+
+;scroll-up = bspwm-desknext
+;scroll-down = bspwm-deskprev
+
+cursor-click = pointer
+cursor-scroll = ns-resize
+#+END_SRC
+
+****** Padding
+
+#+BEGIN_SRC sh
+[module/pad]
+type = custom/text
+content = "   "
+content-foreground = ${colors.fg-alt}
+
+[module/pad-left]
+type = custom/text
+content = "         "
+
+[module/app-pad-volume]
+type = custom/script
+exec = ~/.config/polybar/modules/app-pad-volume.sh
+interval = 1
+
+#+END_SRC
+
+****** mail
+#+BEGIN_SRC sh
+[module/app-mail]
+type = custom/script
+exec = ~/.config/polybar/modules/app-mail.sh
+interval = 10
+#+END_SRC
+
+****** bluetooth
+#+BEGIN_SRC sh
+[module/app-bluetooth]
+type = custom/script
+exec = ~/.config/polybar/modules/app-bluetooth.sh
+interval = 10
+#+END_SRC
+
+****** vpn
+#+BEGIN_SRC sh
+[module/app-vpn]
+type = custom/script
+exec = ~/.config/polybar/modules/app-vpn.sh
+interval = 10
+#+END_SRC
+
+****** keyboard
+#+BEGIN_SRC sh :tangle no
+[module/xkeyboard]
+type = internal/xkeyboard
+blacklist-0 = num lock
+blacklist-1 = caps lock
+blacklist-2 = scroll lock
+
+format-prefix = " "
+format-prefix-foreground = ${colors.foreground-alt}
+format-prefix-underline = ${colors.secondary}
+
+label-layout = %layout%
+label-layout-underline = ${colors.secondary}
+
+label-indicator-padding = 2
+label-indicator-margin = 1
+label-indicator-background = ${colors.secondary}
+label-indicator-underline = ${colors.secondary}
+
+#+END_SRC
+
+****** bspwm
+#+BEGIN_SRC sh
+[module/bspwm]
+type = internal/bspwm
+
+ws-icon-0 = 1;
+ws-icon-1 = 2;
+ws-icon-2 = 3;
+ws-icon-3 = 4;
+ws-icon-4 = 5;
+ws-icon-5 = 6;
+ws-icon-6 = 7;
+ws-icon-7 = 8;
+ws-icon-8 = 9;
+ws-icon-default = x
+
+format = <label-state> <label-mode>
+label-padding = 1
+
+label-focused = %icon%
+label-focused-background = #33000000
+label-focused-foreground = ${colors.green}
+label-focused-padding = 1
+;label-focused = %icon%
+;label-focused-foreground = ${colors.red}
+;label-focused-padding = 1
+
+label-occupied = %icon%
+label-occupied-foreground = ${colors.icons}
+label-occupied-padding = 1
+;label-occupied = %icon%
+;label-occupied-foreground = ${colors.red}
+;label-occupied-padding = 1
+
+label-urgent-foreground = ${colors.red}
+;label-urgent-padding = 1
+;label-urgent = %icon%!
+;label-urgent-background = ${colors.red}
+;label-urgent-padding = 1
+
+label-empty = %icon%
+label-empty-foreground = ${colors.fg-alt}
+label-empty-padding = 1
+;label-empty = %icon%
+;label-empty-foreground = ${colors.bg-alt}
+;; label-empty-background = ${xrdb:color0:#222}
+;label-empty-padding = 1
+
+; Separator in between workspaces
+; label-separator = |
+#+END_SRC
+
+****** wifi
+#+BEGIN_SRC sh
+[module/wlan]
+type = internal/network
+interface = wlp3s0
+interval = 3.0
+
+format-connected = <ramp-signal>
+
+format-disconnected = 
+format-disconnected-foreground = ${colors.red}
+label-disconnected = %ifname% disconnected
+
+ramp-signal-0 = 
+ramp-signal-0-foreground = ${colors.foreground-alt}
+ramp-signal-1 = 
+ramp-signal-1-foreground = ${colors.foreground-alt}
+ramp-signal-2 = 
+ramp-signal-2-foreground = ${colors.foreground-alt}
+ramp-signal-3 = 
+ramp-signal-3-foreground = ${colors.foreground-alt}
+ramp-signal-4 = 
+ramp-signal-4-foreground = ${colors.foreground-alt}
+#+END_SRC
+
+****** ethernet
+#+BEGIN_SRC sh :tangle no
+[module/eth]
+type = internal/network
+interface = net0
+interval = 3.0
+
+format-connected-underline = #55aa55
+format-connected-prefix = " "
+format-connected-prefix-foreground = ${colors.foreground-alt}
+label-connected = %local_ip%
+
+format-disconnected =
+;format-disconnected = <label-disconnected>
+;format-disconnected-underline = ${self.format-connected-underline}
+;label-disconnected = %ifname% disconnected
+;label-disconnected-foreground = ${colors.foreground-alt}
+
+#+END_SRC
+
+****** date
+#+BEGIN_SRC sh
+[module/date]
+type = internal/date
+interval = 5
+
+label = %date%  %time%
+date = %A, %h %d
+date-alt = %Y-%m-%d
+time = %I:%M %p
+time-alt = %H:%M:%S
+;format-prefix = ""
+format-prefix = 
+format-prefix-padding = 1
+; format-prefix-background = ${colors.bg-alt}
+format-prefix-foreground = ${colors.icons}
+; format-underline = ${xrdb:color4}
+
+;date =
+;date-alt = " %Y-%m-%d"
+;
+;time = %H:%M
+;time-alt = %H:%M:%S
+;
+;format-prefix = 
+;format-prefix-foreground = ${colors.foreground-alt}
+;format-underline = #0a6cf5
+;
+;label = %date% %time%
+#+END_SRC
+
+****** pulseaudio
+#+BEGIN_SRC sh
+[module/pulseaudio]
+type = internal/pulseaudio
+
+; format-volume = <label-volume> <bar-volume>
+format-volume = <ramp-volume> <bar-volume>
+label-volume-foreground = ${colors.fg}
+
+format-muted-foreground = ${colors.red}
+label-muted = ""
+
+bar-volume-width = 8
+bar-volume-foreground-0 = ${colors.blue}
+bar-volume-foreground-1 = ${colors.blue}
+bar-volume-foreground-2 = ${colors.blue}
+bar-volume-foreground-3 = ${colors.blue}
+bar-volume-foreground-4 = ${colors.blue}
+bar-volume-foreground-5 = ${colors.blue}
+bar-volume-foreground-6 = ${colors.blue}
+bar-volume-gradient = false
+bar-volume-indicator = |
+bar-volume-indicator-font = 2
+bar-volume-indicator-foreground = #ff
+bar-volume-fill = ─
+bar-volume-fill-font = 2
+bar-volume-empty = ─
+bar-volume-empty-font = 2
+bar-volume-empty-foreground = ${colors.fg-alt}
+
+; Only applies if <ramp-volume> is used
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
+
+#+END_SRC
+
+****** battery
+#+BEGIN_SRC sh
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = ADP1
+full-at = 96
+
+format-charging = <animation-charging> <label-charging>
+format-charging-underline = #ffb52a
+
+format-discharging = <ramp-capacity> <label-discharging>
+format-discharging-underline = ${self.format-charging-underline}
+
+format-full-prefix = " "
+format-full-prefix-foreground = ${colors.fg-alt}
+format-full-underline = ${self.format-charging-underline}
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-foreground = ${colors.fg-alt}
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-foreground = ${colors.fg-alt}
+animation-charging-framerate = 750
+#+END_SRC
+
+****** cpu
+#+BEGIN_SRC sh
+[module/cpu]
+type = internal/cpu
+interval = 2
+format = <bar-load>
+format-prefix = ""
+format-foreground = ${colors.icons}
+format-padding = 1
+
+bar-load-indicator =
+bar-load-width = 6
+bar-load-foreground-0 = ${colors.green}
+bar-load-foreground-1 = ${colors.green}
+bar-load-foreground-2 = ${colors.yellow}
+bar-load-foreground-3 = ${colors.red}
+bar-load-foreground-4 = ${colors.red}
+bar-load-fill = |
+bar-load-empty = ¦
+bar-load-empty-foreground = ${colors.fg-alt}
+
+#+END_SRC
+
+****** memory
+#+BEGIN_SRC sh
+[module/memory]
+type = internal/memory
+interval = 3
+format = <bar-used>
+format-prefix = ""
+format-prefix-foreground = ${colors.icons}
+format-padding-left = 1
+
+; Only applies if <bar-used> is used
+bar-used-indicator =
+bar-used-width = 6
+bar-used-foreground-0 = ${colors.green}
+bar-used-foreground-1 = ${colors.green}
+bar-used-foreground-2 = ${colors.yellow}
+bar-used-foreground-3 = ${colors.red}
+bar-used-foreground-4 = ${colors.red}
+bar-used-fill = |
+bar-used-empty = ¦
+bar-used-empty-foreground = ${colors.fg-alt}
+#+END_SRC
+
+****** redshift
+
+#+BEGIN_SRC sh
+[module/app-redshift]
+type = custom/script
+exec = echo 1
+exec-if = pgrep -x redshift
+format = ""
+format-foreground = ${colors.icons}
+interval = 2
+#+END_SRC
+
+****** global settings
+#+BEGIN_SRC sh
+[settings]
+screenchange-reload = true
+;compositing-background = xor
+;compositing-background = screen
+;compositing-foreground = source
+;compositing-border = over
+;pseudo-transparency = false
+
+[global/wm]
+margin-top = 0
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+margin-bottom = 60
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+margin-bottom = 30
+#+END_SRC
+
+#+BEGIN_SRC sh
+; vim:ft=dosini
+#+END_SRC
+
+
+
 **** custom modules
+
+***** bluetooth
+
+#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-bluetooth.sh :shebang "#! /bin/sh" :mkdirp yes
+# source ~/.cache/wal/colors.sh
+
+# Determine if bluetooth is active
+active=$(systemctl is-active bluetooth.service)
+
+# Determine if bluetooth is connected
+connected="no"
+if [ "$active" = "active" ]; then
+    devices=$(echo -e 'paired-devices' | bluetoothctl)
+    for device in $devices; do
+        if [[ $device == [0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F]\:[0-9A-F][0-9A-F] ]] ; then
+            # Value of field Connected
+            is_connected=$(echo -e 'info ' $i '\n' | bluetoothctl | grep 'Connected' | cut -d' ' -f2)
+            if [[ "$is_connected" == "yes" ]]; then
+               connected="yes"
+            fi
+        fi
+    done
+fi
+
+# Set the color and icon
+if [ "$connected" = "yes" ]; then
+    echo "%{F#81a2be}" # fg-blue
+elif [ "$active" = "active" ]; then
+    echo "%{F#c5c8c6}" # white
+else
+    echo "%{F#555856}" # grey
+fi
+
+#+END_SRC
+
+***** vpn
+
+#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-vpn.sh :shebang "#! /bin/sh" :mkdirp yes
+
+# Type is the third column, looking for type vpn
+connection=$(nmcli connection show --active | awk '{print $3}' | grep vpn)
+
+if [ "$connection" = "vpn" ]; then
+    # active
+    echo "%{F#81a2be}" # fg-blue
+else
+    # inactive
+    echo "%{F#555856}" # grey
+fi
+#+END_SRC
+***** mail
+
+#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-mail.sh :shebang "#! /bin/sh" :mkdirp yes
+
+unread=$(notmuch search tag:unread | wc -l)
+
+if [ "$unread" -eq "0" ]; then
+    echo "%{F#555856}" # grey
+else
+    echo "%{F#f0c674}$unread" # yellow
+fi
+#+END_SRC
+***** redshift
+
+#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-redshift :shebang "#! /bin/bash" :mkdirp yes
+
+# Specifying the icon(s) in the script
+# This allows us to change its appearance conditionally
+pgrep -x redshift &> /dev/null
+if [[ $? -eq 0 ]]; then
+    temp=$(redshift -p 2>/dev/null | grep temp | cut -d' ' -f3)
+    temp=${temp//K/}
+fi
+
+# OPTIONAL: Append ' ${temp}K' after $icon
+if [[ -z $temp ]]; then
+    echo "%{F#65737E}$icon"       # Greyed out (not running)
+elif [[ $temp -ge 5000 ]]; then
+    echo "%{F#8FA1B3}$icon"       # Blue
+elif [[ $temp -ge 4000 ]]; then
+    echo "%{F#EBCB8B}$icon"       # Yellow
+else
+    echo "%{F#D08770}$icon"       # Orange
+fi
+
+#+END_SRC
+
+***** screen recording
+
+Start with the symbol
+#+BEGIN_SRC sh :tangle no
+
+#+END_SRC
+***** pad-volume
+
+#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-pad-volume.sh :shebang "#!/usr/bin/env bash" :mkdirp yes
+muted=$(pacmd list-sinks | grep muted | cut -d' ' -f2)
+# Set the color and icon
+if [ "$muted" = "yes" ]; then
+    echo "%{F#81a2be}         " # blue
+else
+    echo "%{F#81a2be}" # blue
+fi
+#+END_SRC
 
 *** Application launcher
 :PROPERTIES:
