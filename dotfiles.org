@@ -2865,8 +2865,9 @@ if [ $? -ne 0 ]; then
 fi
 #+END_SRC
 
-~Improvement:~ add a smart function for deletion in Emacs to avoid
-deleting mails that have been flagged.
+**** TODO Don't delete flagged mails
+
+Make a function in Emacs to avoid deleting flagged emails.
 
 * Shells
 ** Zsh
