@@ -3661,7 +3661,7 @@ set-option -g bell-action none
 
 # The modes
 setw -g clock-mode-colour colour135
-setw -g mode-style bg=colour238,fg=colour196,attr=bold
+setw -g mode-style bg=colour238,fg=colour196
 
 # The panes
 setw -g pane-border-style bg=default,fg=colour235
