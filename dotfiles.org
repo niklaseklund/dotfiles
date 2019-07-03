@@ -29,14 +29,6 @@ TODO: Why I keep it in org-mode
 (get-string-from-file filename)
 #+END_SRC
 
-example:
-#+BEGIN_SRC sh :tangle ~/tmp/fake.sh :noweb tangle
-echo "niklas"
-<<insert-file-content(filename="~/tmp/test.txt")>>
-
-echo "carlsson"
-#+END_SRC
-
 * Desktop environment
 ** X server
 
