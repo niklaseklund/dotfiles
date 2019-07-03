@@ -3769,7 +3769,7 @@ i3lock -i $OUTPUT -t
 
 *** Vpn utility :vpn:
 :PROPERTIES:
-:header-args: :tangle ~/bin/vpn-toggle :shebang "#! /bin/zsh"
+:header-args: :tangle ~/bin/vpn-toggle :shebang "#! /bin/zsh" :padline no
 :END:
 
 The purpose of this script should be to toggle a vpn connection between active
@@ -3785,12 +3785,23 @@ connection=$(nmcli connection show --active | awk '{print $3}' | grep vpn)
 If a connection is detected set it to down otherwise start it.
 #+BEGIN_SRC sh
 if [ "$connection" = "vpn" ]; then
-    # active
+    # deactivate
     active_connection=$(nmcli connection show --active | grep vpn | awk '{print $1}')
     nmcli connection down $active_connection >/dev/null 2>&1
 else
-    # inactive
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+    # activate
     printf $(pass network/ovpn)'\n' | nmcli connection up ovpn-se-tcp --ask >/dev/null 2>&1
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+    # activate
+    printf $(pass work/zenuity/login | sed -n 1p)'\n' | nmcli con up Z-VPN-PKI-SE --ask >/dev/null 2>&1
+#+END_SRC
+
+#+BEGIN_SRC sh
 fi
 #+END_SRC
 
