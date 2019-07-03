@@ -1854,8 +1854,11 @@ margin-bottom = 30
 *** custom modules
 
 **** bluetooth
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/modules/app-bluetooth.sh :shebang "#! /bin/sh" :mkdirp yes
+:END:
 
-#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-bluetooth.sh :shebang "#! /bin/sh" :mkdirp yes
+#+BEGIN_SRC sh
 # source ~/.cache/wal/colors.sh
 
 # Determine if bluetooth is active
@@ -1888,8 +1891,11 @@ fi
 #+END_SRC
 
 **** vpn
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/modules/app-vpn.sh :shebang "#! /bin/sh" :mkdirp yes
+:END:
 
-#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-vpn.sh :shebang "#! /bin/sh" :mkdirp yes
+#+BEGIN_SRC sh
 
 # Type is the third column, looking for type vpn
 connection=$(nmcli connection show --active | awk '{print $3}' | grep vpn)
@@ -1903,8 +1909,11 @@ else
 fi
 #+END_SRC
 **** mail
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/modules/app-mail.sh :shebang "#! /bin/sh" :mkdirp yes
+:END:
 
-#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-mail.sh :shebang "#! /bin/sh" :mkdirp yes
+#+BEGIN_SRC sh
 
 unread=$(notmuch search tag:unread | wc -l)
 
@@ -1915,8 +1924,11 @@ else
 fi
 #+END_SRC
 **** redshift
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/modules/app-redshift :shebang "#! /bin/bash" :mkdirp yes
+:END:
 
-#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-redshift :shebang "#! /bin/bash" :mkdirp yes
+#+BEGIN_SRC sh
 
 # Specifying the icon(s) in the script
 # This allows us to change its appearance conditionally
@@ -1940,14 +1952,20 @@ fi
 #+END_SRC
 
 **** screen recording
+:PROPERTIES:
+:header-args: tangle no
+:END:
 
 Start with the symbol
-#+BEGIN_SRC sh :tangle no
+#+BEGIN_SRC sh
 
 #+END_SRC
 **** pad-volume
+:PROPERTIES:
+:header-args: :tangle ~/.config/polybar/modules/app-pad-volume.sh :shebang "#!/usr/bin/env bash" :mkdirp yes
+:END:
 
-#+BEGIN_SRC sh :tangle ~/.config/polybar/modules/app-pad-volume.sh :shebang "#!/usr/bin/env bash" :mkdirp yes
+#+BEGIN_SRC sh
 muted=$(pacmd list-sinks | grep muted | cut -d' ' -f2)
 # Set the color and icon
 if [ "$muted" = "yes" ]; then
@@ -2285,9 +2303,12 @@ export EA_CLIPBOARD=$content
 
 * Encryption
 ** GPG
+:PROPERTIES:
+:header-args: :tangle (my/tangle-os '(ubuntu arch) "~/.gnupg/gpg-agent.conf") :mkdirp yes
+:END:
 
 Increase the cache validity for the ~gpg-agent~.
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu) "~/.gnupg/gpg-agent.conf") :mkdirp yes
+#+BEGIN_SRC sh
 default-cache-ttl 86400
 max-cache-ttl 86400
 #+END_SRC
@@ -3017,8 +3038,11 @@ passwordeval "pass show work/zenuity/login | sed -n 1p"
 
 ** Automate
 *** timer
+:PROPERTIES:
+:header-args: :tangle ~/.config/systemd/user/mbsync.timer :mkdirp t :tangle-mode (identity #o644)
+:END:
 
-#+BEGIN_SRC sh :tangle ~/.config/systemd/user/mbsync.timer :mkdirp t :tangle-mode (identity #o644)
+#+BEGIN_SRC sh
 [Unit]
 Description=Mailbox synchronization timer
 
@@ -3972,11 +3996,14 @@ run -b '~/.tmux/plugins/tpm/tpm'
 These are my custom utility scripts that I use.
 
 *** Music player :tmux:tizonia:
+:PROPERTIES:
+:header-args: :tangle ~/bin/music-tmux :shebang "#! /bin/zsh"
+:END:
 
 A music player setup combining ~tizonia~ with the music visualizer ~cava~ and
 volume control ~ncpamixer~ into a three window setup with ~tmux~.
 
-#+BEGIN_SRC sh :tangle ~/bin/music-tmux :shebang "#! /bin/zsh"
+#+BEGIN_SRC sh
 tmux new-session \; \
     send-keys 'ncpamixer' C-m \; \
     send-keys LL \; \
@@ -3988,10 +4015,13 @@ tmux new-session \; \
 #+END_SRC
 
 *** Glitch lock
+:PROPERTIES:
+:header-args: :tangle ~/bin/glitcher~ :shebang "#! /bin/zsh"
+:END:
 
 Glitch locking the screen utilizing ~videoglitch~
 
-#+BEGIN_SRC sh :tangle ~/bin/glitcher~ :shebang "#! /bin/zsh"
+#+BEGIN_SRC sh
 OUTPUT='/tmp/i3lock.png'
 scrot -z $OUTPUT
 convert $OUTPUT -scale '50%' $OUTPUT
@@ -4030,6 +4060,9 @@ fi
 ~Note:~ an idea for the future might be to utilize a rofi popup to select which
 vpn connection to use when activating. Currently one is hardcoded.
 *** Control monitor brightness :python:xrandr:
+:PROPERTIES:
+:header-args: :tangle ~/bin/monitor-brightness :shebang "#!/usr/bin/env python"
+:END:
 
 Use xrandr and Python to adjust the monitor brightness.
 
@@ -4037,7 +4070,7 @@ Improvements
 - make it so that the function can operate on the monitor that currently has the
   focus in bspwm. Making this a feature that not only works on the external screen.
 
-#+BEGIN_SRC python :tangle ~/bin/monitor-brightness :shebang "#!/usr/bin/env python"
+#+BEGIN_SRC python
 # -*- mode: python-*-
 import subprocess
 import sys
