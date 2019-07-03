@@ -370,7 +370,7 @@ xcape &
 unclutter &
 #+END_SRC
 
-* bspwm
+* bspwm :deprecated:
 ** profile
 :PROPERTIES:
 :header-args: :tangle ~/.profile :mkdirp yes
@@ -3974,6 +3974,23 @@ Wait some before launching before launching the other, non-critical, application
 xcape &
 unclutter &
 #+END_SRC
+**** Profile
+:PROPERTIES:
+:header-args: :tangle ~/.profile :mkdirp yes
+:END:
+
+In the [[https://wiki.archlinux.org/index.php/bspwm][configuration section for bspwm in the ArchWiki]] it is stated that:
+#+BEGIN_EXAMPLE
+Important: Make sure your environment variable $XDG_CONFIG_HOME is set or your
+bspwmrc will not be found
+#+END_EXAMPLE
+
+It's therefore important to set this environmental variable, which I do in
+~profile~.
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CONFIG_HOME
+#+END_SRC
 
 *** Window manager
 
@@ -3982,6 +3999,729 @@ unclutter &
 
 **** TODO bspwm
 **** sxhkd
+:PROPERTIES:
+:header-args: :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes
+:END:
+
+I followed the instructions from the manual and copied over the example
+configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
+
+***** Independent hotkeys
+
+#+BEGIN_SRC sh
+#
+# wm independent hotkeys
+#
+
+# terminal emulator
+super + Return
+	urxvt
+#+END_SRC
+
+A dropdown terminal can come in handy, [[https://github.com/noctuid/tdrop][tdrop]] provides that. The parameters are
+the following, a for autodection of the window manager, m for monitor awareness,
+s for creating a session named scratch and urxvt is the program that launches.
+#+BEGIN_SRC sh
+# dropdown terminal
+super + grave
+    tdrop -ma -s scratch urxvt
+#+END_SRC
+
+#+BEGIN_SRC sh
+# make sxhkd reload its configuration files:
+super + Escape
+	pkill -USR1 -x sxhkd
+#+END_SRC
+
+Add a shortcut for launching a floating org-capture window
+#+BEGIN_SRC sh
+mod4 + ctrl + shift + grave
+	bspc rule -a 'Emacs' -o state=floating && org-capture
+#+END_SRC
+
+Add a shortcut for Emacs anywhere. Make it always appear tiled at the bottom
+#+BEGIN_SRC sh
+mod4 + apostrophe
+    emacsclient -e nil && bspc rule -a 'Emacs' -o split_ratio=0.7 state=tiled split_dir=south && emacs-anywhere
+#+END_SRC
+
+****** Application launcher
+
+I have changed the application launcher from ~dmenu~ to ~rofi~.
+#+BEGIN_SRC sh
+super + @space
+	rofi -show run
+
+#+END_SRC
+
+****** Lock
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+@F2
+    lock -n -p
+#+END_SRC
+****** Password
+
+Quickly search through my passwords
+
+#+BEGIN_SRC sh
+super + backslash
+    rofi-pass
+#+END_SRC
+
+***** Hotkeys
+#+BEGIN_SRC sh
+#
+# bspwm hotkeys
+#
+
+# quit bspwm normally
+super + alt + Escape
+	bspc quit
+
+# close and kill
+super + {_,shift + }w
+	bspc node -{c,k}
+
+# alternate between the tiled and monocle layout
+super + m
+	bspc desktop -l next
+
+# send the newest marked node to the newest preselected node
+super + y
+	bspc node newest.marked.local -n newest.!automatic.local
+
+# swap the current node and the biggest node
+super + g
+	bspc node -s biggest
+
+#+END_SRC
+
+***** State flags
+
+#+BEGIN_SRC sh
+#
+# state/flags
+#
+
+# set the window state
+super + {t,shift + t,s,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+
+# set the node flags
+super + ctrl + {m,x,y,z}
+	bspc node -g {marked,locked,sticky,private}
+
+#+END_SRC
+
+***** Focus and swapping
+#+BEGIN_SRC sh
+#
+# focus/swap
+#
+
+# focus the node in the given direction
+super + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+# focus the node for the given path jump
+super + {p,b,comma,period}
+	bspc node -f @{parent,brother,first,second}
+
+# focus the next/previous node in the current desktop
+super + {_,shift + }c
+	bspc node -f {next,prev}.local
+
+# focus the next/previous desktop in the current monitor
+super + bracket{left,right}
+	bspc desktop -f {prev,next}.local
+
+# focus the last node/desktop
+super + {grave,Tab}
+	bspc {node,desktop} -f last
+
+# focus the older or newer node in the focus history
+super + {o,i}
+	bspc wm -h off; \
+	bspc node {older,newer} -f; \
+	bspc wm -h on
+
+# focus or send to the given desktop
+super + {_,shift + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
+
+#+END_SRC
+
+***** Preselect
+
+#+BEGIN_SRC sh
+#
+# preselect
+#
+
+# preselect the direction
+super + ctrl + {h,j,k,l}
+	bspc node -p {west,south,north,east}
+
+# preselect the ratio
+super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+# cancel the preselection for the focused node
+super + ctrl + space
+	bspc node -p cancel
+
+# cancel the preselection for the focused desktop
+super + ctrl + shift + space
+	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+#+END_SRC
+
+***** Move/resize
+#+BEGIN_SRC sh
+#
+# move/resize
+#
+
+# expand a window by moving one of its side outward
+super + alt + {h,j,k,l}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+# contract a window by moving one of its side inward
+super + alt + shift + {h,j,k,l}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+# move a floating window
+super + {Left,Down,Up,Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+#+END_SRC
+
+Resize the gaps in tiled layout. Found inspiration [[https://github.com/desyncr/bspwmrc/blob/master/sxhkdrc ][here]]
+#+BEGIN_SRC sh
+#
+# gaps
+#
+
+# change window gap at run time
+super + plus
+    bspc config -d focused window_gap $((`bspc config -d focused window_gap` + 5 ))
+
+# Restore original gap
+super + equal
+    bspc config top_padding 6; bspc config -d focused window_gap 15
+
+# decrease gap
+super + minus
+    bspc config -d focused window_gap $((`bspc config -d focused window_gap` - 5 ))
+#+END_SRC
+
+***** Brightness
+
+I want to be able to control the brightness of the screen. To my help I have
+[[https://haikarainen.github.io/light/][light]].
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#
+# Brightness
+#
+XF86MonBrightnessDown
+	light -U 5
+XF86MonBrightnessUp
+	light -A 5
+#+END_SRC
+
+:PROPERTIES:
+:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :mkdirp yes
+:END:
+
+With ~bspwmrc~ it's important that the file is executable. With tangle there are
+two different ways of making a tangled file executable
+https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
+argument which will org will make sure to add the shebang and make the file
+executable.
+
+***** sxhkd
+
+The example file starts with ~sxhkd~. I am unsure if I need it both here and in
+the ~xinitrc~.
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+sxhkd &
+#+END_SRC
+
+***** Monitors and desktops
+****** [X] Set the primary monitor
+CLOSED: [2019-01-27 Sun 13:38]
+
+I will start by setting up the correct monitor to be primary using ~randr~. The
+benefit of that is that I later can just refer to the primary monitor, for
+example to only put the polybar on the primary. Or use other type of bars for
+the ones that ain't primary.
+
+First step is to define the name of the primary. If there are no screens
+connected then the internal screen will automatically be set to primary which
+means that I don't need to do antyhing more.
+
+This is my primary monitor for my ~ubuntu~ setup
+#+BEGIN_SRC sh
+EXTERNAL_MONITOR="DP-1-1-8"
+#+END_SRC
+
+This is my primary monitor for my ~arch~ setup
+#+BEGIN_SRC sh
+EXTERNAL_MONITOR="DP-2"
+#+END_SRC
+
+Setup for external monitors. I found inspiration on how to find out wether the
+external monitor is among the items in the list [[https://stackoverflow.com/questions/8063228/how-do-i-check-if-a-variable-exists-in-a-list-in-bash][here]]
+#+BEGIN_SRC sh
+MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
+if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
+    # if external monitor is connected set it to primary
+    xrandr --output $EXTERNAL_MONITOR --primary
+fi
+#+END_SRC
+****** TODO Distribute workspaces on the different displays
+
+With bspwm I can have different amount of workspaces on different displays. The
+workspaces are not connected either which is a nice feature making it possible
+to change workspace on one screen whilst keeping the other workspaces unchanged.
+
+******* Uniform distribution
+
+Each display gets the same amount of workspaces.
+
+******* Primary distribution
+
+The primary display get's more workspaces whilst the others have one each.
+
+****** first solution
+******* randr
+
+#+BEGIN_SRC sh :tangle no
+xrandr --output DP-1-1-8 --primary
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle no
+xrandr -q | grep DP-1-1-8
+#+END_SRC
+
+#+RESULTS:
+
+Trying to improve setting primary
+#+BEGIN_SRC sh :tangle no
+MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
+echo $MONITORS
+if [[ $MONITORS == *DP* ]];
+then
+    echo "Connected"
+else
+    echo "Not connected"
+fi
+#+END_SRC
+
+#+RESULTS:
+| eDP-1-1 |           |
+| Not     | connected |
+
+#+BEGIN_SRC sh :tangle no :results output
+EXTERNAL_CONNECTED=$(xrandr -q | grep DP-1-1-8 | wc -l)
+
+echo $EXTERNAL_CONNECTED
+if [ $EXTERNAL_CONNECTED -eq "0"]; then
+echo "External not connnected"
+else
+echo "External connnected"
+fi
+#+END_SRC
+
+#+RESULTS:
+: 0
+: External connnected
+
+#+BEGIN_SRC sh :tangle no :results output
+INTERNAL_CONNECTED=$(xrandr -q | grep "eDP-1-1" | wc -l)
+echo $INTERNAL_CONNECTED
+if [ $INTERNAL_CONNECTED -eq "0"]; then
+echo "Internal not connnected"
+else
+echo "Internal connnected"
+fi
+#+END_SRC
+
+#+RESULTS:
+: 1
+: Internal connnected
+
+******* Simple hardcoded solution
+This is the setup for monitors in the example configuration
+#+BEGIN_SRC sh :tangle no
+bspc monitor -d I II III IV V VI VII VIII IX X
+#+END_SRC
+
+This is the first attempt to use multiple monitors on my macArch
+#+BEGIN_SRC sh :tangle no
+# bspc monitor DP-1 I II III IV V
+# bspc monitor eDP-1 VI VII VIII IX X
+bspc monitor 0x00600002 -d I II III IV V
+bspc monitor 0x00600004 -d VI VII VIII IX X
+#+END_SRC
+
+******* Generic solution
+This is the more generic solution. It splits up the ten workspaces on the number
+of monitors that exists. In the case of three screens 3 workspaces will be
+assigned to each monitor.
+#+BEGIN_SRC sh
+# Different strategy if there is only one screen
+if [ "$(bspc query -M | wc -l)" -eq "1" ]; then
+    bspc monitor $(bspc query -M) -d $(seq 1 5)
+else
+    i=0
+    n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
+    per=$(( 10 / n ))          # number of desktops per monitor
+    for monitor in `bspc query -M`; do
+        bspc monitor $monitor -d `seq $i $(( i + per - 1 ))`
+        # seq is end-inclusive; `seq 1 $((1+2))` returns "1 2 3"
+        i=$(( i + per ))
+    done
+fi
+#+END_SRC
+
+******* Specific 3 monitor solution :wip:
+This solution finds the primary display and allocates five workspaces on that
+one and leaves the other screens with 1 workspace each. Maybe this is a good
+approach, I will evaluate it.
+#+BEGIN_SRC sh :tangle no
+export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
+export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
+MONITOR=${MONITOR:-${MONITORS[0]}}
+# Multiple workspaces for main monitor, but only one for others
+bspc monitor $MONITOR -d {1,2,3,4,5}
+for mon in ${MONITORS[@]/${MONITOR}}; do
+    bspc monitor $mon -d $mon/1
+done
+
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle no
+export CENTER_MONITOR=$(xrandr -q | grep " connected" | sed -n '1p' | cut -d' ' -f1)
+export LEFT_MONITOR=$(xrandr -q | grep " connected" | sed -n '2p' | cut -d' ' -f1)
+export RIGHT_MONITOR=$(xrandr -q | grep " connected" | sed -n '3p' | cut -d' ' -f1)
+
+bspc monitor $LEFT_MONITOR -d {1}
+bspc monitor $CENTER_MONITOR -d {2,3,4,5,6}
+bspc monitor $RIGHT_MONITOR -d {7}
+#+END_SRC
+
+******* Multiple monitors improved
+
+******** Finding out the monitors with xrandr
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+Find the primary monitor (this is the built in one in the laptop)
+#+BEGIN_SRC sh :results output
+xrandr -q | grep primary | grep 'connected'
+#+END_SRC
+
+#+RESULTS:
+: eDP-1-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 309mm x 175mm
+
+#+BEGIN_SRC sh :results output
+xrandr -q | grep primary | grep 'connected' | cut -d' ' -f1
+#+END_SRC
+
+#+RESULTS:
+: eDP-1-1
+
+Find the other connected monitors
+#+BEGIN_SRC sh :results output
+xrandr -q | grep 'connected'
+#+END_SRC
+
+#+RESULTS:
+: DP-0 disconnected (normal left inverted right x axis y axis)
+: DP-1 disconnected (normal left inverted right x axis y axis)
+: eDP-1-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 309mm x 175mm
+: DP-1-1 disconnected (normal left inverted right x axis y axis)
+: HDMI-1-1 disconnected (normal left inverted right x axis y axis)
+: DP-1-1-8 connected 1920x1200+1920+0 (normal left inverted right x axis y axis) 518mm x 324mm
+: DP-1-1-1 connected 1920x1200+3840+0 (normal left inverted right x axis y axis) 518mm x 324mm
+
+The problem here is that I find a lot of disconnected monitors. I want to get
+rid of those
+
+In the grep manual there is an ~invert~ entry
+#+BEGIN_SRC sh :results output
+grep --help | grep invert
+#+END_SRC
+
+#+RESULTS:
+:   -v, --invert-match        select non-matching lines
+
+If I use that then
+#+BEGIN_SRC sh :results output
+xrandr -q | grep 'connected' | grep -v 'disconnected' | cut -d' ' -f1
+#+END_SRC
+
+#+RESULTS:
+: eDP-1-1
+: DP-1-1-8
+: DP-1-1-1
+
+Or use awk https://stackoverflow.com/questions/3548453/negative-matching-using-grep-match-lines-that-do-not-contain-foo
+#+BEGIN_SRC sh :results output
+xrandr -q | grep 'connected' | awk '!/disconnected/' | cut -d' ' -f1
+#+END_SRC
+
+#+RESULTS:
+: eDP-1-1
+: DP-1-1-8
+: DP-1-1-1
+******** Finding out the monitors with bspc
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+I found this post on the matter, [[https://www.reddit.com/r/unixporn/comments/5lxecy/bspwm_with_two_monitors/][bspwm with two monitors]].
+
+This solution evenly distributes the monitors. So with a 3 monitor setup the
+workspaces becomes. In this setup there will be 3 monitors per monitor meaning 9
+desktops in total.
+#+BEGIN_SRC sh
+i=0
+n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
+per=$(( 10 / n ))          # number of desktops per monitor
+for monitor in `bspc query -M`; do
+    bspc monitor $monitor -d `seq $i $(( i + per - 1 ))`
+    # seq is end-inclusive; `seq 1 $((1+2))` returns "1 2 3"
+    i=$(( i + per ))
+done
+#+END_SRC
+
+***** bspwm look
+
+These settings are from hlissner's setup
+#+BEGIN_SRC sh
+bspc config split_ratio          0.50
+bspc config gapless_monocle      true
+bspc config borderless_monocle   true
+bspc config paddingless_monocle  true
+
+bspc config pointer_modifier mod4
+bspc config pointer_action1 move
+bspc config pointer_action2 resize_side
+bspc config pointer_action3 resize_corner
+
+bspc config remove_disabled_monitors false
+bspc config remove_unplugged_monitors true
+
+bspc config border_width    0
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+bspc config window_gap      50
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+bspc config window_gap      12
+#+END_SRC
+
+#+BEGIN_SRC sh
+bspc config top_padding     0
+bspc config bottom_padding  0
+bspc config left_padding    0
+bspc config right_padding   0
+#+END_SRC
+
+To make it possible to use youtube in fullscreen tiled mode
+[[https://www.reddit.com/r/bspwm/comments/a4ju19/youtube_video_in_fullscreen_tiled_mode/][a thread about the issue]]
+#+BEGIN_SRC sh
+bspc config ignore_ewmh_fullscreen all
+#+END_SRC
+
+Settings for the primary monitor
+#+BEGIN_SRC sh
+export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
+
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+bspc config -m $MONITOR window_gap     50
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+bspc config -m $MONITOR window_gap     60
+#+END_SRC
+
+This sets the padding value. If it's matched to the ~height~ value in ~polybar~
+config the bar will be shown even if the window is in a full screen mode.
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+bspc config -m $MONITOR bottom_padding 60
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+bspc config -m $MONITOR bottom_padding 30
+#+END_SRC
+
+#+BEGIN_SRC sh
+bspc config -m $MONITOR top_padding    0
+bspc config -m $MONITOR left_padding   0
+bspc config -m $MONITOR right_padding  0
+#+END_SRC
+
+***** Default rules
+
+#+BEGIN_SRC sh
+bspc rule -a 'Emacs:org*' state=floating
+bspc rule -a Gimp desktop='^8' state=floating follow=on
+bspc rule -a Chromium desktop='^2'
+bspc rule -a mplayer2 state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
+#+END_SRC
+***** Custom rules
+
+****** Emacs
+#+BEGIN_SRC sh
+bspc rule -a 'Emacs:org*' state=floating
+bspc rule -a Emacs split_ratio=0.5 border=off state=tiled
+#+END_SRC
+
+****** Peek
+I want peek to be floating as it's suppose to record what is underneath it.
+This code did however not work
+#+BEGIN_SRC sh :tangle no
+bspc rule -a peek state=floating
+#+END_SRC
+
+But consulting the [[https://wiki.archlinux.org/index.php/bspwm#Rules][arch wiki]] I found that I need to make sure I provide the
+right class name. To figure that out run the following command and click on the
+window of the application you want to add a rule for.
+#+BEGIN_SRC sh :tangle no
+# run it in the terminal not here
+xprop | grep WM_CLASS                                                                                                                                                                  ~
+#+END_SRC
+
+The output when clicking on the top of the ~Peek~ window is
+#+BEGIN_EXAMPLE
+WM_CLASS(STRING) = "peek", "Peek"
+#+END_EXAMPLE
+
+#+BEGIN_SRC sh
+bspc rule -a Peek state=floating
+#+END_SRC
+****** Zathura
+
+#+BEGIN_SRC sh
+bspc rule -a Zathura state=tiled
+#+END_SRC
+
+***** TODO Window issues
+
+I have had an issue with the ~Emacs~ window that the box is rendered larger than
+actual ~Emacs~. The issue seems to be this
+https://wiki.archlinux.org/index.php/bspwm#Window_box_larger_than_the_actual_application.
+
+#+BEGIN_EXAMPLE
+M-x emacs-version
+#+END_EXAMPLE
+
+States that ~Emacs~ is built with ~GTK+~ so it might be worth seeing if this can
+be fixed.
+
+Had no effect what I could see but I am also unsure how this is loaded?
+It might actually have had effect after I rebooted the computer. Unfortunately I
+don't think that it worked.
+
+#+BEGIN_SRC sh :tangle ~/.config/gtk-3.0/gtk.css :shebang :comments
+.window-frame, .window-frame:backdrop {
+  box-shadow: 0 0 0 black;
+  border-style: none;
+  margin: 0;
+  border-radius: 0;
+}
+
+.titlebar {
+  border-radius: 0;
+}
+#+END_SRC
+
+***** Background
+I found this post about how to configure feh when using bspwm,
+http://profectium.blogspot.com/2016/07/how-to-change-your-desktop-background.html.
+I tried to use xinitrc first to set the background but that approach seemed to
+have implications when running dual screens.
+
+#+BEGIN_SRC sh :tangle no
+feh --bg-scale ~/src/dotfiles/assets/ghostinshell.jpg
+#+END_SRC
+
+***** Status bar
+It was recomended in the polybar wiki,
+https://github.com/jaagr/polybar/wiki, to add a launch file which could be
+called from the ~bspwmrc~.
+
+#+BEGIN_SRC sh
+$HOME/.config/polybar/launch.sh
+#+END_SRC
+
+***** Pywal color
+#+BEGIN_SRC sh :tangle no
+# source the colors.
+. "${HOME}/.cache/wal/colors.sh"
+
+# Set the border colors.
+# bspc config normal_border_color "$color1"
+# bspc config active_border_color "$color2"
+# bspc config focused_border_color "$color15"
+# Use the line below if you are on bspwm >= 0.9.4
+bspc config presel_feedback_color "$color1"
+# Use the line below if you are on bspwm < 0.9.4
+#bspc config presel_border_color "$color1"
+#+END_SRC
+
+***** TODO Drop down scrach terminal
+
+The ~scratchpad~ might be a useful feature
+https://wiki.archlinux.org/index.php/bspwm#Scratchpad
+
+***** Mouse control
+I want to be able to hide my mouse cursor automatically after a while of non-usage
+https://wiki.archlinux.org/index.php/unclutter
+#+BEGIN_SRC sh :no
+unclutter &
+#+END_SRC
+
+***** Keyboard control
+I want to switch caps lock to ctrl when pressed in conjunction with another key,
+and escape when pressed by itself. This functionality is provided by the program
+~xcape~.
+#+BEGIN_SRC sh :no
+xcape &
+#+END_SRC
+
+****** TODO Differentiate between internal and external keyboard
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+An improvement will be to make this conditional. I want to only start
+xcape as long as the keyboardio can't be detected that it is plugged in. Cause
+in that case this modification is not needed.
+
+https://askubuntu.com/questions/337411/how-to-permanently-assign-a-different-keyboard-layout-to-a-usb-keyboard
+
+I should probably have a strategy that when there is a usb keyboard detected.
+Investigate if it is my special external keyboard. If so don't do any remaping.
+Otherwise do it since I will only have the internal keyboard at my disposal.
+
+#+BEGIN_SRC sh :results output
+xinput -list | grep "Keyboard"
+#+END_SRC
+
+#+RESULTS:
+: ⎜   ↳ USB Keyboard                            	id=11	[slave  pointer  (2)]
+:     ↳ USB Keyboard                            	id=12	[slave  keyboard (3)]
+
 *** Compositor
 :PROPERTIES:
 :header-args: :tangle ~/.config/compton.conf :mkdirp yes
