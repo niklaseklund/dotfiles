@@ -3300,7 +3300,7 @@ user           niklas.carlsson@zenuity.com
 passwordeval "pass show work/zenuity/login | sed -n 1p"
 #+END_SRC
 
-* music
+* music :legacy:
 ** tizonia arch
 :PROPERTIES:
 :header-args: :tangle (my/tangle-os '(arch) "~/.config/tizonia/tizonia.conf~") :mkdirp yes :comments link
@@ -3312,8 +3312,17 @@ passwordeval "pass show work/zenuity/login | sed -n 1p"
 *** Start
 #+BEGIN_SRC sh
 # -*-Mode: conf; -*-
-# tizonia-config v0.16.0 configuration file
+#+END_SRC
 
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+# tizonia-config v0.16.0 configuration file
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+# tizonia-config v0.17.0 configuration file
+#+END_SRC
+
+#+BEGIN_SRC sh
 [ilcore]
 # Tizonia OpenMAX IL Core section
 
@@ -3321,8 +3330,17 @@ passwordeval "pass show work/zenuity/login | sed -n 1p"
 # -------------------------------------------------------------------------
 # A comma-separated list of paths to be scanned by the Tizonia IL Core when
 # searching for component plugins
-component-paths = /usr/lib/tizonia0-plugins12;
+#+END_SRC
 
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+component-paths = /usr/lib/tizonia0-plugins12;
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+component-paths = /usr/lib/x86_64-linux-gnu/tizonia0-plugins12;
+#+END_SRC
+
+#+BEGIN_SRC sh
 # IL Core extension plugins discovery
 # -------------------------------------------------------------------------
 # A comma-separated list of paths to be scanned by the Tizonia IL Core when
@@ -3386,9 +3404,9 @@ mpris-enabled = true
 #
 spotify.user     = _downfall_
 spotify.password = $(pass web/spotify)
-# spotify.password = pass
 # spotify.recover_lost_token = false (set to true to continue playback after
 #                                     the token has been [spuriously?] lost)
+
 #+END_SRC
 
 *** Google Play Music
@@ -3453,7 +3471,7 @@ soundcloud.oauth_token = $(pass web/soundcloud | grep OAuth | cut -d ":" -f2)
 #+END_SRC
 ** tizonia ubuntu
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os '(ubuntu) "~/.config/tizonia/tizonia.conf~") :mkdirp yes :comments link
+:header-args: :tangle "~/tmp/tizonia_ubuntu" :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
@@ -3577,21 +3595,7 @@ spotify.password = $(pass web/spotify)
 
 
 #+END_SRC
-** tizonia remote control
-
-Download the tizonia remote script which can use mpris2 to communicate with the
-running tizonia instance
-#+BEGIN_SRC sh :tangle no :results none
-wget -O /tmp/tizonia-remote https://raw.githubusercontent.com/tizonia/tizonia-openmax-il/master/player/tools/tizonia-remote.in /tmp/tizonia-remote.in
-#+END_SRC
-
-Move it to somewhere in path and make it executable
-#+BEGIN_SRC sh :tangle no :results no
-mv /tmp/tizonia-remote ~/bin/tizonia-remote
-chmod +x ~/bin/tizonia-remote
-#+END_SRC
-
-Make sure to also have mpris enabled in the configuration.
+:header-args: :tangle (my/tangle-os '(arch) "~/.config/tizonia/tizonia.conf~") :mkdirp yes :comments link
 
 * New dotfiles structure
 ** Background
@@ -4002,7 +4006,192 @@ Tridactyl. Need to add how to customize the colors.
 Tizonia and the remote control goes here.
 
 ***** configuration
+:PROPERTIES:
+:header-args: :tangle (my/tangle-os '(arch ubuntu) "~/.config/tizonia/tizonia.conf") :mkdirp yes :padline no
+:END:
+
+[[https://github.com/tizonia/tizonia-openmax-il][Tizonia]] is a command-line cloud music player for Linux with support for
+~Youtube~, ~Spotify~ and ~SoundCloud~.
+
+****** Start
+#+BEGIN_SRC sh
+# -*-Mode: conf; -*-
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+# tizonia-config v0.16.0 configuration file
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+# tizonia-config v0.17.0 configuration file
+#+END_SRC
+
+#+BEGIN_SRC sh
+[ilcore]
+# Tizonia OpenMAX IL Core section
+
+# Component plugins discovery
+# -------------------------------------------------------------------------
+# A comma-separated list of paths to be scanned by the Tizonia IL Core when
+# searching for component plugins
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+component-paths = /usr/lib/tizonia0-plugins12;
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+component-paths = /usr/lib/x86_64-linux-gnu/tizonia0-plugins12;
+#+END_SRC
+
+#+BEGIN_SRC sh
+# IL Core extension plugins discovery
+# -------------------------------------------------------------------------
+# A comma-separated list of paths to be scanned by the Tizonia IL Core when
+# searching for IL Core extensions (not implemented yet)
+extension-paths =
+
+
+[resource-management]
+# Tizonia OpenMAX IL Resource Management (RM) section
+
+# Resource Manager (RM) daemon interface enable/disable switch
+# -------------------------------------------------------------------------
+# Whether the IL RM functionality is enabled or not
+enabled = false
+
+# RM database
+# -------------------------------------------------------------------------
+# This is the path to the Resource Manager database
+rmdb = /usr/share/tizrmd/tizrm.db
+
+
+[plugins]
+# OpenMAX IL Component plugins section
+
+# Each key-value pair represents a list of any data that a
+# specific component might need. The entries here must honor the following
+# format: OMX.component.name.key = <semi-colon-separated list of items>
+
+# ALSA Audio Renderer
+# -------------------------------------------------------------------------
+#
+# OMX.Aratelia.audio_renderer.alsa.pcm.preannouncements_disabled.port0 = false
+OMX.Aratelia.audio_renderer.alsa.pcm.alsa_device = default
+OMX.Aratelia.audio_renderer.alsa.pcm.alsa_mixer = Master
+
+
+[tizonia]
+# Tizonia player section
+
+# The default audio renderer used by the tizonia player
+# -------------------------------------------------------------------------
+# Valid values are:
+# - OMX.Aratelia.audio_renderer.pulseaudio.pcm
+# - OMX.Aratelia.audio_renderer.alsa.pcm
+default-audio-renderer = OMX.Aratelia.audio_renderer.pulseaudio.pcm
+
+# MPRIS v2 interface enable/disable switch
+# -------------------------------------------------------------------------
+# Valid values are: true | false
+#
+mpris-enabled = true
+
+#+END_SRC
+
+****** Spotify
+#+BEGIN_SRC sh
+# Spotify configuration
+# -------------------------------------------------------------------------
+# To avoid passing this information on the command line, uncomment
+# and configure accordingly
+#
+spotify.user     = _downfall_
+spotify.password = $(pass web/spotify)
+# spotify.recover_lost_token = false (set to true to continue playback after
+#                                     the token has been [spuriously?] lost)
+
+#+END_SRC
+
+****** Google Play Music
+#+BEGIN_SRC sh
+# Google Play Music configuration
+# -------------------------------------------------------------------------
+# To avoid passing this information on the command line, uncomment and
+# configure here.
+#
+# gmusic.user       = user@gmail.com
+# gmusic.password   = pass (account password or app-specific password for
+#                          2-factor users)
+# gmusic.device_id  = deviceid (16 hex digits, e.g. '1234567890abcdef')
+
+
+#+END_SRC
+
+****** SoundCloud
+
+I got the token by following the link at the tizonia project's homepage.
+#+BEGIN_SRC sh
+# SoundCloud configuration
+# -------------------------------------------------------------------------
+# To avoid passing this information on the command line, uncomment and
+# configure your SoundCloud OAuth token here.
+#
+# To obtain your OAuth token, Tizonia needs to be granted access to your
+# SoundCloud account. Visit http://tizonia.org/docs/soundcloud/ for the
+# details.
+#
+# soundcloud.oauth_token = X-XXXXXX-XXXXXXXX-XXXXXXXXXXXXXX
+soundcloud.oauth_token = $(pass web/soundcloud | grep OAuth | cut -d ":" -f2)
+#+END_SRC
+
+****** Dirble
+
+#+BEGIN_SRC sh
+# Dirble configuration
+# -------------------------------------------------------------------------
+# To avoid passing this information on the command line, uncomment and
+# configure your Dirble Api Key here.
+#
+# To obtain your Dirble API key, go to https://dirble.com/developer/
+#
+# dirble.api_key = xxxxxxxxxxxxxx
+
+
+#+END_SRC
+
+****** Plex
+#+BEGIN_SRC sh
+# Plex configuration
+# -------------------------------------------------------------------------
+# To avoid passing this information on the command line, uncomment and
+# configure your Plex server and account auth token here.
+#
+# To find how to obtain a Plex user authentication token, see:
+# https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
+#
+# plex.base_url = xxxxxxxxxxxxxx (e.g. http://plexserver:32400)
+# plex.auth_token = xxxxxxxxxxxxxx (e.g. SrPEojhap3H5Qj2DmjhX)
+#+END_SRC
+
 ***** remote control
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+Download the tizonia remote script which can use mpris2 to communicate with the
+running tizonia instance
+#+BEGIN_SRC sh
+wget -O /tmp/tizonia-remote https://raw.githubusercontent.com/tizonia/tizonia-openmax-il/master/player/tools/tizonia-remote.in /tmp/tizonia-remote.in
+#+END_SRC
+
+Move it to somewhere in path and make it executable
+#+BEGIN_SRC sh
+mv /tmp/tizonia-remote ~/bin/tizonia-remote
+chmod +x ~/bin/tizonia-remote
+#+END_SRC
+
+Make sure to also have mpris enabled in the configuration.
 
 *** Reader
 **** Zathura
