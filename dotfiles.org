@@ -3130,6 +3130,25 @@ source /usr/share/fzf/key-bindings.zsh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 #+END_SRC
 
+customize fzf prompt
+#+BEGIN_SRC sh
+# # FZF colors
+# export FZF_DEFAULT_OPTS="
+#     $FZF_DEFAULT_OPTS
+#     --color fg:7,bg:0,hl:1,fg+:232,bg+:1,hl+:255
+#     --color info:7,prompt:2,spinner:1,pointer:232,marker:1
+# "
+
+# # Fix LS_COLORS being unreadable.
+# export LS_COLORS="${LS_COLORS}:su=30;41:ow=30;42:st=30;44:"
+
+# Change the Fzf colors
+#export FZF_DEFAULT_OPTS='
+#--color fg:188,bg:233,hl:103,fg+:222,bg+:234,hl+:104
+#--color info:183,prompt:110,spinner:107,pointer:167,marker:215
+#'
+#+END_SRC
+
 **** DONE remove duplicates history in zsh
 CLOSED: [2019-02-04 mån 10:28]
 
