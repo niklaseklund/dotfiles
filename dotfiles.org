@@ -371,7 +371,8 @@ setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_l
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 # set keyboard layouts
-setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
+setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_lwin
+# setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
 #+END_SRC
 
 **** Programs
@@ -569,6 +570,7 @@ bspc rule -a Chromium desktop='^2'
 bspc rule -a mplayer2 state=floating
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
+bspc rule -a URxvt state=tiled
 #+END_SRC
 **** Custom window rules
 
@@ -1095,7 +1097,6 @@ done
 #+BEGIN_SRC sh
 if type "xrandr"; then
   for m in $(xrandr --query | grep "primary" | cut -d" " -f1); do
-  # for m in $(xrandr --query | grep "DP-1-1-8" | cut -d" " -f1); do
     MONITOR=$m polybar --reload main &
   done
 else
@@ -1403,11 +1404,8 @@ The name of the wifi device is not the same across different computers. Use this
 code to deduce the wifi-device name and use it in the following source block.
 #+NAME: wifi-device
 #+BEGIN_SRC sh :tangle no
-nmcli device | grep wifi | cut -d' ' -f1
+nmcli device | grep 'wifi ' | cut -d' ' -f1
 #+END_SRC
-
-#+RESULTS:
-: wlp4s0
 
 #+BEGIN_SRC sh :noweb tangle
 [module/wlan]
@@ -1597,7 +1595,9 @@ bar-used-empty = ¦
 bar-used-empty-foreground = ${colors.fg-alt}
 #+END_SRC
 
-***** redshift
+***** TODO redshift
+
+I am unsure which of these blocks are the one I want.
 
 #+BEGIN_SRC sh
 [module/app-redshift]
@@ -1606,6 +1606,16 @@ exec = echo 1
 exec-if = pgrep -x redshift
 format = ""
 format-foreground = ${colors.icons}
+interval = 2
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle no
+[module/app-redshift]
+type = custom/script
+exec = ~/.config/polybar/modules/app-redshift
+exec-if = pgrep -x redshift
+;format = ""
+;format-foreground = ${colors.icons}
 interval = 2
 #+END_SRC
 
@@ -1645,7 +1655,6 @@ margin-bottom = 30
 :END:
 
 #+BEGIN_SRC sh
-# source ~/.cache/wal/colors.sh
 
 # Determine if bluetooth is active
 active=$(systemctl is-active bluetooth.service)
@@ -1673,7 +1682,6 @@ elif [ "$active" = "active" ]; then
 else
     echo "%{F#555856}" # grey
 fi
-
 #+END_SRC
 
 **** vpn
@@ -1714,7 +1722,9 @@ fi
 :header-args: :tangle ~/.config/polybar/modules/app-redshift :shebang "#! /bin/bash" :mkdirp yes
 :END:
 
-#+BEGIN_SRC sh
+I am unsure which of these blocks are the one I want.
+
+#+BEGIN_SRC sh :tangle no
 
 # Specifying the icon(s) in the script
 # This allows us to change its appearance conditionally
@@ -1735,6 +1745,29 @@ else
     echo "%{F#D08770}$icon"       # Orange
 fi
 
+#+END_SRC
+
+#+BEGIN_SRC sh
+#!/usr/bin/env bash
+
+# Specifying the icon(s) in the script
+# This allows us to change its appearance conditionally
+pgrep -x redshift &> /dev/null
+if [[ $? -eq 0 ]]; then
+    temp=$(redshift -p 2>/dev/null | grep temp | cut -d' ' -f3)
+    temp=${temp//K/}
+fi
+
+# OPTIONAL: Append ' ${temp}K' after $icon
+if [[ -z $temp ]]; then
+    echo "%{F#65737E}"       # Greyed out (not running)
+elif [[ $temp -ge 5000 ]]; then
+    echo "%{F#8FA1B3}"       # Blue
+elif [[ $temp -ge 4000 ]]; then
+    echo "%{F#EBCB8B}"       # Yellow
+else
+    echo "%{F#D08770}"       # Orange
+fi
 #+END_SRC
 
 **** screen recording
@@ -1763,7 +1796,7 @@ fi
 
 ** Application launcher
 :PROPERTIES:
-:header-args: :tangle ~/.config/rofi/config2 :mkdirp yes
+:header-args: :tangle ~/.config/rofi/config :mkdirp yes
 :END:
 
 [[https://github.com/davatorium/rofi][Rofi, a window switcher and application launcher]].
@@ -3300,9 +3333,9 @@ Mount external
 # mount ssd
 alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
-*** inputrc
+** Inputrc
 :PROPERTIES:
-:header-args: :tangle (my/tangle-app '(zsh) "~/.inputrc") :mkdirp yes
+:header-args: :tangle (my/tangle-not-app '(zsh) "~/.inputrc") :mkdirp yes
 :END:
 
 If zsh is not found on the computer this will create an inputrc file enabling
@@ -3355,13 +3388,10 @@ set keyseq-timeout 0
 
 #+END_SRC
 
-
-my bash configuration goes here.
-
 * Terminal
 ** Multiplexing
 :PROPERTIES:
-:header-args: :tangle ~/.tmux2.conf :mkdirp yes :padline no
+:header-args: :tangle ~/.tmux.conf :mkdirp yes :padline no
 :END:
 
 [[https://github.com/tmux/tmux][Tmux, a terminal multiplexer]]
@@ -3753,7 +3783,7 @@ tmux new-session \; \
 
 *** Glitch lock
 :PROPERTIES:
-:header-args: :tangle ~/bin/glitcher~ :shebang "#! /bin/zsh"
+:header-args: :tangle ~/bin/glitcher :shebang "#! /bin/zsh"
 :END:
 
 Glitch locking the screen utilizing ~videoglitch~
@@ -3906,7 +3936,7 @@ Redshift
 
 ** Notifications
 :PROPERTIES:
-:header-args: :tangle ~/.config/dunst/dunstrc :padline no
+:header-args: :tangle ~/.config/dunst/dunstrc :padline no :mkdirp yes
 :END:
 
 [[https://github.com/dunst-project/dunst][Dunst, a lightweight and customizable notification daemon]]
