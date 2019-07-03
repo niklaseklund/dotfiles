@@ -1974,7 +1974,7 @@ else
 fi
 #+END_SRC
 
-* tmux
+* tmux :deprecated:
 :PROPERTIES:
 :header-args: :tangle ~/.tmux.conf :mkdirp yes
 :END:
@@ -5601,8 +5601,399 @@ my bash configuration goes here.
 
 ** Terminal
 *** Tmux
+:PROPERTIES:
+:header-args: :tangle ~/.tmux.conf :mkdirp yes
+:END:
 
 [[https://github.com/tmux/tmux][Tmux, a terminal multiplexer]]
+
+**** TODO Fix tmux settings incompatibility
+
+Version 2.9 introduced some breaking changes to the styling, here is some discussion:
+https://github.com/tmux/tmux/issues/1689
+
+An example is here:
+#+BEGIN_SRC sh :tangle no
+# before 2.9
+# setw -g window-status-fg colour236
+# setw -g window-status-bg default
+# setw -g window-status-attr none
+# setw -g window-status-format '#[fg=colour8] #I #[fg=default]#W '
+
+# after 2.9
+set -g window-status-style bg=default,fg=colour236,none
+#+END_SRC
+
+**** General information
+
+I am trying to grasp the notations of ~tmux~. It seems like there is three
+important words to know. ~Sessions~, ~Windows~ and ~Panes~.
+
+**** TODO Start using relevant code from sensible
+
+The plugin [[https://github.com/tmux-plugins/tmux-sensible][tmux-sensible]] has many sane options as default. I will use many of
+them from there.
+
+#+BEGIN_SRC sh
+# # -- GENERAL -----------------------------
+
+#+END_SRC
+
+I haven't checked what the setting does but it is suggested to be set here for
+the issue I am trying to solve namnely to have the autosuggestions shown in a
+highlighted way. Currently everything looks like a command.
+https://github.com/zsh-users/zsh-autosuggestions/issues/229
+#+BEGIN_SRC sh
+set -g default-terminal screen-256color
+#+END_SRC
+
+#+BEGIN_SRC sh
+# set -g default-command $SHELL
+# # Prevent double-execution of profile, $SHELL needs to be explicitly in profile
+# # though
+# set -g default-shell /bin/sh
+# set -s focus-events on
+# # increase scrollback buffer size
+set -g history-limit 50000
+
+#+END_SRC
+
+#+BEGIN_SRC sh
+# # Rather than constraining window size to the maximum size of any client
+# # connected to the *session*, constrain window size to the maximum size of any
+# # client connected to *that window*. Much more reasonable.
+setw -g aggressive-resize off
+#+END_SRC
+
+#+BEGIN_SRC sh
+# # Tmux >= 2.1
+# # enable mouse
+# setw -g mouse on
+# # fix mouse scrolling: enter copy mode on scroll-up, exits it when scrolled to bottom
+# bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'copy-mode -e'"
+
+# # For tmux <2.2
+# # UTF-8
+# #set -q -g status-utf8 on
+# #setw -q -g utf8 on
+# # Enable mouse
+# #setw -g mode-mouse on
+# #set -g mouse-resize-pane on
+# #set -g mouse-select-pane on
+# #set -g mouse-select-window on
+
+
+#+END_SRC
+
+**** Display
+
+#+BEGIN_SRC sh
+# # -- DISPLAY -----------------------------
+
+set -g set-titles on
+set -g set-titles-string "tmux [#H] #S:#W:#T"
+
+# Zero-based indexing is fine in programming languages, but not so much in a multiplexer
+# when zero is on the other side of the keyboard.
+set -g base-index 1
+setw -g pane-base-index 1
+
+setw -g automatic-rename on # rename window to reflect current program
+set -g renumber-windows on  # renumber windows when a window is closed
+# display tmux messages longer
+set -g display-time 1500
+set -g display-panes-time 800
+
+# focus events enabled for terminals that support them
+set -g focus-events on
+#+END_SRC
+
+**** Important keybindings
+#+BEGIN_SRC sh
+# # -- KEYBINDS ----------------------------
+
+# set vi keys
+setw -g mode-keys vi
+
+# setw -g xterm-keys on
+#+END_SRC
+
+When I started using tmux I had a delay in zsh and in tmux there was a
+noticable delay as well. This article describes how to deal with it by seting
+the ~escape-time~ parameter.
+https://www.johnhawthorn.com/2012/09/vi-escape-delays/
+#+BEGIN_SRC sh
+set -s escape-time 0
+# set -sg repeat-time 600
+
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle no
+# # Custom prefix
+set -g prefix C-c
+bind C-c send-prefix
+
+unbind C-b
+#+END_SRC
+
+**** Window management
+These keybindings makes more sense from a Vim perspective.
+#+BEGIN_SRC sh
+unbind %
+unbind '"'
+bind s split-window -c "#{pane_current_path}" -v
+bind v split-window -c "#{pane_current_path}" -h
+bind c new-window -c "#{pane_current_path}"
+#+END_SRC
+
+**** Pane management
+
+Windows in tmux can be thougth of as tabs. So breaking a pane to a window
+basically takes, what I would call a window and makes it into a tab.
+
+#+BEGIN_SRC sh
+# break pane into a window
+bind = select-layout even-vertical
+bind + select-layout even-horizontal
+bind - break-pane
+bind _ join-pane
+#+END_SRC
+
+These are some clever commands, but I haven't had the time to look more into it
+so I will have it disabled in the meantime.
+#+BEGIN_SRC sh
+# # Smart pane switching with awareness of vim splits
+# # See: https://github.com/christoomey/vim-tmux-navigator
+# is_vim='echo "#{pane_current_command}" | grep -iqE "(^|\/)g?(view|n?vim?x?)(diff)?$"'
+# bind -n C-h if-shell "$is_vim" "send-keys C-h" "select-pane -L"
+# bind -n C-j if-shell "$is_vim" "send-keys C-j" "select-pane -D"
+# bind -n C-k if-shell "$is_vim" "send-keys C-k" "select-pane -U"
+# bind -n C-l if-shell "$is_vim" "send-keys C-l" "select-pane -R"
+# bind -n C-\ if-shell "$is_vim" "send-keys C-\\" "select-pane -l"
+# bind C-w last-pane
+# bind C-n next-window
+# bind C-p previous-window
+#+END_SRC
+
+Resizing and pane switching with Vi-ish bindings.
+#+BEGIN_SRC sh
+# Pane resizing
+bind C-h resize-pane -L 6
+bind C-j resize-pane -D 6
+bind C-k resize-pane -U 6
+bind C-l resize-pane -R 6
+bind -n M-h resize-pane -L 6
+bind -n M-j resize-pane -D 6
+bind -n M-k resize-pane -U 6
+bind -n M-l resize-pane -R 6
+
+# Swap panes directionally
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+bind H run '$TMUX_HOME/scripts/swap-pane left'
+bind J run '$TMUX_HOME/scripts/swap-pane down'
+bind K run '$TMUX_HOME/scripts/swap-pane up'
+bind L run '$TMUX_HOME/scripts/swap-pane right'
+bind M run '$TMUX_HOME/scripts/swap-pane master'
+
+bind o resize-pane -Z
+bind S choose-session
+bind W choose-window
+bind / choose-session
+bind . choose-window
+
+bind n run 'TMUX= tmux new-session -t "$(basename \"$PWD\")" -d \; switch-client -t "$(basename \"$PWD\")"'
+bind N run 'TMUX= tmux new-session -t "$(tmux display-message -p #S)" -s "$(tmux display-message -p #S-clone)" -d \; switch-client -n \; display-message "session #S cloned"'
+
+# bind = select-layout tiled
+bind | select-layout even-horizontal
+bind _ select-layout even-vertical
+
+#+END_SRC
+
+Clever way of rebinding the ~prefix ]/[~ to navigate between active sessions.
+#+BEGIN_SRC sh
+# switch between sessions
+bind -r [ switch-client -p
+bind -r ] switch-client -n
+#+END_SRC
+
+Killing
+#+BEGIN_SRC sh
+bind x kill-pane
+bind X kill-window
+bind q kill-session
+bind Q kill-server
+#+END_SRC
+
+**** Copy mode
+Enable vi bindings for Copy mode
+#+BEGIN_SRC sh
+# # -- COPY MODE ---------------------------
+
+bind Enter copy-mode # enter copy mode
+bind b list-buffers  # list paster buffers
+bind p paste-buffer  # paste from the top pate buffer
+bind P choose-buffer # choose which buffer to paste from
+
+bind -T copy-mode-vi v send -X begin-selection
+bind -T copy-mode-vi C-v send -X rectangle-toggle
+bind -T copy-mode-vi y send -X copy-selection
+bind -T copy-mode-vi Escape send -X cancel
+bind -T copy-mode-vi H send -X start-of-line
+bind -T copy-mode-vi L send -X end-of-line
+
+#+END_SRC
+
+**** Reload configuration
+#+BEGIN_SRC sh
+# reload config without killing server
+bind r source-file $HOME/.tmux.conf \; display-message "  Config reloaded..".
+bind ^r refresh-client
+#+END_SRC
+
+**** Theme
+Load the theme
+#+BEGIN_SRC sh
+# -- THEME -------------------------------
+
+# The statusbar
+set -g status-position bottom
+set -g status-justify centre
+set -g status-bg default
+set -g status-fg colour15
+set -g status-interval 10
+# set -g status-attr dim
+# set -g status-left '#[fg=colour236]_________________________'
+set -g status-left '#[fg=colour236]―――――――――――――――――――――――――'
+# set -g status-right "#[fg=colour236]#{prefix_highlight} #[fg=colour5] #S #[fg=colour236]──"
+# set -g status-right '#[fg=colour236]_________________________'
+set -g status-right '#[fg=colour236]―――――――――――――――――――――――――'
+set -g status-right-length 12
+set -g status-left-length 12
+
+# The messages
+# set -g message-fg colour4
+# set -g message-bg colour237
+# set -g message-command-fg blue
+# set -g message-command-bg black
+
+# loud or quiet?
+set-option -g visual-activity off
+set-option -g visual-bell off
+set-option -g visual-silence off
+set-window-option -g monitor-activity on
+set-option -g bell-action none
+
+# The modes
+setw -g clock-mode-colour colour135
+# setw -g mode-attr bold
+# setw -g mode-fg colour196
+# setw -g mode-bg colour238
+
+# The panes
+# set -g pane-border-fg colour235
+# set -g pane-border-bg default
+# set -g pane-active-border-fg colour5
+# set -g pane-active-border-bg default
+
+# setw -g window-status-current-fg colour2
+# setw -g window-status-current-bg default
+# setw -g window-status-current-attr none
+setw -g window-status-current-format ' #W '
+
+#setw -g window-status-fg colour236
+#setw -g window-status-bg default
+#setw -g window-status-attr none
+# setw -g window-status-format '#[fg=colour8] #I #[fg=default]#W '
+setw -g window-status-format ' #W '
+
+#setw -g window-status-activity-bg default
+#setw -g window-status-activity-fg colour240
+#setw -g window-status-activity-attr none
+
+#setw -g window-status-bell-attr bold
+#setw -g window-status-bell-fg colour255
+#setw -g window-status-bell-bg colour1
+
+
+#+END_SRC
+
+**** Load plugins
+
+***** Plugin manager
+~Plugin manager~
+https://github.com/tmux-plugins/tpm
+#+BEGIN_SRC sh
+set -g @plugin 'tmux-plugins/tpm'
+#+END_SRC
+
+| Command          | Action                      |
+|------------------+-----------------------------|
+| prefix + I       | Installs new plugins        |
+| prefix + U       | Updates plugins             |
+| prefix + alt + u | Removes/uninstalls plugins  |
+
+***** Custom plugins
+****** copy-cat
+[[https://github.com/tmux-plugins/tmux-copycat][tmux-copycat]] enables
+- regex searches
+- search result highlighting
+- predefined searches (especially if combined with tmux-yank)
+
+#+BEGIN_SRC sh
+set -g @plugin 'tmux-plugins/tmux-copycat'
+#+END_SRC
+
+****** yank
+In normal mode ~prefix + y~ copies the command line to clipboard.
+In copy mode ~y~ copies selection to clipboard.
+In copy mode ~Y~ copies and pastes it to the command line.
+#+BEGIN_SRC sh
+set -g @plugin 'tmux-plugins/tmux-yank'
+#+END_SRC
+
+#+RESULTS:
+****** open
+
+Key bindings
+#+BEGIN_QUOTE
+In tmux copy mode:
+
+    o - "open" a highlighted selection with the system default program
+    Ctrl-o - open a highlighted selection with the $EDITOR
+    Shift-s - search the highlighted selection directly inside a search engine (defaults to google).
+
+In copy mode:
+
+    highlight file.pdf and press o - file will open in the default PDF viewer.
+    highlight file.doc and press o - file will open in system default .doc file viewer.
+    highlight http://quote.com and press o - link will be opened in the default browser.
+    highlight file.txt and press Ctrl-o - file will open in $EDITOR.
+    highlight TypeError: 'undefined' is not a function and press Shift-s - the text snipped will be searched directly inside google by default
+#+END_QUOTE
+
+#+BEGIN_SRC sh
+set -g @plugin 'tmux-plugins/tmux-open'
+#+END_SRC
+
+****** others
+#+BEGIN_SRC sh
+# set -g @plugin 'tmux-plugins/tmux-prefix-highlight'
+
+# set -g @prefix_highlight_fg colour4
+# set -g @prefix_highlight_output_suffix ' #[bg=colour8] '
+
+#+END_SRC
+
+***** start pluings
+Start the plugin manager
+#+BEGIN_SRC sh
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run -b '~/.tmux/plugins/tpm/tpm'
+#+END_SRC
 
 *** Scripts
 
