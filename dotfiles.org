@@ -2051,7 +2051,7 @@ the keyup command.
 content=$(xclip -selection c -o)
 export EA_CLIPBOARD=$content
 
-"/home/nikcar/.emacs_anywhere/bin/run"
+"$HOME/.emacs_anywhere/bin/run"
 #+END_SRC
 
 * Encryption
