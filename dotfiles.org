@@ -90,14 +90,6 @@ I learnt about the ~setxkbmap~ at the [[https://wiki.archlinux.org/index.php/Xor
 the line. The ~layout~ specifies ~American~ and ~Swedish~ layouts. One can
 switch between these two keyboard layouts by pressing both ~shifts~ at
 time. Last I swap ctrl to caps and remove capslock.
-**** Pywall
-
-#+BEGIN_SRC sh :tangle no
-# Add this to your .xinitrc or whatever file starts programs on startup.
-# -R restores the last colorscheme that was in use.
-wal -R
-#+END_SRC
-
 **** Launch programs
 
 I need to launch sxhkd since bspwm is relying upon that program to handle the
@@ -322,17 +314,11 @@ fi
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
 #+END_SRC
 
-**** Pywall
+**** Wallpaper
 
 #+BEGIN_SRC sh
 # set wallpaper
 [[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle no
-# Add this to your .xinitrc or whatever file starts programs on startup.
-# -R restores the last colorscheme that was in use.
-wal -R
 #+END_SRC
 
 **** TODO Keyboard
@@ -790,11 +776,8 @@ called from the ~bspwmrc~.
 $HOME/.config/polybar/launch.sh
 #+END_SRC
 
-**** Pywal color
-#+BEGIN_SRC sh :tangle no
-# source the colors.
-. "${HOME}/.cache/wal/colors.sh"
-
+**** Selection color
+#+BEGIN_SRC sh
 # Set the border colors.
 # bspc config normal_border_color "$color1"
 # bspc config active_border_color "$color2"
@@ -2128,7 +2111,6 @@ Plug 'justinmk/vim-sneak' " Snipe characters with greater precision
 Plug 'tommcdo/vim-exchange' " Provide exchange object
 Plug 'qpkorr/vim-bufkill' " Improve buffer handling
 Plug 'Konfekt/FastFold' " Improve folding performance
-Plug 'dylanaraps/wal.vim' " Pywall colorscheme
 call plug#end()
 
 " Vim core {{{1
@@ -2230,7 +2212,6 @@ set statusline+=%2c
 
 " Color tweaking
 set background=dark
-colorscheme wal
 #+END_SRC
 
 ** Emacs
