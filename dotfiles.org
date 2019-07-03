@@ -403,15 +403,6 @@ export XDG_CONFIG_HOME
 :header-args: :tangle ~/.config/bspwm/bspwmrc2 :mkdirp yes
 :END:
 
-**** sxhkd
-
-The example file starts with ~sxhkd~. I am unsure if I need it both here and in
-the ~xinitrc~.
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-sxhkd &
-#+END_SRC
-
 **** Monitors and desktops
 ***** [X] Set the primary monitor
 CLOSED: [2019-01-27 Sun 13:38]
