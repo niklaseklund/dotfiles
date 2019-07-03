@@ -6,6 +6,18 @@ dotfiles]]. I have also taken inspiration from others such as [[https://github.c
 has been to craft a setup that is highly focused on being ~minimalistic~,
 ~keyboardriven~, and ~highly customizable~.
 
+TODO: Why I keep it in org-mode
+
+** Org-mode helper functions
+:PROPERTIES:
+:header-args: :padline no
+:END:
+
+#+NAME: home
+#+BEGIN_SRC elisp
+(getenv "HOME")
+#+END_SRC
+
 * Desktop environment
 ** X server
 
@@ -2598,7 +2610,7 @@ Channel "zenuity-trash"
 
 ** Index
 :PROPERTIES:
-:header-args: :tangle ~/.notmuch-config
+:header-args: :tangle ~/.notmuch-config :noweb tangle
 :END:
 
 ~notmuch~ is an indexer providing a cli and ~Emacs~ interface. This
@@ -2627,11 +2639,11 @@ xapian.
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-path=/home/niklascarlsson/.mail
+path=<<home()>>/.mail
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-path=/home/nikcar/.mail
+path=<<home()>>/.mail
 #+END_SRC
 
 #+BEGIN_SRC sh
