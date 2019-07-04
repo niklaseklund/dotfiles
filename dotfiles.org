@@ -378,7 +378,7 @@ export XDG_CONFIG_HOME
 
 *** bspwm
 :PROPERTIES:
-:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :mkdirp yes
+:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#!/usr/bin/env zsh" :mkdirp yes
 :END:
 
 **** Monitors and desktops
@@ -435,20 +435,33 @@ fi
 This is the more generic solution. It splits up the ten workspaces on the number
 of monitors that exists. In the case of three screens 3 workspaces will be
 assigned to each monitor.
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 # Different strategy if there is only one screen
 if [ "$(bspc query -M | wc -l)" -eq "1" ]; then
     bspc monitor $(bspc query -M) -d $(seq 1 5)
 else
-    i=0
-    n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
-    per=$(( 10 / n ))          # number of desktops per monitor
-    for monitor in `bspc query -M`; do
-        bspc monitor $monitor -d `seq $i $(( i + per - 1 ))`
-        # seq is end-inclusive; `seq 1 $((1+2))` returns "1 2 3"
-        i=$(( i + per ))
-    done
+    bspc monitor DP-2 -d {1,2,3,4,5}
+    bspc monitor eDP-1 -d 0
+    # i=0
+    # n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
+    # per=$(( 10 / n ))          # number of desktops per monitor
+    # for monitor in `bspc query -M`; do
+    #     bspc monitor $monitor -d `seq $i $(( i + per - 1 ))`
+    #     # seq is end-inclusive; `seq 1 $((1+2))` returns "1 2 3"
+    #     i=$(( i + per ))
+    # done
 fi
+#+END_SRC
+
+#+BEGIN_SRC sh
+export MONITOR=$(xrandr -q | grep primary | grep ' connected' | cut -d' ' -f1)
+export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
+MONITOR=${MONITOR:-${MONITORS[1]}}
+# Multiple workspaces for main monitor, but only one for others
+bspc monitor $MONITOR -d {1,2,3,4,5}
+for mon in ${MONITORS[@]/${MONITOR}}; do
+    bspc monitor $mon -d $mon/1
+done
 #+END_SRC
 
 **** The look
