@@ -332,9 +332,7 @@ setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_l
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-# set keyboard layouts
-setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_lwin
-# setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
+"$HOME/bin/set-keymap"
 #+END_SRC
 
 **** Programs
@@ -3872,6 +3870,26 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         adjust_brightness(float(sys.argv[1]))
 #+END_SRC
+*** Set keyboard map depending on external keyboard
+:PROPERTIES:
+:header-args: :tangle (my/tangle-os '(arch ubuntu) "~/bin/set-keymap") :shebang "#!/usr/bin/env bash" :mkdirp yes
+:END:
+
+Because I run Arch Linux on a Macbook I end up in the situation that if I have
+some external keyboards plugged in I want to switch the location on.
+
+#+BEGIN_SRC sh
+keyboard_device="04d9:0167"
+lsusb_output="$(lsusb -d $keyboard_device)"
+if [ -z "$lsusb_output" ]; then
+    # lsusb_output is empty, keyboard is not connected
+    setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps
+else
+    # lsusb_output is not empty, keyboard is connected
+    setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_lwin
+fi
+#+END_SRC
+
 * Utility applications
 ** Screen color temperature
 :PROPERTIES:
@@ -4021,20 +4039,24 @@ lsusb
 #+END_SRC
 
 #+RESULTS:
-| Bus | 2 | Device | 003: | ID | 05ac:8406 | Apple,  | Inc.        |           |                   |            |     |    |
-| Bus | 2 | Device | 002: | ID | 04e8:61f5 | Samsung | Electronics | Co.,      | Ltd               | Portable   | SSD | T5 |
-| Bus | 2 | Device | 001: | ID | 1d6b:0003 | Linux   | Foundation  | 3.0       | root              | hub        |     |    |
-| Bus | 1 | Device | 003: | ID | 05ac:0273 | Apple,  | Inc.        | Internal  | Keyboard/Trackpad | (ISO)      |     |    |
-| Bus | 1 | Device | 002: | ID | 05ac:8290 | Apple,  | Inc.        | Bluetooth | Host              | Controller |     |    |
-| Bus | 1 | Device | 001: | ID | 1d6b:0002 | Linux   | Foundation  | 2.0       | root              | hub        |     |    |
+| Bus | 2 | Device | 003: | ID | 05ac:8406 | Apple,    | Inc.           |           |                   |            |     |    |
+| Bus | 2 | Device | 002: | ID | 04e8:61f5 | Samsung   | Electronics    | Co.,      | Ltd               | Portable   | SSD | T5 |
+| Bus | 2 | Device | 001: | ID | 1d6b:0003 | Linux     | Foundation     | 3.0       | root              | hub        |     |    |
+| Bus | 1 | Device | 005: | ID | 05ac:0273 | Apple,    | Inc.           | Internal  | Keyboard/Trackpad | (ISO)      |     |    |
+| Bus | 1 | Device | 003: | ID | 05ac:8290 | Apple,    | Inc.           | Bluetooth | Host              | Controller |     |    |
+| Bus | 1 | Device | 008: | ID | 046d:c01d | Logitech, | Inc.           | MX510     | Optical           | Mouse      |     |    |
+| Bus | 1 | Device | 006: | ID | 04d9:0167 | Holtek    | Semiconductor, | Inc.      |                   |            |     |    |
+| Bus | 1 | Device | 007: | ID | 0424:4063 | Standard  | Microsystems   | Corp.     |                   |            |     |    |
+| Bus | 1 | Device | 004: | ID | 0424:2640 | Standard  | Microsystems   | Corp.     | USB               | 2.0        | Hub |    |
+| Bus | 1 | Device | 002: | ID | 0424:2514 | Standard  | Microsystems   | Corp.     | USB               | 2.0        | Hub |    |
+| Bus | 1 | Device | 001: | ID | 1d6b:0002 | Linux     | Foundation     | 2.0       | root              | hub        |     |    |
 
 Extract if there is an external keyboard plugged in
 #+BEGIN_SRC sh
-lsusb | grep Keyboard
+lsusb -d 04d9:0167
 #+END_SRC
 
 #+RESULTS:
-| Bus 001 Device 003: ID 05ac:0273 Apple | Inc. Internal Keyboard/Trackpad (ISO) |
 
 ** Mouse toggle
 
