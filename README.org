@@ -7,4 +7,7 @@ has been to craft a setup that is highly focused on being ~minimalistic~,
 
 TODO: Why I keep it in org-mode
 
+* Screenshots
+
+Add some screenshots here
 * Credit
