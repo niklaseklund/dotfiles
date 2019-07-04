@@ -1,34 +1,4 @@
 #+TITLE: dotfiles
-* Background
-
-This dotfile setup is heavily inspired/borderline stolen from [[https://github.com/hlissner/dotfiles][hlissner's
-dotfiles]]. I have also taken inspiration from others such as [[https://github.com/noctuid][noctuid]]. My ambition
-has been to craft a setup that is highly focused on being ~minimalistic~,
-~keyboardriven~, and ~highly customizable~.
-
-TODO: Why I keep it in org-mode
-
-** Org-mode helper functions
-:PROPERTIES:
-:header-args: :padline no
-:END:
-
-#+NAME: home
-#+BEGIN_SRC elisp
-(getenv "HOME")
-#+END_SRC
-
-#+NAME: insert-file-content
-#+BEGIN_SRC elisp :var filename=""
-(defun get-string-from-file (filePath)
-  "Return filePath's file content."
-  (with-temp-buffer
-    (insert-file-contents filePath)
-    (string-trim (buffer-string))))
-
-(get-string-from-file filename)
-#+END_SRC
-
 * Desktop environment
 ** X server
 
@@ -2108,6 +2078,27 @@ content=$(xclip -selection c -o)
 export EA_CLIPBOARD=$content
 
 "$HOME/.emacs_anywhere/bin/run"
+#+END_SRC
+
+*** Org-mode helper functions
+:PROPERTIES:
+:header-args: :padline no
+:END:
+
+#+NAME: home
+#+BEGIN_SRC elisp
+(getenv "HOME")
+#+END_SRC
+
+#+NAME: insert-file-content
+#+BEGIN_SRC elisp :var filename=""
+(defun get-string-from-file (filePath)
+  "Return filePath's file content."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (string-trim (buffer-string))))
+
+(get-string-from-file filename)
 #+END_SRC
 
 * Encryption

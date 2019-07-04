@@ -1,0 +1,10 @@
+* About
+
+This dotfile setup is heavily inspired/borderline stolen from [[https://github.com/hlissner/dotfiles][hlissner's
+dotfiles]]. I have also taken inspiration from others such as [[https://github.com/noctuid][noctuid]]. My ambition
+has been to craft a setup that is highly focused on being ~minimalistic~,
+~keyboardriven~, and ~highly customizable~.
+
+TODO: Why I keep it in org-mode
+
+* Credit
