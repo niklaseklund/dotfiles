@@ -10,4 +10,9 @@ TODO: Why I keep it in org-mode
 * Screenshots
 
 Add some screenshots here
+* Inspiration
+
+I found that ~Protesilaos Stavrou~ have an interesting video about scripting a
+dynamic desktop setup. I will look into that sometime, [[https://protesilaos.com/codelog/2019-06-17-bspwm-dynamic-desktops/][bspwm-dynamic-desktops]].
+
 * Credit
