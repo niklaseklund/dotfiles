@@ -4108,3 +4108,19 @@ xinput -list | grep "Keyboard"
 #+RESULTS:
 : ⎜   ↳ USB Keyboard                            	id=11	[slave  pointer  (2)]
 :     ↳ USB Keyboard                            	id=12	[slave  keyboard (3)]
+** Remotely control tizonia
+
+To switch to the next song
+#+BEGIN_SRC sh :results none
+tizonia-remote next
+#+END_SRC
+
+To switch to the previous song
+#+BEGIN_SRC sh :results none
+tizonia-remote prev
+#+END_SRC
+
+To toggle pause
+#+BEGIN_SRC sh :results none
+tizonia-remote pause
+#+END_SRC
