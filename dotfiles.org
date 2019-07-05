@@ -432,26 +432,15 @@ fi
 #+END_SRC
 
 ***** Distribute workspaces among the screens
-This is the more generic solution. It splits up the ten workspaces on the number
-of monitors that exists. In the case of three screens 3 workspaces will be
-assigned to each monitor.
-#+BEGIN_SRC sh :tangle no
-# Different strategy if there is only one screen
-if [ "$(bspc query -M | wc -l)" -eq "1" ]; then
-    bspc monitor $(bspc query -M) -d $(seq 1 5)
-else
-    bspc monitor DP-2 -d {1,2,3,4,5}
-    bspc monitor eDP-1 -d 0
-    # i=0
-    # n=`bspc query -M | wc -l`  # count number of lines in bspwm's monitor list
-    # per=$(( 10 / n ))          # number of desktops per monitor
-    # for monitor in `bspc query -M`; do
-    #     bspc monitor $monitor -d `seq $i $(( i + per - 1 ))`
-    #     # seq is end-inclusive; `seq 1 $((1+2))` returns "1 2 3"
-    #     i=$(( i + per ))
-    # done
-fi
-#+END_SRC
+
+The distribution of desktops in bspwm seems very powerful and customizable but I
+have a hard time figuring out how it really works. It seems like the names are
+not necessarily connected to how I can access them.
+
+For example giving the primary monitor dekstops 1-5 below doesn't mean that I
+will use ~super+{1...5}~ to access those. Because there will be a screen to the
+left of the primary monitor and that one will get one dekstop that I will access
+with the ~super+1~. So the primary monitor becomes shifted by one.
 
 #+BEGIN_SRC sh
 export MONITOR=$(xrandr -q | grep primary | grep ' connected' | cut -d' ' -f1)
@@ -463,6 +452,20 @@ for mon in ${MONITORS[@]/${MONITOR}}; do
     bspc monitor $mon -d $mon/1
 done
 #+END_SRC
+
+Using the above code on my 3-monitor setup yields the following desktop names:
+#+BEGIN_SRC sh :results output :tangle no
+bspc query -D --names
+#+END_SRC
+
+#+RESULTS:
+: eDP-1-1/1
+: 1
+: 2
+: 3
+: 4
+: 5
+: DP-1-1-1/1
 
 **** The look
 
@@ -3134,6 +3137,13 @@ else # From outside tmux
     tdup() { tmux new-session -t "${1:-`tmux display-message -p '#S'`}"; }
 fi
 #+END_SRC
+***** Bluetooth
+
+#+BEGIN_SRC sh
+alias bluecon='echo -e "connect 2C:41:A1:4C:1A:B8" | bluetoothctl &>/dev/null; echo "Connected"'
+alias bluedis='echo -e "disconnect" | bluetoothctl &>/dev/null; echo "Disconnected"'
+#+END_SRC
+
 **** settings
 
 This setting controls the hightlightstyle
