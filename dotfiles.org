@@ -2920,18 +2920,21 @@ Make a function in Emacs to avoid deleting flagged emails.
 
 * Shells
 ** Zsh
-
 *** zshrc
 :PROPERTIES:
 :header-args: :tangle ~/.zshrc :mkdirp yes
 :END:
 
-**** zgen
+**** Extend zsh with plugins
 
 Following the setup details on [[https://github.com/tarjoilija/zgen][zgen wiki]]. Starting with sourcing zgen on start
 in zshrc.
 
 #+BEGIN_SRC sh
+#
+## Plugins
+#
+
 # load zgen
 source "${HOME}/.zgen/zgen.zsh"
 #+END_SRC
@@ -2957,18 +2960,15 @@ if ! zgen saved; then
 fi
 #+END_SRC
 
-**** keybindings
+**** Vim keybindings
 
-Make sure to set the timeout to a low value to avoid delays when pressing escape
-https://www.johnhawthorn.com/2012/09/vi-escape-delays/
+Enable vi-mode and set the keybindings. I copied this from [[https://github.com/hlissner/dotfiles/tree/master/shell/zsh][hlissner]].
 #+BEGIN_SRC sh
-export KEYTIMEOUT=10
-#+END_SRC
+#
+## Keybindings
+#
 
-Enable vi-mode and set the keybindings
-I grabbed this from https://github.com/hlissner/dotfiles/tree/master/shell/zsh
-#+BEGIN_SRC sh
-## vi-mode
+# vi-mode
 bindkey -v
 bindkey -M viins 'jk' vi-cmd-mode
 bindkey -M viins ' ' magic-space
@@ -2987,36 +2987,31 @@ bindkey -M viins '^d' push-line-or-edit
 
 bindkey -M vicmd '^k' kill-line
 bindkey -M vicmd 'H'  run-help
-
-# Shift + Tab
-bindkey -M viins '^[[Z' reverse-menu-complete
 #+END_SRC
 
-There is an example zshrc found in the arch wiki
-https://github.com/MrElendig/dotfiles-alice/blob/master/.zshrc
-
-I use this to get colored directories
+Also make sure to set the timeout to a low value to avoid delays when pressing
+escape, [[https://www.johnhawthorn.com/2012/09/vi-escape-delays/][vi-escape-delays]].
 #+BEGIN_SRC sh
-#------------------------------
-# History stuff
-#------------------------------
-HISTFILE=~/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
+export KEYTIMEOUT=10
+#+END_SRC
 
-#------------------------------
-# Variables
-#------------------------------
+**** Configure variables
+
+#+BEGIN_SRC sh
+#
+## Variables
+#
 export BROWSER="firefox"
 export EDITOR="nvim"
 #+END_SRC
 
-I found this set in the arch ~bashrc~ file. Seems like a good alias to set, this
-gave me colored output of my ls commands.
+**** Prompt
+
 #+BEGIN_SRC sh
-alias ls='ls --color=auto'
+#
+## Prompt
+#
 #+END_SRC
-**** prompt
 
 https://github.com/hlissner/dotfiles/blob/master/shell/zsh/prompt.zsh
 
@@ -3050,8 +3045,6 @@ prompt_hook_precmd() {
 
 ## Initialization ######################
 prompt_init() {
-  # prevent the extra space in the rprompt
-  [[ -n $EMACS ]] || ZLE_RPROMPT_INDENT=0
   # prevent percentage showing up
   # if output doesn't end with a newline
   export PROMPT_EOL_MARK=
@@ -3094,7 +3087,14 @@ something else then lambda when in such a console with a restricted font.
 
 This is a solution for how to detect if the shell is running in a virtual terminal
 https://unix.stackexchange.com/questions/96463/detect-if-running-in-a-virtual-terminal
-**** aliases
+**** Aliases
+
+#+BEGIN_SRC sh
+#
+## Aliases
+#
+#+END_SRC
+
 ***** Move/Copy/Remove
 #+BEGIN_SRC sh
 alias rm='rm -i'
@@ -3107,6 +3107,7 @@ alias mv='mv -i'
 List content. ~LC_COLLATE=C~ sorts in upper case letters before lower.
 #+BEGIN_SRC sh
 alias ln="${aliases[ln]:-ln} -v"  # verbose ln
+alias ls='ls --color=auto'
 alias l='ls -1'
 alias ll='ls -l'
 alias la='LC_COLLATE=C ls -la'
@@ -3143,14 +3144,87 @@ fi
 alias bluecon='echo -e "connect 2C:41:A1:4C:1A:B8" | bluetoothctl &>/dev/null; echo "Connected"'
 alias bluedis='echo -e "disconnect" | bluetoothctl &>/dev/null; echo "Disconnected"'
 #+END_SRC
+***** Directory
 
-**** settings
+[[https://github.com/vigneshwaranr/bd][The recommended rebinding of bd]]
+#+BEGIN_SRC sh
+alias bd=". bd -si"
+#+END_SRC
 
+**** Configure zsh options
+
+#+BEGIN_SRC sh
+#
+## Configure zsh options
+#
+#+END_SRC
+
+***** General
+
+#+BEGIN_SRC sh
+# Treat these characters as part of a word.
+WORDCHARS='_-*?[]~&.;!#$%^(){}<>'
+
+unsetopt BRACE_CCL        # Allow brace character class list expansion.
+setopt COMBINING_CHARS    # Combine zero-length punc chars (accents) with base char
+setopt RC_QUOTES          # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'
+setopt HASH_LIST_ALL
+unsetopt CORRECT_ALL
+unsetopt NOMATCH
+unsetopt MAIL_WARNING     # Don't print a warning message if a mail file has been accessed.
+unsetopt BEEP             # Hush now, quiet now.
+setopt IGNOREEOF
+
+## Jobs
+setopt LONG_LIST_JOBS     # List jobs in the long format by default.
+setopt AUTO_RESUME        # Attempt to resume existing job before creating a new process.
+setopt NOTIFY             # Report status of background jobs immediately.
+unsetopt BG_NICE          # Don't run all background jobs at a lower priority.
+unsetopt HUP              # Don't kill jobs on shell exit.
+unsetopt CHECK_JOBS       # Don't report on jobs when shell exit.
+#+END_SRC
+
+***** History
+
+#+BEGIN_SRC sh
+HISTFILE=~/.zsh_history
+HISTSIZE=1000                    # Max events to store in internal history.
+SAVEHIST=1000                    # Max events to store in history file.
+
+setopt BANG_HIST                 # Don't treat '!' specially during expansion.
+setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
+setopt APPEND_HISTORY            # Appends history to history file on exit
+setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
+setopt SHARE_HISTORY             # Share history between all sessions.
+setopt HIST_EXPIRE_DUPS_FIRST    # Expire a duplicate event first when trimming history.
+setopt HIST_IGNORE_DUPS          # Do not record an event that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS      # Delete an old recorded event if a new event is a duplicate.
+setopt HIST_FIND_NO_DUPS         # Do not display a previously found event.
+setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space.
+setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
+setopt HIST_VERIFY               # Do not execute immediately upon history expansion.
+setopt HIST_BEEP                 # Beep when accessing non-existent history.
+#+END_SRC
+
+***** Looks
 This setting controls the hightlightstyle
 #+BEGIN_SRC sh
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
 #+END_SRC
-**** fzf
+***** Keybindings
+
+[[https://superuser.com/questions/385175/how-to-reclaim-s-in-zsh][How to reclaim ctrl-s in zsh]]
+
+#+BEGIN_SRC sh
+setopt noflowcontrol      # Reclaim Ctrl-s
+#+END_SRC
+
+Then change in the file ~.fzf/shell/keybindings.zsh~
+#+BEGIN_SRC sh :tangle no
+bindkey '^S' fzf-history-widget
+#+END_SRC
+
+**** Fuzzy finding
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 source /usr/share/fzf/key-bindings.zsh
@@ -3177,17 +3251,6 @@ customize fzf prompt
 #--color fg:188,bg:233,hl:103,fg+:222,bg+:234,hl+:104
 #--color info:183,prompt:110,spinner:107,pointer:167,marker:215
 #'
-#+END_SRC
-
-**** DONE remove duplicates history in zsh
-CLOSED: [2019-02-04 mån 10:28]
-
-Avoiding duplicate entries in history, [[https://github.com/junegunn/fzf/issues/600][I found the information here]]. However I
-will leave it disabled for the meantime. I sometimes found the history quite
-good to have in case I need to backtrack what I have done in the terminal.
-
-#+BEGIN_SRC sh :tangle no
-setopt HIST_IGNORE_ALL_DUPS
 #+END_SRC
 
 **** DONE Improve z with fzf
