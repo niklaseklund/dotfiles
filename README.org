@@ -1,18 +1,70 @@
 * About
 
-This dotfile setup is heavily inspired/borderline stolen from [[https://github.com/hlissner/dotfiles][hlissner's
-dotfiles]]. I have also taken inspiration from others such as [[https://github.com/noctuid][noctuid]]. My ambition
-has been to craft a setup that is highly focused on being ~minimalistic~,
-~keyboardriven~, and ~highly customizable~.
+My dotfiles, stored and managed with Emacs, using [[https://orgmode.org/][Org mode]].
 
-TODO: Why I keep it in org-mode
+Design intent:
+- ~minimalistic design~ (decrease snr, remove unnecessary gui elements)
+- ~highly customizable~ (make complex/hard things easy, bend it to my will, spirit
+  of emacs, unify the environment)
+- ~keyboard driven~ (decrease use of mouse, favor workflows design for keyboard,
+  personal preference)
+- ~harmonize devices~ (make work/personal computer feel more the same)
 
-* Screenshots
+* Background
 
-Add some screenshots here
+Why this setup:
+- inspired by the blogpost [[https://irreal.org/blog/?p=7702][Org to Dotfiles]]. Wanted to improve my dotfile
+  management, and my org skills, seemed like a good match. Describe some
+  advantages such as handling of multiple devices
+- started as I installed, and began setting up arch linux on a dual boot on my macbook
+- window manager instead of traditional desktop environment. Reasons are
+  minimalistic, keyboard driven workflow and also a quest of understanding linux
+  better under the hood.Put yourself in environments where you learn naturally
+
+* TODO Screenshots
+
+The credit for the great should be handed to [[https://github.com/hlissner/dotfiles][hlissner]], from which this design is
+copied from.
+
+What to show:
+- ~nothing running~
+- ~rofi~
+- ~emacs~
+- ~firefox, with emacs-anywhere~
+- ~multiple terminals~
+
+* Setup
+
+I want to add an accompanying ~setup.org~ which will take care of the
+installation of the applications that this environment depends on.
+
+What to list:
+- ~password-management:~ pass, rofi-pass, rofi-pinentry
+- ~web-browsing:~ firefox, tridactyl
+- ~mail:~ mbsync, notmuch, msmtp
+- ~media:~ tizonia, ncpamixer, cava, mplayer, youtube-dl/viewer, zathura, scrot,
+  gimp, darktable, imagemagick
+- ~writing:~ aspell, fonts(iosevka, roboto), xcape
+- ~shell:~ zsh, shellcheck
+- ~terminal-editor~ nvim
+- ~emacs:~ emacs, libvterm, doom-emacs
+- ~package-management:~ yay
+- ~network:~ nmtui, nmcli
+- ~terminal:~ urxvt, tmux, tdrop
+- ~terminal-utilities:~ fzf, rg, fd, bd, xclip, redshift, git
+- ~python:~ pyenv, pyls, ptvsd, pylint
+- ~c++:~ ccls, gdb, clang
+- ~window-manager:~ bspwm, sxhkd, polybar, compton, dunst, unclutter
+
 * Inspiration
 
-I found that ~Protesilaos Stavrou~ have an interesting video about scripting a
-dynamic desktop setup. I will look into that sometime, [[https://protesilaos.com/codelog/2019-06-17-bspwm-dynamic-desktops/][bspwm-dynamic-desktops]].
+~Sources to draw inspiration from:~
 
-* Credit
+- ~Protesilaos Stavrou~ has an interesting video [[https://protesilaos.com/codelog/2019-06-17-bspwm-dynamic-desktops/][bspwm-dynamic-desktops]]
+- ~ambrevar's~ [[https://old.reddit.com/r/emacs/comments/6y3q4k/yes_eshell_is_my_main_shell/][yes-eshell-is-my-main-shell]]
+- ~noctuid's~ [[https://github.com/noctuid/dotfiles/blob/master/README.org][README-file]]
+ 
+* Credits
+
+- [[https://github.com/hlissner][hlissner]]
+- [[https://wiki.archlinux.org/][arch-wiki]]
