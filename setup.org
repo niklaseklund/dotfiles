@@ -1,0 +1,5 @@
+#+TITLE: setup
+
+* TODO Implement
+
+Placeholder for future setup script.
