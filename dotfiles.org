@@ -100,7 +100,7 @@ exec bspwm
 
 *** Xresources
 :PROPERTIES:
-:header-args: :tangle ~/.Xresources :mkdirp yes
+:header-args: :tangle ~/.Xresources :mkdirp yes :padline no
 :END:
 
 [[https://wiki.archlinux.org/index.php/x_resources#Usage][Xresources in ArchWiki]]
@@ -117,7 +117,8 @@ The configuration of hidpi parameters originate from the blogpost
 some hints for what to configure these values to.
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-!! hidpi
+!!
+!! hidpi settings
 Xft.dpi: 227
 Xft.rgba: rgb
 Xft.antialias: true
@@ -133,7 +134,8 @@ schemes might be
 I found these colors in [[https://github.com/hlissner/dotfiles/blob/master/base/arch-desktop/Xresources][hlissner/dotfiles]], and thought they would make a good
 start. For changes in the future the [[https://terminal.sexy/][terminal.sexy]] has some color schemes that
 can be directly exported to Xresources format.
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+!!
 !! Colors
 #define blk  #141517
 #define bblk #969896
@@ -158,6 +160,7 @@ can be directly exported to Xresources format.
 ,*.background:  bg
 ,*.cursorColor: mag
 
+! color[n]
 ,*.color0:  blk
 ,*.color8:  bblk
 ,*.color1:  red
@@ -183,17 +186,24 @@ can be directly exported to Xresources format.
 ,*.color239: #504945
 ,*.color240: #544c49
 ,*.color241: #665c54
+#+END_SRC
 
-!! cursor
+**** Cursor
+
+Tweak the looks of the cursor.
+
+#+BEGIN_SRC sh :padline yes
+!!
+!! Cursor
 Xcursor.theme: default
 Xcursor.size: 32
 #+END_SRC
 
 **** urxvt
 
-These settings originates from the the same link as the above block.
-#+BEGIN_SRC sh
-!! urxvt
+#+BEGIN_SRC sh :padline yes
+!!
+!! Terminal
 URxvt*.background:             [96]blk
 URxvt*.termName:               xterm-256color
 URxvt*.geometry:               81x20
@@ -211,7 +221,6 @@ URxvt*.loginShell:             false
 URxvt*.matcher.button:         1
 URxvt*.matcher.rend.0:         Uline Bold fg5
 URxvt*.url-launcher:           firefox
-
 URxvt*.lineSpace:              0
 URxvt*.letterSpace:            0
 #+END_SRC
@@ -222,21 +231,31 @@ Choosing fonts are never easy. These are my current setup.
 
 ~Arch~
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+!!
+!! Fonts
 URxvt.font: xft:Iosevka Term:style=regular:size=6
 URxvt.boldFont: xft:Iosevka Term:style=bold:size=6
 #+END_SRC
 
 ~Ubuntu~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :padline yes
+!!
+!! Fonts
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle no
 !URxvt.font: xft:Roboto Mono:style=regular:size=12
 !URxvt.boldFont: xft:Roboto Mono:style=bold:size=12
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 URxvt.font: xft:Iosevka Term:style=Regular:size=14
 URxvt.boldFont: xft:Iosevka Term:style=Bold:size=14
 #+END_SRC
 
 *** Xprofile
 :PROPERTIES:
-:header-args: :tangle (my/tangle-app '(lightdm) "~/.xprofile") :mkdirp yes
+:header-args: :tangle (my/tangle-app '(lightdm) "~/.xprofile") :mkdirp yes :padline no
 :END:
 
 **** About
@@ -302,22 +321,24 @@ fi
 
 **** Xresources
 
-#+BEGIN_SRC sh
-# customize xresources
+Merge my ~Xresources~ settings with already existing ones.
+#+BEGIN_SRC sh :padline yes
+#
+# Define the looks
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
 #+END_SRC
 
 **** Wallpaper
 
+Use ~feh~ to set the background for the desktop.
 #+BEGIN_SRC sh
-# set wallpaper
 [[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
 #+END_SRC
 
 **** TODO Keyboard
 
 I want to have a smarter solution in place here. Maybe one that utilizes udev
-rules to set this automatically depending on wether I have a specfic external
+rules to set this automatically depending on wether I have a specific external
 keyboard in use.
 
 Essentially this is only valuable when I run on my Ubuntu computer or having a
@@ -326,8 +347,9 @@ non keyboardio external keyboard attached to the computer.
 Set the keyboard mapping. I enable ~Swedish~ and ~English~ and switch languages
 by pressing both of the ~shift~ keys.
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
-# set keyboard layouts
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :padline yes
+#
+# Set keyboard layout
 setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_lwin
 #+END_SRC
 
@@ -338,17 +360,18 @@ setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_l
 **** Programs
 
 Launch the hotkey daemon.
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+#
+# Launch programs
 sxhkd &
 #+END_SRC
 
 Launch the compositor compton to enable semi-trasparency.
 #+BEGIN_SRC sh
-# Start compositor
 compton &
 #+END_SRC
 
-Wait some before launching before launching the other, non-critical, applications
+Launch keyboard/mouserelated programs.
 #+BEGIN_SRC sh
 xcape &
 unclutter &
@@ -378,7 +401,7 @@ export XDG_CONFIG_HOME
 
 *** bspwm
 :PROPERTIES:
-:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#!/usr/bin/env zsh" :mkdirp yes
+:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#!/usr/bin/env zsh" :mkdirp yes :padline no
 :END:
 
 **** Monitors and desktops
@@ -393,13 +416,18 @@ First step is to define the name of the primary. If there are no screens
 connected then the internal screen will automatically be set to primary which
 means that I don't need to do antyhing more.
 
+
 This is my primary monitor for my ~ubuntu~ setup
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :padline yes
+#
+## Monitor setup
 EXTERNAL_MONITOR="DP-1-1-8"
 #+END_SRC
 
 This is my primary monitor for my ~arch~ setup
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch)) :padline yes
+#
+## Monitor setup
 EXTERNAL_MONITOR="DP-2"
 #+END_SRC
 
@@ -442,11 +470,12 @@ will use ~super+{1...5}~ to access those. Because there will be a screen to the
 left of the primary monitor and that one will get one dekstop that I will access
 with the ~super+1~. So the primary monitor becomes shifted by one.
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+#
+## Workspace distribution
 export MONITOR=$(xrandr -q | grep primary | grep ' connected' | cut -d' ' -f1)
 export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
 MONITOR=${MONITOR:-${MONITORS[1]}}
-# Multiple workspaces for main monitor, but only one for others
 bspc monitor $MONITOR -d {1,2,3,4,5}
 for mon in ${MONITORS[@]/${MONITOR}}; do
     bspc monitor $mon -d $mon/1
@@ -470,7 +499,9 @@ bspc query -D --names
 **** The look
 
 These settings are from hlissner's setup
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+#
+## Looks
 bspc config split_ratio          0.50
 bspc config gapless_monocle      true
 bspc config borderless_monocle   true
@@ -538,9 +569,30 @@ bspc config -m $MONITOR left_padding   0
 bspc config -m $MONITOR right_padding  0
 #+END_SRC
 
+***** Selection color
+
+#+BEGIN_SRC sh :tangle no
+# Set the border colors.
+# bspc config normal_border_color "$color1"
+# bspc config active_border_color "$color2"
+# bspc config focused_border_color "$color15"
+#+END_SRC
+
+Use the line below if you are on bspwm >= 0.9.4
+#+BEGIN_SRC sh
+bspc config presel_feedback_color "$color1"
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle no
+# Use the line below if you are on bspwm < 0.9.4
+#bspc config presel_border_color "$color1"
+#+END_SRC
+
 **** Default window rules
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+#
+## Custom rules
 bspc rule -a Gimp desktop='^8' state=floating follow=on
 bspc rule -a Chromium desktop='^2'
 bspc rule -a mplayer2 state=floating
@@ -590,20 +642,10 @@ It was recomended in the polybar wiki,
 https://github.com/jaagr/polybar/wiki, to add a launch file which could be
 called from the ~bspwmrc~.
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+#
+## Launch polybar
 $HOME/.config/polybar/launch.sh
-#+END_SRC
-
-**** Selection color
-#+BEGIN_SRC sh
-# Set the border colors.
-# bspc config normal_border_color "$color1"
-# bspc config active_border_color "$color2"
-# bspc config focused_border_color "$color15"
-# Use the line below if you are on bspwm >= 0.9.4
-bspc config presel_feedback_color "$color1"
-# Use the line below if you are on bspwm < 0.9.4
-#bspc config presel_border_color "$color1"
 #+END_SRC
 
 *** sxhkd
@@ -2118,7 +2160,7 @@ export EA_CLIPBOARD=$content
 * Encryption
 ** GPG
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os '(ubuntu arch) "~/.gnupg/gpg-agent.conf") :mkdirp yes
+:header-args: :tangle (my/tangle-os '(ubuntu arch) "~/.gnupg/gpg-agent.conf") :mkdirp yes :padline no
 :END:
 
 Increase the cache validity for the ~gpg-agent~.
@@ -2126,6 +2168,11 @@ Increase the cache validity for the ~gpg-agent~.
 default-cache-ttl 86400
 max-cache-ttl 86400
 #+END_SRC
+
+#+BEGIN_SRC sh (my/tangle-os '(ubuntu))
+pinentry-program /usr/bin/pinentry-rofi-guile
+#+END_SRC
+
 ** Rofi-pass
 :PROPERTIES:
 :header-args: :tangle ~/.config/rofi-pass/config :mkdirp yes
