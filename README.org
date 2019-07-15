@@ -43,7 +43,7 @@ What to list:
 - ~web-browsing:~ firefox, tridactyl
 - ~mail:~ mbsync, notmuch, msmtp
 - ~media:~ tizonia, ncpamixer, cava, mplayer, youtube-dl/viewer, zathura, scrot,
-  gimp, darktable, imagemagick
+  maim, gimp, darktable, imagemagick
 - ~writing:~ aspell, fonts(iosevka, roboto), xcape
 - ~shell:~ zsh, shellcheck
 - ~terminal-editor~ nvim
@@ -55,6 +55,10 @@ What to list:
 - ~python:~ pyenv, pyls, ptvsd, pylint
 - ~c++:~ ccls, gdb, clang
 - ~window-manager:~ bspwm, sxhkd, polybar, compton, dunst, unclutter
+
+Customized looks:
+- ~gerrit:~ xq_light(theme)
+- ~firefox:~ tridactyl, dracula(theme), dark-reader
 
 * Inspiration
 
