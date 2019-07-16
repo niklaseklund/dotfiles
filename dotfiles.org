@@ -2507,7 +2507,7 @@ set page-padding 1
 * Mail
 ** Retrieve
 :PROPERTIES:
-:header-args: :tangle ~/.mbsyncrc
+:header-args: :tangle ~/.mbsyncrc :padline no
 :END:
 
 On the [[https://wiki.archlinux.org/index.php/isync#Configuring][Arch Wiki]] there is an example configuration file. I have just modified
@@ -2516,49 +2516,56 @@ the password and user section to my needs.
 This file behaves a little bit strange though. I tried to separate the content
 but when it tangled with some empty lines ~isync~ wasn't happy. That is why I
 decided to keep it as a big block.
+
+*** Personal
 #+BEGIN_SRC sh
-IMAPAccount gmail
-# Address to connect to
-Host imap.gmail.com
-User carlsson.niklas@gmail.com
-PassCmd "pass email/gmail.com"
-# Pass your_password, if you don't have the pass application
 #
-# Use SSL
-SSLType IMAPS
-# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
-CertificateFile /etc/ssl/certs/ca-certificates.crt
-#CertificateFile ~/.cert/imap.gmail.com.pem
-#CertificateFile ~/.cert/Equifax_Secure_CA.pem
+## Personal
+#
+
+#+END_SRC
+
+#+BEGIN_SRC sh
+IMAPAccount     gmail
+Host            "imap.gmail.com"
+User            "carlsson.niklas@gmail.com"
+PassCmd         "pass email/gmail.com | sed -n 1p"
+SSLType         "IMAPS"
+CertificateFile "/etc/ssl/certs/ca-certificates.crt"
 
 IMAPStore gmail-remote
-Account gmail
+Account "gmail"
 
 MaildirStore gmail-local
-Subfolders Verbatim
-# The trailing "/" is important
 Path ~/.mail/gmail/
 Inbox ~/.mail/gmail/Inbox
+Subfolders Verbatim
 
 Channel gmail
-Master :gmail-remote:
-Slave :gmail-local:
-# Exclude everything under the internal [Gmail] folder, except the interesting folders
+Master  ":gmail-remote:"
+Slave   ":gmail-local:"
+#+END_SRC
+
+Exclude everything under the internal [Gmail] folder, except the interesting folders.
+#+BEGIN_SRC sh
 Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
-# Or include everything
-#Patterns *
-# Automatically create missing mailboxes, both locally and on the server
+#+END_SRC
+
+Automatically create missing mailboxes, both locally and on the server
+#+BEGIN_SRC sh
 Create Both
-# Save the synchronization state files in the relevant directory
+#+END_SRC
+
+Save the synchronization state files in the relevant directory
+#+BEGIN_SRC sh
 SyncState *
 #+END_SRC
 
-Mail setup for work
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :noweb tangle
+*** Work
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :noweb tangle :padline yes
 #
-# Zenuity
+## Work
 #
-
 IMAPAccount     zenuity
 Host            "outlook.office365.com"
 User            "niklas.carlsson@zenuity.com"
@@ -2575,7 +2582,6 @@ Path         "<<home()>>/.mail/zenuity/"
 Inbox        "<<home()>>/.mail/zenuity/Inbox"
 Trash        "<<home()>>/.mail/zenuity/Trash"
 SubFolders   "Verbatim"
-
 
 Channel   zenuity-inbox
 Master    ":zenuity-remote:Inbox"
@@ -2645,7 +2651,7 @@ path=<<home()>>/.mail
 # Here is where you can let notmuch know how you would like to be
 # addressed. Valid settings are
 #
-#	name		Your full name.
+#   name        Your full name.
 #	primary_email	Your primary email address.
 #	other_email	A list (separated by ';') of other email addresses
 #			at which you receive email.
@@ -2729,7 +2735,7 @@ gpg_path=gpg
 
 ** Send
 :PROPERTIES:
-:header-args: :tangle ~/.msmtprc :tangle-mode (identity #o600)
+:header-args: :tangle ~/.msmtprc :tangle-mode (identity #o600) :padline no
 :END:
 
 I use ~msmtp~ for sending my emails [[https://wiki.archlinux.org/index.php/msmtp][more information in arch wiki]]. One important
@@ -2747,14 +2753,18 @@ in the [[https://orgmode.org/manual/tangle_002dmode.html][org-manual.]]
 Here is the default configuration found at the arch wiki, just with my gmail
 account instead of the default one.
 #+BEGIN_SRC conf
-# Set default values for all following accounts.
+#
+## Default values
+#
 defaults
 auth           on
 tls            on
 tls_trust_file /etc/ssl/certs/ca-certificates.crt
 logfile        ~/.msmtp.log
 
-# Gmail
+#
+## Personal
+#
 account        gmail
 host           smtp.gmail.com
 port           587
@@ -2765,7 +2775,7 @@ user           carlsson.niklas@gmail.com
 Now I have [[https://www.passwordstore.org/][Pass the standard unix password manager]] setup so I can call that
 directly:
 #+BEGIN_SRC conf
-passwordeval "pass email/gmail.com"
+passwordeval   "pass email/gmail.com"
 #+END_SRC
 
 If you don't have the password-store, but have setup gpg then one can use:
@@ -2779,19 +2789,21 @@ to store the password in plain text.
 password       my_password
 #+END_SRC
 
+Set a default account.
 #+BEGIN_SRC conf
-# Set a default account
 account default : gmail
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)))
-# Zenuity
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))) :padline yes
+#
+## Work
+#
 account        zenuity
 host           smtp.office365.com
 port           587
 from           niklas.carlsson@zenuity.com
 user           niklas.carlsson@zenuity.com
-passwordeval "pass show work/zenuity/login | sed -n 1p"
+passwordeval   "pass show work/zenuity/login | sed -n 1p"
 #+END_SRC
 
 ** Automate
