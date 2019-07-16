@@ -892,7 +892,7 @@ executable.
 
 ** Compositor
 :PROPERTIES:
-:header-args: :tangle ~/.config/compton.conf :mkdirp yes
+:header-args: :tangle ~/.config/compton.conf :mkdirp yes :padline no
 :END:
 
 [[https://github.com/chjj/compton][Compton, a compositor for X]]
@@ -902,36 +902,31 @@ I disabled the shadows. I need to understand better how these shadows work
 before I use them.
 
 #+BEGIN_SRC sh
+#
+## Shadows
+
 shadow = false;
 shadow-radius = 7;
 shadow-offset-x = -7;
 shadow-offset-y = -7;
 log-level = "warn";
-# log-file = "/path/to/your/log/file";
-# shadow-opacity = 0.7;
-# shadow-red = 0.0;
-# shadow-green = 0.0;
-# shadow-blue = 0.0;
 shadow-exclude = [
-	"name = 'Notification'",
-	"class_g = 'Conky'",
-	"class_g ?= 'Notify-osd'",
-	"class_g = 'Cairo-clock'",
-	"_GTK_FRAME_EXTENTS@:c"
+    "name = 'Notification'",
+    "class_g = 'Conky'",
+    "class_g ?= 'Notify-osd'",
+    "class_g = 'Cairo-clock'",
+    "_GTK_FRAME_EXTENTS@:c"
 ];
-# shadow-exclude = "n:e:Notification";
-# shadow-exclude-reg = "x10+0+0";
-# xinerama-shadow-crop = true;
 #+END_SRC
 
 *** Opacity and blur
 It seems like compton gives emacs some kind of dark frame on the right side,
 which dissapears if I go to monocle view and back. Need to investigate that.
 
-#+BEGIN_SRC sh
-# Opacity
-inactive-opacity = 1.0;
-# active-opacity = 0.8;
+#+BEGIN_SRC sh :padline yes
+#
+## Opacity
+inactive-opacity = 1.0; # 0.8
 frame-opacity = 0.7;
 inactive-opacity-override = false;
 #+END_SRC
@@ -942,15 +937,11 @@ inactive-dim = 0.2;
 #+END_SRC
 
 #+BEGIN_SRC sh
-# blur-background = true;
-# blur-background-frame = true;
 blur-kern = "3x3box";
-# blur-kern = "5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
-# blur-background-fixed = true;
 blur-background-exclude = [
-	"window_type = 'dock'",
-	"window_type = 'desktop'",
-	"_GTK_FRAME_EXTENTS@:c"
+    "window_type = 'dock'",
+    "window_type = 'desktop'",
+    "_GTK_FRAME_EXTENTS@:c"
 ];
 #+END_SRC
 
@@ -963,7 +954,9 @@ rules. By adding a ~*=~ one can make a wildcard match and a ~!~ prefix will
 negate the match. Currently there are three different rules for URxvt. One that
 applies for a scratch buffer, one that applys for windows that isn't named
 scratch and for the windows that are not in focus.
- #+BEGIN_SRC sh :padline no
+ #+BEGIN_SRC sh :padline yes
+#
+# Opacity rules
  opacity-rule = [
    "90:class_g = 'URxvt' && WM_NAME@:s *= 'scratch'",
    "80:class_g = 'URxvt' && !focused && WM_NAME@:s !*= 'scratch'",
@@ -994,35 +987,23 @@ transparent.
 ];
 #+END_SRC
 
-*** TODO Different alpha value for inactive windows
+*** Other
 
-I want to have the alpha value lowered for the other windows, not the active
-one. This will make it easier to know which window currently has the focus.
-
-*** Rest
-#+BEGIN_SRC sh
-# Fading
+I haven't looked into these settings.
+#+BEGIN_SRC sh :padline yes
+#
+## Other
 fading = true;
-# fade-delta = 30;
 fade-in-step = 0.03;
 fade-out-step = 0.03;
-# no-fading-openclose = true;
-# no-fading-destroyed-argb = true;
 fade-exclude = [ ];
-
-# Other
 backend = "xrender";
 mark-wmwin-focused = false;
 mark-ovredir-focused = false;
-# use-ewmh-active-win = true;
 detect-rounded-corners = true;
 detect-client-opacity = true;
 refresh-rate = 0;
 vsync = "none";
-# sw-opti = true;
-# unredir-if-possible = true;
-# unredir-if-possible-delay = 5000;
-# unredir-if-possible-exclude = [ ];
 focus-exclude = [ "class_g = 'Cairo-clock'" ];
 #+END_SRC
 
@@ -1034,17 +1015,7 @@ detect-client-leader = false;
 
 #+BEGIN_SRC sh
 invert-color-include = [ ];
-# resize-damage = 1;
-
-# GLX backend
-# glx-no-stencil = true;
-# glx-no-rebind-pixmap = true;
 glx-swap-method = "undefined";
-# glx-use-gpushader4 = true;
-# xrender-sync = true;
-# xrender-sync-fence = true;
-
-# Window type settings
 wintypes:
 {
   tooltip = { fade = true; shadow = true; opacity = 0.75; focus = true; full-shadow = false; };

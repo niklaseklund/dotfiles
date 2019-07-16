@@ -47,7 +47,7 @@ What to list:
 - ~writing:~ aspell, fonts(iosevka, roboto), xcape
 - ~shell:~ zsh, shellcheck
 - ~terminal-editor~ nvim
-- ~emacs:~ emacs, libvterm, doom-emacs
+- ~emacs:~ emacs, doom-emacs, libvterm
 - ~package-management:~ yay
 - ~network:~ nmtui, nmcli
 - ~terminal:~ urxvt, tmux, tdrop
