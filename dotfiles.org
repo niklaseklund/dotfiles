@@ -1554,10 +1554,12 @@ margin-bottom = 30
 
 #+BEGIN_SRC sh
 
-# Determine if bluetooth is active
+#
+## Bluetooth active
 active=$(systemctl is-active bluetooth.service)
 
-# Determine if bluetooth is connected
+#
+## Device connected
 connected="no"
 if [ "$active" = "active" ]; then
     devices=$(echo -e 'paired-devices' | bluetoothctl)
@@ -1572,7 +1574,8 @@ if [ "$active" = "active" ]; then
     done
 fi
 
-# Set the color and icon
+#
+## Set color and icon
 if [ "$connected" = "yes" ]; then
     echo "%{F#81a2be}" # fg-blue
 elif [ "$active" = "active" ]; then
@@ -1589,9 +1592,12 @@ fi
 
 #+BEGIN_SRC sh
 
-# Type is the third column, looking for type vpn
+#
+## VPN connection active
 connection=$(nmcli connection show --active | awk '{print $3}' | grep vpn)
 
+#
+## Set color and icon
 if [ "$connection" = "vpn" ]; then
     # active
     echo "%{F#81a2be}" # fg-blue
@@ -1607,8 +1613,12 @@ fi
 
 #+BEGIN_SRC sh
 
+#
+## Unread mails
 unread=$(notmuch search tag:unread | wc -l)
 
+#
+## Set color and icon
 if [ "$unread" -eq "0" ]; then
     echo "%{F#555856}" # grey
 else
@@ -1617,7 +1627,7 @@ fi
 #+END_SRC
 **** redshift
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/modules/app-redshift :shebang "#! /bin/bash" :mkdirp yes
+:header-args: :tangle ~/.config/polybar/modules/app-redshift :shebang "#!/usr/bin/env bash" :mkdirp yes
 :END:
 
 I am unsure which of these blocks are the one I want.
@@ -1646,8 +1656,6 @@ fi
 #+END_SRC
 
 #+BEGIN_SRC sh
-#!/usr/bin/env bash
-
 # Specifying the icon(s) in the script
 # This allows us to change its appearance conditionally
 pgrep -x redshift &> /dev/null
@@ -1683,8 +1691,12 @@ Start with the symbol
 :END:
 
 #+BEGIN_SRC sh
+#
+## Audio muted?
 muted=$(pacmd list-sinks | grep muted | cut -d' ' -f2)
-# Set the color and icon
+
+#
+## Pad or don't
 if [ "$muted" = "yes" ]; then
     echo "%{F#81a2be}         " # blue
 else
