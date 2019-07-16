@@ -889,6 +889,15 @@ two different ways of making a tangled file executable
 https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
 argument which will org will make sure to add the shebang and make the file
 executable.
+**** Record
+
+#+BEGIN_SRC sh
+#
+# Record
+#
+super + Print
+    printscreen-primary.sh
+#+END_SRC
 
 ** Compositor
 :PROPERTIES:
@@ -3906,7 +3915,60 @@ else
     setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_lwin
 fi
 #+END_SRC
+*** Print screen of primary monitor
+:PROPERTIES:
+:header-args: :tangle (my/tangle-os '(arch ubuntu) "~/bin/printscreen-primary.sh") :shebang "#!/usr/bin/env zsh" :mkdirp yes
+:END:
 
+[[https://gist.github.com/naelstrof/f9b74b5221cdc324c0911c89a47b8d97][Example of retriving size of screen]]
+
+
+Here is the code that does what I want. A screenshot of the primary monitor. Of
+course here the size and everything is hardcoded but that can be fixed.
+#+BEGIN_SRC sh :tangle no
+maim /dev/stdout | convert -crop 2560x1440+1920x0 /dev/stdin ~/tmp/screenshot.png
+#+END_SRC
+
+First query xrandr
+#+BEGIN_SRC sh :results output :tangle no
+xrandr -q | grep 'primary'
+#+END_SRC
+
+#+RESULTS:
+: DP-1-1 connected primary 2560x1440+1920+0 (normal left inverted right x axis y axis) 597mm x 336mm
+
+Get the numbers
+#+BEGIN_SRC sh :results output :tangle no
+xrandr -q | grep 'primary' | cut -d' ' -f4
+#+END_SRC
+
+#+RESULTS:
+: 2560x1440+1920+0
+
+Extract each dimension
+#+BEGIN_SRC sh :results output :tangle no
+xrandr -q | grep 'primary' | cut -d' ' -f4 | awk -F "[x+]" '{print $1}'
+xrandr -q | grep 'primary' | cut -d' ' -f4 | awk -F "[x+]" '{print $2}'
+xrandr -q | grep 'primary' | cut -d' ' -f4 | awk -F "[x+]" '{print $3}'
+xrandr -q | grep 'primary' | cut -d' ' -f4 | awk -F "[x+]" '{print $4}'
+#+END_SRC
+
+#+RESULTS:
+: 2560
+: 1440
+: 1920
+: 0
+
+Export it to a script:
+#+BEGIN_SRC sh
+MONITOR_DIMENSIONS=$(xrandr -q | grep 'primary' | cut -d' ' -f4)
+WIDTH=$(echo $MONITOR_DIMENSIONS | awk -F "[x+]" '{print $1}')
+HEIGHT=$(echo $MONITOR_DIMENSIONS | awk -F "[x+]" '{print $2}')
+X_OFFSET=$(echo $MONITOR_DIMENSIONS | awk -F "[x+]" '{print $3}')
+Y_OFFSET=$(echo $MONITOR_DIMENSIONS | awk -F "[x+]" '{print $4}')
+
+maim /dev/stdout | convert -crop  "${WIDTH}x${HEIGHT}+${X_OFFSET}x${Y_OFFSET}" /dev/stdin ~/screenshots/$(date +%F-%T).png && notify-send "Fullscreen screenshot saved"
+#+END_SRC
 * Utility applications
 ** Screen color temperature
 :PROPERTIES:
