@@ -1831,6 +1831,91 @@ don't think that it worked.
 #+END_SRC
 
 * Editors
+** Emacs
+
+How to install doom and setup my private configuration goes here. And Emacs
+anywhere as well.
+
+#+BEGIN_SRC sh :tangle no :dir ~/src :mkdirp yes
+git clone https://github.com/hlissner/doom-emacs
+git clone git@github.com:niklascarlsson/doom-private
+ln -s ~/src/doom-emacs ~/.emacs.d
+ln -s ~/src/doom-private ~/.doom.d
+#+END_SRC
+
+*** Anywhere
+:PROPERTIES:
+:header-args: :tangle ~/bin/emacs-anywhere :shebang "#!/bin/bash"
+:END:
+
+[[https://github.com/zachcurry/emacs-anywhere][Emacs anywhere]] brings Emacs into new realms. Use it to edit text in ~Firefox~.
+
+0) Download the Emacs anywhere project:
+#+BEGIN_SRC sh :tangle no
+git clone git@github.com:niklascarlsson/emacs-anywhere ~/.emacs-anywhere
+#+END_SRC
+
+1) Make sure it's called from Firefox. Get the name of the calling application
+#+BEGIN_SRC sh
+WINDOW=$( xdotool getactivewindow )
+APP_NAME=$( xprop -id "$WINDOW WM_CLASS")
+x=$( echo "$APP_NAME" | awk -F ',' '{print $2}' )
+x2=$(echo "$x" | tr -d '"')
+Make comparison
+if [[ "$x2" == *"Firefox"* ]]; then
+    :
+else
+    exit 1;
+fi
+#+END_SRC
+
+2) Mark the content in Firefox and copy it to the default clipboard
+#+BEGIN_SRC sh
+# clear the clipboard
+echo -n | xclip
+# make selection
+sleep 0.2
+xdotool key --clearmodifiers ctrl+a
+xdotool key --clearmodifiers ctrl+c
+# clear modifiers to avoid registering them
+sleep 0.2 && xdotool keyup Super_L Super_R
+#+END_SRC
+
+I encountered issues that the xdotool sometimes makes the super key stuck
+after I use the clearmodifiers flag. To mitigate that I found this issue on
+github: https://github.com/jordansissel/xdotool/issues/43. Which is why I have
+the keyup command.
+
+3) Lastly export the copied content to a variable that will be accessible in the
+   called run scrip.
+#+BEGIN_SRC sh
+content=$(xclip -selection c -o)
+export EA_CLIPBOARD=$content
+
+"$HOME/.emacs_anywhere/bin/run"
+#+END_SRC
+
+*** Org-mode helper functions
+:PROPERTIES:
+:header-args: :padline no
+:END:
+
+#+NAME: home
+#+BEGIN_SRC elisp
+(getenv "HOME")
+#+END_SRC
+
+#+NAME: insert-file-content
+#+BEGIN_SRC elisp :var filename=""
+(defun get-string-from-file (filePath)
+  "Return filePath's file content."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (string-trim (buffer-string))))
+
+(get-string-from-file filename)
+#+END_SRC
+
 ** Neovim
 :PROPERTIES:
 :header-args: :tangle ~/.config/nvim/init.vim :mkdirp yes
@@ -1969,91 +2054,6 @@ set statusline+=%#Identifier#\ %F " Use %f for shorter name
 set statusline+=%m
 set statusline+=%=
 set statusline+=%2c
-#+END_SRC
-
-** Emacs
-
-How to install doom and setup my private configuration goes here. And Emacs
-anywhere as well.
-
-#+BEGIN_SRC sh :tangle no :dir ~/src :mkdirp yes
-git clone https://github.com/hlissner/doom-emacs
-git clone git@github.com:niklascarlsson/doom-private
-ln -s ~/src/doom-emacs ~/.emacs.d
-ln -s ~/src/doom-private ~/.doom.d
-#+END_SRC
-
-*** Anywhere
-:PROPERTIES:
-:header-args: :tangle ~/bin/emacs-anywhere :shebang "#!/bin/bash"
-:END:
-
-[[https://github.com/zachcurry/emacs-anywhere][Emacs anywhere]] brings Emacs into new realms. Use it to edit text in ~Firefox~.
-
-0) Download the Emacs anywhere project:
-#+BEGIN_SRC sh :tangle no
-git clone git@github.com:niklascarlsson/emacs-anywhere ~/.emacs-anywhere
-#+END_SRC
-
-1) Make sure it's called from Firefox. Get the name of the calling application
-#+BEGIN_SRC sh
-WINDOW=$( xdotool getactivewindow )
-APP_NAME=$( xprop -id "$WINDOW WM_CLASS")
-x=$( echo "$APP_NAME" | awk -F ',' '{print $2}' )
-x2=$(echo "$x" | tr -d '"')
-Make comparison
-if [[ "$x2" == *"Firefox"* ]]; then
-    :
-else
-    exit 1;
-fi
-#+END_SRC
-
-2) Mark the content in Firefox and copy it to the default clipboard
-#+BEGIN_SRC sh
-# clear the clipboard
-echo -n | xclip
-# make selection
-sleep 0.2
-xdotool key --clearmodifiers ctrl+a
-xdotool key --clearmodifiers ctrl+c
-# clear modifiers to avoid registering them
-sleep 0.2 && xdotool keyup Super_L Super_R
-#+END_SRC
-
-I encountered issues that the xdotool sometimes makes the super key stuck
-after I use the clearmodifiers flag. To mitigate that I found this issue on
-github: https://github.com/jordansissel/xdotool/issues/43. Which is why I have
-the keyup command.
-
-3) Lastly export the copied content to a variable that will be accessible in the
-   called run scrip.
-#+BEGIN_SRC sh
-content=$(xclip -selection c -o)
-export EA_CLIPBOARD=$content
-
-"$HOME/.emacs_anywhere/bin/run"
-#+END_SRC
-
-*** Org-mode helper functions
-:PROPERTIES:
-:header-args: :padline no
-:END:
-
-#+NAME: home
-#+BEGIN_SRC elisp
-(getenv "HOME")
-#+END_SRC
-
-#+NAME: insert-file-content
-#+BEGIN_SRC elisp :var filename=""
-(defun get-string-from-file (filePath)
-  "Return filePath's file content."
-  (with-temp-buffer
-    (insert-file-contents filePath)
-    (string-trim (buffer-string))))
-
-(get-string-from-file filename)
 #+END_SRC
 
 * Encryption
