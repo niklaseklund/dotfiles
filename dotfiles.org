@@ -1224,9 +1224,22 @@ modules-right = battery app-bluetooth app-vpn wlan app-redshift pad date
 type = custom/text
 content = "   "
 content-foreground = ${colors.fg-alt}
+#+END_SRC
+
+Due to font differences the audio bar has a different length on my different setups.
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
 [module/pad-left]
 type = custom/text
 content = "         "
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+[module/pad-left]
+type = custom/text
+content = "   "
+#+END_SRC
+
+#+BEGIN_SRC sh :padline yes
 [module/app-pad-volume]
 type = custom/script
 exec = ~/.config/polybar/modules/app-pad-volume.sh
