@@ -1838,24 +1838,20 @@ don't think that it worked.
 
 [[https://github.com/neovim/neovim][Vim-fork focused on extensibility and usability]]
 
+*** Load plugins
 #+BEGIN_SRC text
-" vim: foldmethod=marker
+"
+"" Plugins
 
-" {{{1 Easy configuration
-let color_config = 'dark' " light/dark
-
-" Vim-Plug (Plugin manager) {{{1
-" Installation {{{2
+" Install plugin manager
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
   silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source ~/.config/nvim/init.vim
 endif
 
-" Setup plugins {{{2
+" Load plugins
 call plug#begin(expand('~/.config/nvim/plugged'))
-
-" Define plugins
 Plug 'tpope/vim-commentary' " Comments
 Plug 'tpope/vim-surround' " Change surrounding chars
 Plug 'tpope/vim-unimpaired' " Improve navigation
@@ -1867,9 +1863,14 @@ Plug 'tommcdo/vim-exchange' " Provide exchange object
 Plug 'qpkorr/vim-bufkill' " Improve buffer handling
 Plug 'Konfekt/FastFold' " Improve folding performance
 call plug#end()
+#+END_SRC
 
-" Vim core {{{1
-" Settings {{{2
+*** Vim core settings
+#+BEGIN_SRC text
+
+"
+"" Vim core settings
+
 syntax enable " Enable syntax highlighting
 set number " Show line number
 set updatetime=100 " Decrease update time from 4s to 0.1 s, useful for gutter
@@ -1887,14 +1888,12 @@ set foldlevelstart=99 " start unfolded
 set tabstop=4 shiftwidth=4 expandtab
 set ignorecase smartcase " smart case enabled
 set inccommand=nosplit " Get live visualization of substitution (Neovim exclusive)
-
+set background=dark " Dark theme
 " Define leader key
 let mapleader=","
-
 " Autoread when switching buffer or Vim got the focus again
 au FocusGained,BufEnter * :checktime
-
-" Mappings {{{2
+" Mappings
 " Harmonize Y behavior with (C, D)
 map Y y$
 "" Remap t/f movement in reverse direction
@@ -1936,10 +1935,13 @@ nnoremap <leader>ot :term<CR>
 nnoremap <silent> <leader>qq :qall!<CR>
 " Disable current highlight search
 nnoremap <silent> <Esc> :noh<CR>
+#+END_SRC
 
-" Plugins {{{1
-" Mappings {{{2
-" BuffKill {{{3
+*** Customize plugins
+#+BEGIN_SRC text
+"
+"" Customize plugins
+
 " Kill current buffer
 nnoremap <silent> <leader>bk :BD!<CR>
 " Move to previous buffer
@@ -1948,25 +1950,25 @@ nnoremap <silent> <leader>b[ :BB<CR>
 nnoremap <silent> <leader>b] :BF<CR>
 " Create a new empty buffer
 nnoremap <silent> <leader>bn :enew<CR>
-
-" Settings {{{2
-" vim-textobj-parameter {{{3
+" vim-textobj-parameter
 let g:vim_textobj_parameter_mapping = 'a'
-
-" Exchange {{{3
+" Exchange
 nmap gx <Plug>(Exchange)
 nmap gxc <Plug>(ExchangeClear)
 nmap gxx <Plug>(ExchangeLine)
+#+END_SRC
 
-" Statusline {{{1
+*** Status line
+#+BEGIN_SRC text
+
+"
+"" Statusline
+
 set statusline=
 set statusline+=%#Identifier#\ %F " Use %f for shorter name
 set statusline+=%m
 set statusline+=%=
 set statusline+=%2c
-
-" Color tweaking
-set background=dark
 #+END_SRC
 
 ** Emacs
