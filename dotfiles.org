@@ -2868,7 +2868,7 @@ Make a function in Emacs to avoid deleting flagged emails.
 ** Zsh
 *** zshrc
 :PROPERTIES:
-:header-args: :tangle ~/.zshrc :mkdirp yes
+:header-args: :tangle ~/.zshrc :mkdirp yes :padline no
 :END:
 
 **** Extend zsh with plugins
@@ -2876,20 +2876,20 @@ Make a function in Emacs to avoid deleting flagged emails.
 Following the setup details on [[https://github.com/tarjoilija/zgen][zgen wiki]]. Starting with sourcing zgen on start
 in zshrc.
 
+First load zgen:
 #+BEGIN_SRC sh
-#
-## Plugins
-#
-
 # load zgen
 source "${HOME}/.zgen/zgen.zsh"
 #+END_SRC
 
 Further down on the github page there is an example zshrc. I have taken that
 content and slimmed it down.
-#+BEGIN_SRC sh
-# if the init scipt doesn't exist
+#+BEGIN_SRC sh :padline yes
+#
+## Plugins
+#
 if ! zgen saved; then
+    # the init script doesn't exist
     echo "Creating a zgen save"
 
     # plugins
@@ -2909,13 +2909,11 @@ fi
 **** Vim keybindings
 
 Enable vi-mode and set the keybindings. I copied this from [[https://github.com/hlissner/dotfiles/tree/master/shell/zsh][hlissner]].
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
 #
 ## Keybindings
 #
-
-# vi-mode
-bindkey -v
+bindkey -v # vi-mode
 bindkey -M viins 'jk' vi-cmd-mode
 bindkey -M viins ' ' magic-space
 
@@ -2943,7 +2941,7 @@ export KEYTIMEOUT=10
 
 **** Configure variables
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
 #
 ## Variables
 #
@@ -2953,7 +2951,7 @@ export EDITOR="nvim"
 
 **** Prompt
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
 #
 ## Prompt
 #
@@ -2962,8 +2960,6 @@ export EDITOR="nvim"
 https://github.com/hlissner/dotfiles/blob/master/shell/zsh/prompt.zsh
 
 #+BEGIN_SRC sh
-# Loosely based off Pure <https://github.com/sindresorhus/pure>
-
 _strlen() { echo ${#${(S%%)1//$~%([BSUbfksu]|([FB]|){*})/}}; }
 
 # fastest possible way to check if repo is dirty
@@ -3035,7 +3031,7 @@ This is a solution for how to detect if the shell is running in a virtual termin
 https://unix.stackexchange.com/questions/96463/detect-if-running-in-a-virtual-terminal
 **** Aliases
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
 #
 ## Aliases
 #
@@ -3059,13 +3055,28 @@ alias ll='ls -l'
 alias la='LC_COLLATE=C ls -la'
 #+END_SRC
 
-***** Tmux
+***** Bluetooth
+
+#+BEGIN_SRC sh
+alias bluecon='echo -e "connect 2C:41:A1:4C:1A:B8" | bluetoothctl &>/dev/null; echo "Connected"'
+alias bluedis='echo -e "disconnect" | bluetoothctl &>/dev/null; echo "Disconnected"'
+#+END_SRC
+***** Directory
+
+[[https://github.com/vigneshwaranr/bd][The recommended rebinding of bd]]
+#+BEGIN_SRC sh
+alias bd=". bd -si"
+#+END_SRC
+
+**** Tmux
 
 https://github.com/hlissner/dotfiles/blob/master/shell/tmux/tmux.conf
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+#
+## Tmux
+#
 alias ta='tmux attach'
 alias tl='tmux ls'
-
 if [[ -n $TMUX ]]; then # From inside tmux
     alias tf='tmux find-window'
     # Detach all other clients to this session
@@ -3084,33 +3095,19 @@ else # From outside tmux
     tdup() { tmux new-session -t "${1:-`tmux display-message -p '#S'`}"; }
 fi
 #+END_SRC
-***** Bluetooth
-
-#+BEGIN_SRC sh
-alias bluecon='echo -e "connect 2C:41:A1:4C:1A:B8" | bluetoothctl &>/dev/null; echo "Connected"'
-alias bluedis='echo -e "disconnect" | bluetoothctl &>/dev/null; echo "Disconnected"'
-#+END_SRC
-***** Directory
-
-[[https://github.com/vigneshwaranr/bd][The recommended rebinding of bd]]
-#+BEGIN_SRC sh
-alias bd=". bd -si"
-#+END_SRC
-
 **** Configure zsh options
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
 #
-## Configure zsh options
+## Zsh
 #
 #+END_SRC
 
 ***** General
 
 #+BEGIN_SRC sh
-# Treat these characters as part of a word.
-WORDCHARS='_-*?[]~&.;!#$%^(){}<>'
-
+WORDCHARS='_-*?[]~&.;!#$%^(){}<>' # Treat these characters as part of a word.
+# General
 unsetopt BRACE_CCL        # Allow brace character class list expansion.
 setopt COMBINING_CHARS    # Combine zero-length punc chars (accents) with base char
 setopt RC_QUOTES          # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'
@@ -3120,8 +3117,7 @@ unsetopt NOMATCH
 unsetopt MAIL_WARNING     # Don't print a warning message if a mail file has been accessed.
 unsetopt BEEP             # Hush now, quiet now.
 setopt IGNOREEOF
-
-## Jobs
+# Jobs
 setopt LONG_LIST_JOBS     # List jobs in the long format by default.
 setopt AUTO_RESUME        # Attempt to resume existing job before creating a new process.
 setopt NOTIFY             # Report status of background jobs immediately.
@@ -3133,10 +3129,10 @@ unsetopt CHECK_JOBS       # Don't report on jobs when shell exit.
 ***** History
 
 #+BEGIN_SRC sh
+# History
 HISTFILE=~/.zsh_history
 HISTSIZE=1000                    # Max events to store in internal history.
 SAVEHIST=1000                    # Max events to store in history file.
-
 setopt BANG_HIST                 # Don't treat '!' specially during expansion.
 setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
 setopt APPEND_HISTORY            # Appends history to history file on exit
@@ -3155,6 +3151,7 @@ setopt HIST_BEEP                 # Beep when accessing non-existent history.
 ***** Looks
 This setting controls the hightlightstyle
 #+BEGIN_SRC sh
+# Looks
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
 #+END_SRC
 ***** Keybindings
@@ -3162,6 +3159,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
 [[https://superuser.com/questions/385175/how-to-reclaim-s-in-zsh][How to reclaim ctrl-s in zsh]]
 
 #+BEGIN_SRC sh
+# Keybindings
 setopt noflowcontrol      # Reclaim Ctrl-s
 #+END_SRC
 
@@ -3172,6 +3170,13 @@ bindkey '^S' fzf-history-widget
 
 **** Fuzzy finding
 
+#+BEGIN_SRC sh :padline yes
+#
+## FZF
+#
+#+END_SRC
+
+***** Keybindings
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 source /usr/share/fzf/key-bindings.zsh
 #+END_SRC
@@ -3180,8 +3185,9 @@ source /usr/share/fzf/key-bindings.zsh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 #+END_SRC
 
-customize fzf prompt
-#+BEGIN_SRC sh
+***** Colors
+Tweak the colors used by FZF
+#+BEGIN_SRC sh :tangle no
 # # FZF colors
 # export FZF_DEFAULT_OPTS="
 #     $FZF_DEFAULT_OPTS
@@ -3199,42 +3205,14 @@ customize fzf prompt
 #'
 #+END_SRC
 
-**** DONE Improve z with fzf
-CLOSED: [2019-02-04 mån 16:15]
-
-The plugin ~z~ to ~zsh~ makes navigating to known locations easier. However as
-the list of directories grows there might be multiple ones that share similar
-names. By combining ~fzf~ and ~z~ it's possible to fuzzy find among the
-directories.
-
-This unbinds ~z~ and redefines it as this function.
-#+BEGIN_SRC sh
-unalias z 2> /dev/null
-z() {
-  [ $# -gt 0 ] && _z "$*" && return
-  cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
-}
-#+END_SRC
-
-**** local configuration
-
-Load a local ~zshrc~ file if it exists. The benefit is that local settings could
-be stored here. For example aliases that are work specific that should not be
-publicly available.
-
-#+BEGIN_SRC sh
-[[ -f ~/.zshrc_local ]] && source "${HOME}/.zshrc_local"
-#+END_SRC
-
-**** DONE do not show duplicates in fzf history
-CLOSED: [2019-02-04 mån 10:30]
+***** Non duplicate history :deprecated:
 
 A better for the history problem is to override the default behaviour of fzf
 when viewing the history. There is a solution in this issue,
 https://github.com/junegunn/fzf/pull/1287.
 
-#+BEGIN_SRC sh
-# CTRL-R - Paste the selected command from history into the command line
+#+BEGIN_SRC sh :tangle no
+# fuzzy find previous commands
 fzf-history-widget() {
   local selected num
   setopt localoptions noglobsubst noposixbuiltins pipefail 2> /dev/null
@@ -3252,15 +3230,17 @@ fzf-history-widget() {
   return $ret
 }
 #+END_SRC
-**** fuzzy find and open
+
+After setting the zsh options for history so that, duplicates are not stored but
+latest entry is the one that is kept I think I don't need this function anymore.
+
+***** Custom functions
 
 I found this function in the [[https://github.com/junegunn/fzf/wiki/Examples#opening-files][fzf example section]]. This aligns with the
 functionality that I have in ~eshell~, making it more frictionless to move in
 between.
 #+BEGIN_SRC sh
-# ff [FUZZY PATTERN] - Open the selected file with the default editor
-#   - Bypass fuzzy finder if there's only one match (--select-1)
-#   - Exit if there's no match (--exit-0)
+# fuzzy find file
 ff() {
   local files
   IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
@@ -3270,6 +3250,7 @@ ff() {
 
 include those hidden files as well
 #+BEGIN_SRC sh
+# fuzzy find hidden file
 fh() {
   local files
   IFS=$'\n' files=($(find . | fzf-tmux --query="$1" --multi --select-1 --exit-0))
@@ -3277,31 +3258,60 @@ fh() {
 }
 #+END_SRC
 
+***** Use fzf for z
+
+The plugin ~z~ to ~zsh~ makes navigating to known locations easier. However as
+the list of directories grows there might be multiple ones that share similar
+names. By combining ~fzf~ and ~z~ it's possible to fuzzy find among the
+directories.
+
+This unbinds ~z~ and redefines it as this function.
+#+BEGIN_SRC sh
+# fuzzy find visited directories
+unalias z 2> /dev/null
+z() {
+  [ $# -gt 0 ] && _z "$*" && return
+  cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
+}
+#+END_SRC
+
 **** mounting
 
 Dealing with the sd card reader
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch)) :padline yes
+#
+## Mounts
+#
 alias mountsdcard="sudo mount $(lsblk -l -o PATH,MODEL,SIZE | grep -A1 "SD_Card_Reader" | sed -n 2p | cut -d' ' -f1) /mnt/sdcard"
 alias unmountsdcard="sudo umount /mnt/sdcard"
 #+END_SRC
+**** local configuration
+
+Load a local ~zshrc~ file if it exists. The benefit is that local settings could
+be stored here. For example aliases that are work specific that should not be
+publicly available.
+
+#+BEGIN_SRC sh :padline yes
+#
+## Local
+#
+[[ -f ~/.zshrc_local ]] && source "${HOME}/.zshrc_local"
+#+END_SRC
+
 *** zshenv
 :PROPERTIES:
-:header-args: :tangle ~/.zshenv :mkdirp yes
+:header-args: :tangle ~/.zshenv :mkdirp yes :padline no
 :END:
 
 Set the editors that I use. ~Emacs~ for the gui stuff and ~Neovim~ for the good
 old terminal.
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+#
+## Variables
+#
 export EDITOR=nvim
 export VISUAL=emacs
 #+END_SRC
-
-Add ~HOME/bin~ to ~PATH~ to find my local binaries. To ~prepend~ or ~append~ is
-exemplified [[https://stackoverflow.com/questions/11530090/adding-a-new-entry-to-the-path-variable-in-zsh ][here.]]
-#+BEGIN_SRC sh :noweb tangle
-path=('<<home()>>/bin' $path) # prepend path
-#+END_SRC
-
 
 Solve issue with zsh-autosuggestions highlight
 https://github.com/zsh-users/zsh-autosuggestions/issues/229
@@ -3309,8 +3319,20 @@ https://github.com/zsh-users/zsh-autosuggestions/issues/229
 export TERM=xterm-256color
 #+END_SRC
 
+Add ~HOME/bin~ to ~PATH~ to find my local binaries. To ~prepend~ or ~append~ is
+exemplified [[https://stackoverflow.com/questions/11530090/adding-a-new-entry-to-the-path-variable-in-zsh ][here.]]
+#+BEGIN_SRC sh :noweb tangle :padline yes
+#
+## Path
+#
+path=('<<home()>>/bin' $path) # prepend path
+#+END_SRC
+
 Following the installation notes on [[https://github.com/pyenv/pyenv][pyenv]] one needs to setup the following paths
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+#
+## Pyenv
+#
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 #+END_SRC
@@ -3324,7 +3346,7 @@ fi
 
 ** Bash
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os '(arch) "~/.bashrc") :mkdirp yes
+:header-args: :tangle /tmp/.bashrc
 :END:
 *** default
 This is the default content that where in the rc file at start
@@ -3348,7 +3370,7 @@ alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
 ** Inputrc
 :PROPERTIES:
-:header-args: :tangle (my/tangle-not-app '(zsh) "~/.inputrc") :mkdirp yes
+:header-args: :tangle /tmp/.inputrc
 :END:
 
 If zsh is not found on the computer this will create an inputrc file enabling
