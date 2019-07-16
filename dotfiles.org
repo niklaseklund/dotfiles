@@ -1192,10 +1192,9 @@ dpi-y = 96
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch)) :padline yes
 ;
 ;; Fonts
-font-0 = "Roboto Mono:style=Regular:size=6"
-font-1 = unifont:fontformat=truetype:size=6:antialias=false;0
-font-2 = "Material Icons:style=Regular:size=6"
-font-3 = "Wuncon Siji:style=Regular:pixelsize=8;1"
+font-0 = "Roboto Mono:style=Regular:size=8"
+font-1 = "Material Icons:style=Regular:size=8"
+font-2 = siji:size=8
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :padline yes
