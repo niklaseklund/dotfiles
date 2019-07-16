@@ -64,7 +64,7 @@ Customized looks:
 
 ~Sources to draw inspiration from:~
 
-- ~Protesilaos Stavrou~ has an interesting video [[https://protesilaos.com/codelog/2019-06-17-bspwm-dynamic-desktops/][bspwm-dynamic-desktops]]
+- ~Protesilaos Stavrou~ [[https://protesilaos.com/codelog/2019-06-17-bspwm-dynamic-desktops/][bspwm-dynamic-desktops]]
 - ~ambrevar's~ [[https://old.reddit.com/r/emacs/comments/6y3q4k/yes_eshell_is_my_main_shell/][yes-eshell-is-my-main-shell]]
 - ~noctuid's~ [[https://github.com/noctuid/dotfiles/blob/master/README.org][README-file]]
  
