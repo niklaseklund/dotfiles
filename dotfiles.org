@@ -1032,22 +1032,22 @@ wintypes:
 
 *** launch script
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/launch.sh :shebang "#! /bin/sh" :mkdirp yes
+:header-args: :tangle ~/.config/polybar/launch.sh :shebang "#!/usr/bin/env bash" :mkdirp yes :padline no
 :END:
 
 **** Kill active bars
-#+BEGIN_SRC sh
-#!/usr/bin/env bash
 
-# Terminate already running bar instances
+Kill active bars and wait for them to die until continuing further.
+
+#+BEGIN_SRC sh :padline yes
+#
+## Kill active bars
 killall -q polybar
-
-# Wait until the processes have been shut down
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
-
 #+END_SRC
 
 **** Kick of the bar(s)
+
 I add the ~reload~ option to have the bar automatically reloaded when I change
 the configuration file.
 #+BEGIN_QUOTE
@@ -1055,36 +1055,11 @@ the configuration file.
               Reload the application when the config file has been modified
 #+END_QUOTE
 
-This is my first attempt
-#+BEGIN_SRC sh :tangle no
-# Launch example bar
-polybar -r example &
 
-echo "Bar launched..."
-#+END_SRC
-
-***** Multiple monitors :wip:
-https://github.com/jaagr/polybar/issues/763
-#+BEGIN_SRC sh :tangle no
-if type "xrandr"; then
-  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
-    MONITOR=$m polybar --reload example &
-  done
-else
-  polybar --reload example &
-fi
-#+END_SRC
-
-Slimmed down version
-#+BEGIN_SRC sh :tangle no
-for m in $(polybar --list-monitors | cut -d":" -f1); do
-    MONITOR=$m polybar --reload example &
-done
-#+END_SRC
-
-***** Center monitor only
-
-#+BEGIN_SRC sh
+I use the center monitor.
+#+BEGIN_SRC sh :padline yes
+#
+## Start
 if type "xrandr"; then
   for m in $(xrandr --query | grep "primary" | cut -d" " -f1); do
     MONITOR=$m polybar --reload main &
@@ -1094,10 +1069,9 @@ else
 fi
 #+END_SRC
 
-
 *** configuration
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/config :mkdirp yes
+:header-args: :tangle ~/.config/polybar/config :mkdirp yes :padline no
 :END:
 
 Ideas:
@@ -1106,27 +1080,8 @@ Ideas:
   centered straight in the middle.
 
 **** Colors
-#+BEGIN_SRC sh
-;==========================================================
-;
-;
-;   ██████╗  ██████╗ ██╗  ██╗   ██╗██████╗  █████╗ ██████╗
-;   ██╔══██╗██╔═══██╗██║  ╚██╗ ██╔╝██╔══██╗██╔══██╗██╔══██╗
-;   ██████╔╝██║   ██║██║   ╚████╔╝ ██████╔╝███████║██████╔╝
-;   ██╔═══╝ ██║   ██║██║    ╚██╔╝  ██╔══██╗██╔══██║██╔══██╗
-;   ██║     ╚██████╔╝███████╗██║   ██████╔╝██║  ██║██║  ██║
-;   ╚═╝      ╚═════╝ ╚══════╝╚═╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-;
-;
-;   To learn more about how to configure Polybar
-;   go to https://github.com/jaagr/polybar
-;
-;   The README contains alot of information
-;
-;==========================================================
-
+#+BEGIN_SRC sh :padline yes
 [colors]
-; background = ${xrdb:color0:#222}
 background =
 background-alt = ${xrdb:color9:#444}
 foreground = ${xrdb:color7:#222}
@@ -1157,16 +1112,15 @@ bwhite = ${xrdb:color15}
 bg-alt = #0F1013
 fg-alt = #25282a
 icons = #555856
-
 #+END_SRC
 
 **** Main bar
-#+BEGIN_SRC sh
+
+#+BEGIN_SRC sh :padline yes
 [bar/main]
 monitor = ${env:MONITOR:}
 wm-restack = bspwm
 override-redirect = true
-
 width = 100%
 #+END_SRC
 
@@ -1183,24 +1137,14 @@ offset-y = 5
 #+END_SRC
 
 #+BEGIN_SRC sh
-;offset-x = 1%
-;offset-y = 1%
-
 radius = 0.0
-
 fixed-center = false
-
 bottom = 1
-
 background = ${colors.background}
 foreground = ${colors.foreground}
-
 line-size = 0
-
 line-color = #f00
-
 border-size = 0
-
 border-color = #00000000
 #+END_SRC
 
@@ -1219,6 +1163,11 @@ module-margin-left = 1
 module-margin-right = 1
 #+END_SRC
 
+#+BEGIN_SRC sh
+cursor-click = pointer
+cursor-scroll = ns-resize
+#+END_SRC
+
 **** Resolution
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
 dpi-x = 227
@@ -1231,67 +1180,55 @@ dpi-y = 96
 #+END_SRC
 
 **** Fonts
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch)) :padline yes
+;
+;; Fonts
 font-0 = "Roboto Mono:style=Regular:size=6"
 font-1 = unifont:fontformat=truetype:size=6:antialias=false;0
 font-2 = "Material Icons:style=Regular:size=6"
 font-3 = "Wuncon Siji:style=Regular:pixelsize=8;1"
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :padline yes
+;
+;; Fonts
 font-0 = "Roboto Mono:style=Regular:size=10"
 font-1 = unifont:fontformat=truetype:size=10:antialias=false;0
 font-2 = "Material Icons:style=Regular:size=8"
 #+END_SRC
 
 **** Modules setup
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; Modules
 modules-left = cpu memory pad pulseaudio app-mail app-pad-volume pad-left
 modules-center = bspwm
 modules-right = battery app-bluetooth app-vpn wlan app-redshift pad date
 #+END_SRC
 
 **** Modules
+***** padding
 
-***** Misc features
-
-#+BEGIN_SRC sh
-;tray-position = right
-;tray-padding = 2
-;tray-background = #0063ff
-
-;wm-restack = bspwm
-
-;override-redirect = true
-
-;scroll-up = bspwm-desknext
-;scroll-down = bspwm-deskprev
-
-cursor-click = pointer
-cursor-scroll = ns-resize
-#+END_SRC
-
-***** Padding
-
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; Padding
 [module/pad]
 type = custom/text
 content = "   "
 content-foreground = ${colors.fg-alt}
-
 [module/pad-left]
 type = custom/text
 content = "         "
-
 [module/app-pad-volume]
 type = custom/script
 exec = ~/.config/polybar/modules/app-pad-volume.sh
 interval = 1
-
 #+END_SRC
 
 ***** mail
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; Mail
 [module/app-mail]
 type = custom/script
 exec = ~/.config/polybar/modules/app-mail.sh
@@ -1299,7 +1236,9 @@ interval = 10
 #+END_SRC
 
 ***** bluetooth
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; Bluetooth
 [module/app-bluetooth]
 type = custom/script
 exec = ~/.config/polybar/modules/app-bluetooth.sh
@@ -1307,7 +1246,9 @@ interval = 10
 #+END_SRC
 
 ***** vpn
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; VPN
 [module/app-vpn]
 type = custom/script
 exec = ~/.config/polybar/modules/app-vpn.sh
@@ -1337,10 +1278,12 @@ label-indicator-underline = ${colors.secondary}
 #+END_SRC
 
 ***** bspwm
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; Window Manager
 [module/bspwm]
 type = internal/bspwm
-
+; icons
 ws-icon-0 = 1;
 ws-icon-1 = 2;
 ws-icon-2 = 3;
@@ -1351,41 +1294,20 @@ ws-icon-6 = 7;
 ws-icon-7 = 8;
 ws-icon-8 = 9;
 ws-icon-default = x
-
+; labels
 format = <label-state> <label-mode>
 label-padding = 1
-
 label-focused = %icon%
 label-focused-background = #33000000
 label-focused-foreground = ${colors.green}
 label-focused-padding = 1
-;label-focused = %icon%
-;label-focused-foreground = ${colors.red}
-;label-focused-padding = 1
-
 label-occupied = %icon%
 label-occupied-foreground = ${colors.icons}
 label-occupied-padding = 1
-;label-occupied = %icon%
-;label-occupied-foreground = ${colors.red}
-;label-occupied-padding = 1
-
 label-urgent-foreground = ${colors.red}
-;label-urgent-padding = 1
-;label-urgent = %icon%!
-;label-urgent-background = ${colors.red}
-;label-urgent-padding = 1
-
 label-empty = %icon%
 label-empty-foreground = ${colors.fg-alt}
 label-empty-padding = 1
-;label-empty = %icon%
-;label-empty-foreground = ${colors.bg-alt}
-;; label-empty-background = ${xrdb:color0:#222}
-;label-empty-padding = 1
-
-; Separator in between workspaces
-; label-separator = |
 #+END_SRC
 
 ***** wifi
@@ -1397,18 +1319,19 @@ code to deduce the wifi-device name and use it in the following source block.
 nmcli device | grep 'wifi ' | cut -d' ' -f1
 #+END_SRC
 
-#+BEGIN_SRC sh :noweb tangle
+#+BEGIN_SRC sh :noweb tangle :padline yes
+;
+;; Wifi
 [module/wlan]
 type = internal/network
 interface = <<wifi-device()>>
 interval = 3.0
-
+; labels
 format-connected = <ramp-signal>
-
 format-disconnected = 
 format-disconnected-foreground = ${colors.red}
 label-disconnected = %ifname% disconnected
-
+; icons
 ramp-signal-0 = 
 ramp-signal-0-foreground = ${colors.foreground-alt}
 ramp-signal-1 = 
@@ -1442,48 +1365,35 @@ format-disconnected =
 #+END_SRC
 
 ***** date
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; Calendar
 [module/date]
 type = internal/date
 interval = 5
-
+; Format
 label = %date%  %time%
 date = %A, %h %d
 date-alt = %Y-%m-%d
 time = %I:%M %p
 time-alt = %H:%M:%S
-;format-prefix = ""
 format-prefix = 
 format-prefix-padding = 1
-; format-prefix-background = ${colors.bg-alt}
 format-prefix-foreground = ${colors.icons}
-; format-underline = ${xrdb:color4}
-
-;date =
-;date-alt = " %Y-%m-%d"
-;
-;time = %H:%M
-;time-alt = %H:%M:%S
-;
-;format-prefix = 
-;format-prefix-foreground = ${colors.foreground-alt}
-;format-underline = #0a6cf5
-;
-;label = %date% %time%
 #+END_SRC
 
 ***** pulseaudio
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; Audio
 [module/pulseaudio]
 type = internal/pulseaudio
-
-; format-volume = <label-volume> <bar-volume>
+; Format
 format-volume = <ramp-volume> <bar-volume>
 label-volume-foreground = ${colors.fg}
-
 format-muted-foreground = ${colors.red}
 label-muted = ""
-
+; Bar
 bar-volume-width = 8
 bar-volume-foreground-0 = ${colors.blue}
 bar-volume-foreground-1 = ${colors.blue}
@@ -1501,37 +1411,34 @@ bar-volume-fill-font = 2
 bar-volume-empty = ─
 bar-volume-empty-font = 2
 bar-volume-empty-foreground = ${colors.fg-alt}
-
-; Only applies if <ramp-volume> is used
 ramp-volume-0 = 
 ramp-volume-1 = 
 ramp-volume-2 = 
-
 #+END_SRC
 
 ***** battery
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; Battery
 [module/battery]
 type = internal/battery
 battery = BAT0
 adapter = ADP1
 full-at = 96
-
+; Format
 format-charging = <animation-charging> <label-charging>
 format-charging-underline = #ffb52a
-
 format-discharging = <ramp-capacity> <label-discharging>
 format-discharging-underline = ${self.format-charging-underline}
-
 format-full-prefix = " "
 format-full-prefix-foreground = ${colors.fg-alt}
 format-full-underline = ${self.format-charging-underline}
-
+; Icons
 ramp-capacity-0 = 
 ramp-capacity-1 = 
 ramp-capacity-2 = 
 ramp-capacity-foreground = ${colors.fg-alt}
-
+; Animation
 animation-charging-0 = 
 animation-charging-1 = 
 animation-charging-2 = 
@@ -1540,15 +1447,18 @@ animation-charging-framerate = 750
 #+END_SRC
 
 ***** cpu
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; CPU
 [module/cpu]
 type = internal/cpu
 interval = 2
+; Format
 format = <bar-load>
 format-prefix = ""
 format-foreground = ${colors.icons}
 format-padding = 1
-
+; Animation
 bar-load-indicator =
 bar-load-width = 6
 bar-load-foreground-0 = ${colors.green}
@@ -1559,20 +1469,21 @@ bar-load-foreground-4 = ${colors.red}
 bar-load-fill = |
 bar-load-empty = ¦
 bar-load-empty-foreground = ${colors.fg-alt}
-
 #+END_SRC
 
 ***** memory
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; Memory
 [module/memory]
 type = internal/memory
 interval = 3
+; Format
 format = <bar-used>
 format-prefix = ""
 format-prefix-foreground = ${colors.icons}
 format-padding-left = 1
-
-; Only applies if <bar-used> is used
+; Animation
 bar-used-indicator =
 bar-used-width = 6
 bar-used-foreground-0 = ${colors.green}
@@ -1589,7 +1500,9 @@ bar-used-empty-foreground = ${colors.fg-alt}
 
 I am unsure which of these blocks are the one I want.
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; Redshift
 [module/app-redshift]
 type = custom/script
 exec = echo 1
@@ -1610,14 +1523,11 @@ interval = 2
 #+END_SRC
 
 ***** global settings
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+;
+;; Global settings
 [settings]
 screenchange-reload = true
-;compositing-background = xor
-;compositing-background = screen
-;compositing-foreground = source
-;compositing-border = over
-;pseudo-transparency = false
 
 [global/wm]
 margin-top = 0
@@ -1634,8 +1544,6 @@ margin-bottom = 30
 #+BEGIN_SRC sh
 ; vim:ft=dosini
 #+END_SRC
-
-
 
 *** custom modules
 
