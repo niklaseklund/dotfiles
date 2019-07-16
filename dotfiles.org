@@ -1786,17 +1786,16 @@ fi
 
 ** Application launcher
 :PROPERTIES:
-:header-args: :tangle ~/.config/rofi/config :mkdirp yes
+:header-args: :tangle ~/.config/rofi/config :mkdirp yes :padline no
 :END:
 
 [[https://github.com/davatorium/rofi][Rofi, a window switcher and application launcher]].
 
 The configuration here is something that I have copied from ~Matt Dobson~.
 Unfortunately I don't remember where I found his config.
-#+BEGIN_SRC sh
-! ------------------------------------------------------------------------------
-!                          ROFI THEME
-! ------------------------------------------------------------------------------
+#+BEGIN_SRC sh :padline yes
+!
+!! Colors
 rofi.color-window: argb:f2171717, #535c5c,         #a4a4a4
 rofi.color-normal: argb:00171717, #a4a4a4, argb:00535c5c, argb:00171717, #535c5c
 rofi.color-urgent: argb:00171717, #cc6666, argb:e54b5160, argb:00171717, #535c5c
@@ -1804,7 +1803,9 @@ rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
 #+END_SRC
 
 Tweaked for ~Arch~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch)) :padline yes
+!
+!! Appearance
 rofi.width: 1500
 rofi.lines: 10
 rofi.font: Roboto Mono 14
@@ -1815,7 +1816,9 @@ rofi.eh: 1
 #+END_SRC
 
 Tweaked for ~Ubuntu~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :padline yes
+!
+!! Appearance
 rofi.width: 1200
 rofi.lines: 8
 rofi.font: Roboto Mono 10
@@ -1828,7 +1831,9 @@ rofi.eh: 1
 The ~-m~ option determines the behavior of ~rofi~ where the rofi window should
 appear. I want to set this globally to -1. That setting makes most sense to me.
 It will be the display that I have currently focus on.
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
+!
+!! Core config
 rofi.m: -1
 #+END_SRC
 
