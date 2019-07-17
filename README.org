@@ -1,33 +1,26 @@
 * About
 
-My dotfiles, stored and managed with Emacs, using [[https://orgmode.org/][Org mode]].
-
-Design intent:
-- ~minimalistic design~ (decrease snr, remove unnecessary gui elements)
-- ~highly customizable~ (make complex/hard things easy, bend it to my will, spirit
-  of emacs, unify the environment)
-- ~keyboard driven~ (decrease use of mouse, favor workflows design for keyboard,
-  personal preference)
-- ~harmonize devices~ (make work/personal computer feel more the same)
+My dotfiles for [[My dotfiles, stored and managed with Emacs, using %5B%5Bhttps://orgmode.org/%5D%5BOrg mode%5D%5D.][Arch Linux]] and [[https://ubuntu.com/][Ubuntu]], organized and managed through [[https://www.gnu.org/software/emacs/][Emacs]] and
+[[https://orgmode.org/][Org mode]].
 
 * Background
 
-Why this setup:
-- inspired by the blogpost [[https://irreal.org/blog/?p=7702][Org to Dotfiles]]. Wanted to improve my dotfile
-  management, and my org skills, seemed like a good match. Describe some
-  advantages such as handling of multiple devices
-- started as I installed, and began setting up arch linux on a dual boot on my macbook
-- window manager instead of traditional desktop environment. Reasons are
-  minimalistic, keyboard driven workflow and also a quest of understanding linux
-  better under the hood.Put yourself in environments where you learn naturally
+I wanted to improve my knowledge on Linux, shell scripting and Emacs. So I
+combined all of that into this project of creating a dotfile setup using
+~Org-mode~.
+
+Focus has been on creating a setup that favors keyboard interaction, has a
+minimalist design and is highly customizable.
 
 * TODO Screenshots
 
 The credit for the great should be handed to [[https://github.com/hlissner/dotfiles][hlissner]], from which this design is
 copied from.
 
+[[./screenshots/empty_desktop.png]]
+
 What to show:
-- ~nothing running~
+
 - ~rofi~
 - ~emacs~
 - ~firefox, with emacs-anywhere~
