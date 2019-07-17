@@ -14,8 +14,8 @@ minimalist design and is highly customizable.
 
 * Screenshots
 
-The credit for the great should be handed to [[https://github.com/hlissner/dotfiles][hlissner]], from which this design is
-copied from.
+All the credit for the design esthetic should go to [[https://github.com/hlissner/dotfiles][hlissner]], I have graciously
+copied most of it from his dotfiles.
 
 [[./screenshots/empty_desktop.png]]
 ~Empty desktop~
@@ -59,15 +59,8 @@ Customized looks:
 - ~gerrit:~ xq_light(theme)
 - ~firefox:~ tridactyl, dracula(theme), dark-reader
 
-* Inspiration
-
-~Sources to draw inspiration from:~
-
-- ~Protesilaos Stavrou~ [[https://protesilaos.com/codelog/2019-06-17-bspwm-dynamic-desktops/][bspwm-dynamic-desktops]]
-- ~ambrevar's~ [[https://old.reddit.com/r/emacs/comments/6y3q4k/yes_eshell_is_my_main_shell/][yes-eshell-is-my-main-shell]]
-- ~noctuid's~ [[https://github.com/noctuid/dotfiles/blob/master/README.org][README-file]]
- 
 * Credits
 
-- [[https://github.com/hlissner][hlissner]]
-- [[https://wiki.archlinux.org/][arch-wiki]]
+- [[https://wiki.archlinux.org/][arch-wiki]], superb wiki site for Linux
+- [[https://github.com/hlissner][hlissner]], dotfile setup, DOOM Emacs creator
+- [[https://github.com/noctuid%20][noctuid]], dotfile setup
