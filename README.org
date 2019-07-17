@@ -12,21 +12,25 @@ combined all of that into this project of creating a dotfile setup using
 Focus has been on creating a setup that favors keyboard interaction, has a
 minimalist design and is highly customizable.
 
-* TODO Screenshots
+* Screenshots
 
 The credit for the great should be handed to [[https://github.com/hlissner/dotfiles][hlissner]], from which this design is
 copied from.
 
-
-#+CAPTION: Empty desktop
 [[./screenshots/empty_desktop.png]]
+~Empty desktop~
 
-What to show:
+[[./screenshots/doom_emacs.png]]
+~DOOM Emacs~
 
-- ~rofi~
-- ~emacs~
-- ~firefox, with emacs-anywhere~
-- ~multiple terminals~
+[[./screenshots/firefox.png]]
+~Firefox with Tridactyl~
+
+[[./screenshots/rofi.png]]
+~Rofi~
+
+[[./screenshots/terminals.png]]
+~Terminals~
 
 * Setup
 
