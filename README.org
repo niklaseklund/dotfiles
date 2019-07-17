@@ -65,5 +65,5 @@ Customized looks:
 * Credits
 
 - [[https://wiki.archlinux.org/][arch-wiki]], superb wiki site for Linux
-- [[https://github.com/hlissner][hlissner]], dotfile setup, DOOM Emacs creator
+- [[https://github.com/hlissner][hlissner]], dotfile setup, DOOM Emacs
 - [[https://github.com/noctuid%20][noctuid]], dotfile setup
