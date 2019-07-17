@@ -34,13 +34,12 @@ X client applications like the terminal emulator ~urxvt~.
 **** DONE HIDPI screen support
 CLOSED: [2019-06-07 Fri 17:32]
 
-I found an example configuration for the retina display at
-https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/
-Currently I have commented out the gdk and qt settings until I read up on what
-they actually does. The xrandr command however I needed because by default the
-output of the ~xrandr -q~ said the dpi was 96 which was clearly incorrect. I
-verified that the 227 was correct by consulting the apple website for the
-macbook specs.
+I found an example configuration for the retina display at [[https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/][Install Arch Linux
+with Retina support]] Currently I have commented out the gdk and qt settings until
+I read up on what they actually does. The xrandr command however I needed
+because by default the output of the ~xrandr -q~ said the dpi was 96 which was
+clearly incorrect. I verified that the 227 was correct by consulting the apple
+website for the macbook specs.
 
 Some more information on the matter:
 https://wiki.archlinux.org/index.php/HiDPI#GDK_3_(GTK+_3)
@@ -83,6 +82,7 @@ I learnt about the ~setxkbmap~ at the [[https://wiki.archlinux.org/index.php/Xor
 the line. The ~layout~ specifies ~American~ and ~Swedish~ layouts. One can
 switch between these two keyboard layouts by pressing both ~shifts~ at
 time. Last I swap ctrl to caps and remove capslock.
+
 **** Launch programs
 
 I need to launch sxhkd since bspwm is relying upon that program to handle the
@@ -271,12 +271,6 @@ said that if you have a display manager, like the one in Ubuntu, then you
 shouldn't use the ~xinitrc~. So instead I am using the ~xprofile~ to configure
 what applications and settings to configure upon startup.
 
-***** TODO Improvement
-
-One improvement here would be to use xprofile if I have a display manager or
-not. In the case when I don't have one I can source the xprofile from the
-xinitrc. I should consider this in the future. Maybe after switching to
-Ubuntu18.
 **** hidpi and non-hidpi solution
 
 This is my hacky solution for dealing with hidpi and non-hidpi screen mix. If
@@ -955,6 +949,7 @@ blur-background-exclude = [
 #+END_SRC
 
 *** Application opacity rules
+
 I have here the example opacity rule from the arch wiki,
 https://wiki.archlinux.org/index.php/compton.
 
