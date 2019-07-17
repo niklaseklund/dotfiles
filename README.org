@@ -32,6 +32,9 @@ copied most of it from his dotfiles.
 [[./screenshots/terminals.png]]
 ~Terminals~
 
+[[./screenshots/tdrop.png]]
+~Dropdown terminal~
+
 * Setup
 
 I want to add an accompanying ~setup.org~ which will take care of the
