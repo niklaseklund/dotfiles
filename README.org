@@ -1,6 +1,6 @@
 * About
 
-My dotfiles for [[My dotfiles, stored and managed with Emacs, using %5B%5Bhttps://orgmode.org/%5D%5BOrg mode%5D%5D.][Arch Linux]] and [[https://ubuntu.com/][Ubuntu]], organized and managed through [[https://www.gnu.org/software/emacs/][Emacs]] and
+My dotfiles for [[https://www.archlinux.org/][Arch Linux]] and [[https://ubuntu.com/][Ubuntu]], organized and managed through [[https://www.gnu.org/software/emacs/][Emacs]] and
 [[https://orgmode.org/][Org mode]].
 
 * Background
@@ -17,6 +17,8 @@ minimalist design and is highly customizable.
 The credit for the great should be handed to [[https://github.com/hlissner/dotfiles][hlissner]], from which this design is
 copied from.
 
+
+#+CAPTION: Empty desktop
 [[./screenshots/empty_desktop.png]]
 
 What to show:
