@@ -935,7 +935,7 @@ inactive-opacity-override = false;
 #+END_SRC
 
 #+BEGIN_SRC sh
-inactive-dim = 0.2;
+inactive-dim = 0.1;
 # inactive-dim-fixed = true;
 #+END_SRC
 
