@@ -1624,11 +1624,10 @@ fi
 #+END_SRC
 **** mail
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/modules/app-mail.sh :shebang "#! /bin/sh" :mkdirp yes
+:header-args: :tangle ~/.config/polybar/modules/app-mail.sh :shebang "#! /bin/zsh" :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
-
 #
 ## Unread mails
 unread=$(notmuch search tag:unread | wc -l)
@@ -1636,8 +1635,14 @@ unread=$(notmuch search tag:unread | wc -l)
 #
 ## Set color and icon
 if [ "$unread" -eq "0" ]; then
-    echo "%{F#555856}" # grey
+    echo "%{F#555856}   " # grey
 else
+    # pad so that the total number of chars are always the same,
+    # in this case 3
+    if [ "$unread" -gt "99" ]; then
+        unread="99+"
+    fi
+    unread=${(r:3::x:)unread}
     echo "%{F#f0c674}$unread" # yellow
 fi
 #+END_SRC
@@ -4093,26 +4098,6 @@ Redshift
 This work in progress section contains some ideas that I am exploring but where
 I haven't found a good solution or reached a conclusion.
 
-** Right pad strings :zsh:
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-
-Found an example [[https://github.com/yamadapc/zshguide/blob/master/chapter5.md][here]]
-
-#+BEGIN_SRC shell
-#! /bin/zsh
-
-Take a string of a number
-y='3'
-
-# Right pad the number with x
-y=${(r:10::x:)y}
-echo $y
-#+END_SRC
-
-#+RESULTS:
-: 3xxxxxxxxx
 ** Detect if keyboard is plugged in :keyboard:
 
 Use something to detect if a keyboard is plugged in so I can update the
