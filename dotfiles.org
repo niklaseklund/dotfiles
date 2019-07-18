@@ -3981,6 +3981,28 @@ Y_OFFSET=$(echo $MONITOR_DIMENSIONS | awk -F "[x+]" '{print $4}')
 
 maim /dev/stdout | convert -crop  "${WIDTH}x${HEIGHT}+${X_OFFSET}x${Y_OFFSET}" /dev/stdin ~/screenshots/$(date +%F-%T).png && notify-send "Fullscreen screenshot saved"
 #+END_SRC
+*** Record primary monitor
+:PROPERTIES:
+:header-args: :tangle ~/bin/record-primary.sh :shebang "#! /bin/zsh" :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+#
+## Primary monitor dimensions
+MONITOR_DIMENSIONS=$(xrandr -q | grep 'primary' | cut -d' ' -f4)
+WIDTH=$(echo $MONITOR_DIMENSIONS | awk -F "[x+]" '{print $1}')
+HEIGHT=$(echo $MONITOR_DIMENSIONS | awk -F "[x+]" '{print $2}')
+X_OFFSET=$(echo $MONITOR_DIMENSIONS | awk -F "[x+]" '{print $3}')
+Y_OFFSET=$(echo $MONITOR_DIMENSIONS | awk -F "[x+]" '{print $4}')
+
+#
+## Record
+ffmpeg -video_size "${WIDTH}x${HEIGHT}" \
+    -framerate 25 -f x11grab -i :0.0+"${X_OFFSET}",0 \
+    -f alsa -i default -c:v libx264 -crf 0 -preset ultrafast \
+    $1
+#+END_SRC
+
 * Utility applications
 ** Screen color temperature
 :PROPERTIES:
