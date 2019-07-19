@@ -3998,8 +3998,9 @@ Y_OFFSET=$(echo $MONITOR_DIMENSIONS | awk -F "[x+]" '{print $4}')
 #
 ## Record
 ffmpeg -video_size "${WIDTH}x${HEIGHT}" \
-    -framerate 25 -f x11grab -i :0.0+"${X_OFFSET}",0 \
-    -f alsa -i default -c:v libx264 -crf 0 -preset ultrafast \
+    -framerate 25 -thread_queue_size 512 -f x11grab -i :0.0+"${X_OFFSET}",0 \
+    -f alsa -thread_queue_size 512 -i default \
+    -c:v libx264 -crf 0 -preset ultrafast -framerate 25\
     $1
 #+END_SRC
 
