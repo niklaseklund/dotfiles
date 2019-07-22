@@ -3101,6 +3101,11 @@ alias bluedis='echo -e "disconnect" | bluetoothctl &>/dev/null; echo "Disconnect
 alias bd=". bd -si"
 #+END_SRC
 
+Set ~d~ to ~ranger~. Gives a similar behavior to my ~eshell~ setup.
+#+BEGIN_SRC sh
+alias d="ranger"
+#+END_SRC
+
 **** Tmux
 
 https://github.com/hlissner/dotfiles/blob/master/shell/tmux/tmux.conf
