@@ -3343,8 +3343,9 @@ old terminal.
 ## Variables
 #
 export EDITOR=nvim
-export VISUAL=emacs
+export VISUAL=nvim
 #+END_SRC
+Set ~VISUAL~ to neovim to get files open with nvim as default in ~ranger~.
 
 Solve issue with zsh-autosuggestions highlight
 https://github.com/zsh-users/zsh-autosuggestions/issues/229
