@@ -3320,7 +3320,7 @@ Dealing with the sd card reader
 #
 ## Mounts
 #
-alias mountsdcard="sudo mount $(lsblk -l -o PATH,MODEL,SIZE | grep -A1 "SD_Card_Reader" | sed -n 2p | cut -d' ' -f1) /mnt/sdcard"
+alias mountsdcard="sudo mount $(lsblk -l -o NAME,PATH,MODEL,SIZE | grep -A1 "SD_Card_Reader" | sed -n 2p | cut -d' ' -f2) /mnt/sdcard/"
 alias unmountsdcard="sudo umount /mnt/sdcard"
 #+END_SRC
 **** local configuration
