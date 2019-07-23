@@ -551,7 +551,7 @@ bspc config -m $MONITOR window_gap     30
 This sets the padding value. If it's matched to the ~height~ value in ~polybar~
 config the bar will be shown even if the window is in a full screen mode.
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-bspc config -m $MONITOR bottom_padding 60
+bspc config -m $MONITOR bottom_padding 40
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
@@ -1550,7 +1550,7 @@ margin-top = 0
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
-margin-bottom = 60
+margin-bottom = 40
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
