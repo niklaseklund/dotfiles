@@ -694,7 +694,7 @@ mod4 + apostrophe
 
 I have changed the application launcher from ~dmenu~ to ~rofi~.
 #+BEGIN_SRC sh
-super + @space
+super + space
 	rofi -show run
 
 #+END_SRC
