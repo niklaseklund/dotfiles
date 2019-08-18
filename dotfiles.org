@@ -2904,23 +2904,32 @@ Make a function in Emacs to avoid deleting flagged emails.
 :header-args: :tangle ~/.zshrc :mkdirp yes :padline no
 :END:
 
+**** Remote editing
+
+Emacs TRAMP uses a dumb terminal and can't handle some of the features of zsh.
+So instead of being forced to switch to bash on devices that I want to be able
+to edit remotely, I found the [[https://blog.karssen.org/2016/03/02/fixing-emacs-tramp-mode-when-using-zsh/][Fixing Emacs Tramp when using zsh]] post.
+
+In short this detects if the term variable is set to dumb, disable zsh line
+editing, and change the appearance of the prompt before exiting the script.
+
+#+BEGIN_SRC sh :padline yes
+#
+## TRAMP compatible
+#
+[[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
+#+END_SRC
+
 **** Extend zsh with plugins
 
 Following the setup details on [[https://github.com/tarjoilija/zgen][zgen wiki]]. Starting with sourcing zgen on start
 in zshrc.
 
-First load zgen:
-#+BEGIN_SRC sh
-# load zgen
-source "${HOME}/.zgen/zgen.zsh"
-#+END_SRC
-
-Further down on the github page there is an example zshrc. I have taken that
-content and slimmed it down.
 #+BEGIN_SRC sh :padline yes
 #
 ## Plugins
 #
+source "${HOME}/.zgen/zgen.zsh"
 if ! zgen saved; then
     # the init script doesn't exist
     echo "Creating a zgen save"
