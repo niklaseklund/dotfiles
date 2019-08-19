@@ -1642,7 +1642,7 @@ else
     if [ "$unread" -gt "99" ]; then
         unread="99+"
     fi
-    unread=${(r:3::x:)unread}
+    unread=${(r:3:: :)unread}
     echo "%{F#f0c674}$unread" # yellow
 fi
 #+END_SRC
