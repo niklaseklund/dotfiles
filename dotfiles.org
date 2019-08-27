@@ -2547,34 +2547,35 @@ decided to keep it as a big block.
 #+END_SRC
 
 #+BEGIN_SRC sh
-IMAPAccount     gmail
-Host            "imap.gmail.com"
-User            "carlsson.niklas@gmail.com"
-PassCmd         "pass email/gmail.com | sed -n 1p"
+IMAPAccount     posteo
+Host            "posteo.de"
+User            "niklas.carlsson@posteo.net"
+PassCmd         "pass email/posteo.de | sed -n 1p"
 SSLType         "IMAPS"
 CertificateFile "/etc/ssl/certs/ca-certificates.crt"
 
-IMAPStore gmail-remote
-Account "gmail"
+IMAPStore posteo-remote
+Account "posteo"
 
-MaildirStore gmail-local
-Path ~/.mail/gmail/
-Inbox ~/.mail/gmail/Inbox
+MaildirStore posteo-local
+Path ~/.mail/posteo/
+Inbox ~/.mail/posteo/inbox
 Subfolders Verbatim
 
-Channel gmail
-Master  ":gmail-remote:"
-Slave   ":gmail-local:"
-#+END_SRC
-
-Exclude everything under the internal [Gmail] folder, except the interesting folders.
-#+BEGIN_SRC sh
-Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Starred" "[Gmail]/All Mail"
+Channel posteo
+Master  ":posteo-remote:"
+Slave   ":posteo-local:"
+Patterns "*"
 #+END_SRC
 
 Automatically create missing mailboxes, both locally and on the server
 #+BEGIN_SRC sh
 Create Both
+#+END_SRC
+
+Permanently remove all messages marked for deletion
+#+BEGIN_SRC sh :tangle no
+Expunge Both
 #+END_SRC
 
 Save the synchronization state files in the relevant directory
@@ -2682,10 +2683,23 @@ path=<<home()>>/.mail
 # recipient list of replies, and will set the From address based on the
 # address to which the original email was addressed.
 #
+#+END_SRC
+
+The default mail on my private computer.
+#+BEGIN_SRC sh :tangle (my/tangle-os '(arch)))
 [user]
 name=Niklas Carlsson
-primary_email=carlsson.niklas@gmail.com
+primary_email=niklas.carlsson@posteo.net
+#+END_SRC
 
+The default mail on my work computer.
+#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)))
+[user]
+name=Niklas Carlsson
+primary_email=niklas.carlsson@zenuity.com
+#+END_SRC
+
+#+BEGIN_SRC sh
 # Configuration for "notmuch new"
 #
 # The following options are supported here:
@@ -2786,36 +2800,20 @@ logfile        ~/.msmtp.log
 #
 ## Personal
 #
-account        gmail
-host           smtp.gmail.com
+account        posteo
+host           posteo.de
 port           587
-from           carlsson.niklas@gmail.com
-user           carlsson.niklas@gmail.com
+from           niklas.carlsson@posteo.net
+user           niklas.carlsson@posteo.net
+passwordeval   "pass email/posteo.de"
 #+END_SRC
 
-Now I have [[https://www.passwordstore.org/][Pass the standard unix password manager]] setup so I can call that
-directly:
-#+BEGIN_SRC conf
-passwordeval   "pass email/gmail.com"
+Set a default account to private, if I am on my private computer.
+#+BEGIN_SRC conf :tangle (my/tangle-os '(arch))
+account default : posteo
 #+END_SRC
 
-If you don't have the password-store, but have setup gpg then one can use:
-#+BEGIN_SRC conf :tangle no
-passwordeval   "gpg --use-agent --quiet --for-your-eyes-only --no-tty --decrypt path_to_gpg_file_with_password
-#+END_SRC
-
-This is the solution if you don't have set up neither ~pass~ nor ~gpg~. You need
-to store the password in plain text.
-#+BEGIN_SRC conf :tangle no
-password       my_password
-#+END_SRC
-
-Set a default account.
-#+BEGIN_SRC conf
-account default : gmail
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))) :padline yes
+#+BEGIN_SRC conf :tangle (my/tangle-os '(ubuntu))) :padline yes
 #
 ## Work
 #
@@ -2825,6 +2823,7 @@ port           587
 from           niklas.carlsson@zenuity.com
 user           niklas.carlsson@zenuity.com
 passwordeval   "pass show work/zenuity/login | sed -n 1p"
+account default : zenuity
 #+END_SRC
 
 ** Automate
