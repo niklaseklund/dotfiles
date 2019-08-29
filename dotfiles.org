@@ -11,7 +11,7 @@ applications, resulting in massive adoption from most distributions.
 
 *** Xinitrc
 :PROPERTIES:
-:header-args: :tangle (my/tangle-not-app '(lightdm) "~/.xinitrc") :shebang "#! /bin/sh" :mkdirp yes
+:header-args: :tangle no :shebang "#! /bin/sh" :mkdirp yes
 :END:
 
 If my os doesn't have a display manager I will utilize this setup. Hence I let
@@ -100,7 +100,7 @@ exec bspwm
 
 *** Xresources
 :PROPERTIES:
-:header-args: :tangle ~/.Xresources :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.Xresources") :mkdirp yes :padline no
 :END:
 
 [[https://wiki.archlinux.org/index.php/x_resources#Usage][Xresources in ArchWiki]]
@@ -116,7 +116,7 @@ The configuration of hidpi parameters originate from the blogpost
 [[https://ellipticaldoor.com/2017-10-11-installing-arch-linux-on-a-macbook-with-retina-hidpi-support-and-graphic-switching/][installing-arch-linux-on-a-macbook-with-retina-hidpi]], but the [[https://wiki.archlinux.org/index.php/HiDPI#X_Resources][ArchWiki]] also has
 some hints for what to configure these values to.
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 !!
 !! hidpi settings
 Xft.dpi: 227
@@ -230,7 +230,7 @@ URxvt*.letterSpace:            0
 Choosing fonts are never easy. These are my current setup.
 
 ~Arch~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 !!
 !! Fonts
 URxvt.font: xft:Iosevka Term:style=regular:size=6
@@ -238,7 +238,7 @@ URxvt.boldFont: xft:Iosevka Term:style=bold:size=6
 #+END_SRC
 
 ~Ubuntu~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :padline yes
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work)) :padline yes
 !!
 !! Fonts
 #+END_SRC
@@ -248,14 +248,14 @@ URxvt.boldFont: xft:Iosevka Term:style=bold:size=6
 !URxvt.boldFont: xft:Roboto Mono:style=bold:size=12
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 URxvt.font: xft:Iosevka Term:style=Regular:size=14
 URxvt.boldFont: xft:Iosevka Term:style=Bold:size=14
 #+END_SRC
 
 *** Xprofile
 :PROPERTIES:
-:header-args: :tangle (my/tangle-app '(lightdm) "~/.xprofile") :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.xprofile") :mkdirp yes :padline no
 :END:
 
 **** About
@@ -280,7 +280,7 @@ to hidpi mode.
 If the external monitor is connected I however downscale the internal one and
 use sed commands to set non hidpi dpi/font settings.
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 #
 # hidpi hack
 if [ "$(bspc query -M | wc -l)" -eq "1" ]; then
@@ -342,13 +342,13 @@ non keyboardio external keyboard attached to the computer.
 Set the keyboard mapping. I enable ~Swedish~ and ~English~ and switch languages
 by pressing both of the ~shift~ keys.
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :padline yes
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work)) :padline yes
 #
 # Set keyboard layout
 setxkbmap -layout us,se -option grp:shifts_toggle,ctrl:nocaps,altwin:swap_lalt_lwin
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 "$HOME/bin/set-keymap"
 #+END_SRC
 
@@ -373,7 +373,7 @@ unclutter &
 #+END_SRC
 *** Profile
 :PROPERTIES:
-:header-args: :tangle ~/.profile :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.profile") :mkdirp yes
 :END:
 
 In the [[https://wiki.archlinux.org/index.php/bspwm][configuration section for bspwm in the ArchWiki]] it is stated that:
@@ -384,7 +384,7 @@ bspwmrc will not be found
 
 It's therefore important to set this environmental variable, which I do in
 ~profile~.
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CONFIG_HOME
 #+END_SRC
@@ -396,7 +396,7 @@ export XDG_CONFIG_HOME
 
 *** bspwm
 :PROPERTIES:
-:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#!/usr/bin/env zsh" :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/bspwm/bspwmrc") :shebang "#!/usr/bin/env zsh" :mkdirp yes :padline no
 :END:
 
 **** Monitors and desktops
@@ -413,14 +413,14 @@ means that I don't need to do antyhing more.
 
 
 This is my primary monitor for my ~ubuntu~ setup
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :padline yes
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work)) :padline yes
 #
 ## Monitor setup
 EXTERNAL_MONITOR="DP-1-1-8"
 #+END_SRC
 
 This is my primary monitor for my ~arch~ setup
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch)) :padline yes
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch)) :padline yes
 #
 ## Monitor setup
 EXTERNAL_MONITOR="DP-2"
@@ -430,7 +430,7 @@ EXTERNAL_MONITOR="DP-2"
 
 Setup for external monitors. I found inspiration on how to find out wether the
 external monitor is among the items in the list [[https://stackoverflow.com/questions/8063228/how-do-i-check-if-a-variable-exists-in-a-list-in-bash][here]]
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
 if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
     # if external monitor is connected set it to primary
@@ -439,7 +439,7 @@ fi
 #+END_SRC
 
 This is the more hardcoded setup for my work station
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
 if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
     # Center
@@ -513,11 +513,11 @@ bspc config remove_unplugged_monitors true
 bspc config border_width    0
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 bspc config window_gap      50
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 bspc config window_gap      30
 #+END_SRC
 
@@ -540,21 +540,21 @@ export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
 
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 bspc config -m $MONITOR window_gap     50
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 bspc config -m $MONITOR window_gap     30
 #+END_SRC
 
 This sets the padding value. If it's matched to the ~height~ value in ~polybar~
 config the bar will be shown even if the window is in a full screen mode.
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 bspc config -m $MONITOR bottom_padding 40
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 bspc config -m $MONITOR bottom_padding 30
 #+END_SRC
 
@@ -645,7 +645,7 @@ $HOME/.config/polybar/launch.sh
 
 *** sxhkd
 :PROPERTIES:
-:header-args: :tangle ~/.config/sxhkd/sxhkdrc :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/sxhkd/sxhkdrc") :mkdirp yes
 :END:
 
 I followed the instructions from the manual and copied over the example
@@ -701,7 +701,7 @@ super + space
 
 ***** Lock
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 @F2
     lock -n -p
 #+END_SRC
@@ -864,7 +864,7 @@ super + minus
 
 I want to be able to control the brightness of the screen. To my help I have
 [[https://haikarainen.github.io/light/][light]].
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 #
 # Brightness
 #
@@ -875,7 +875,7 @@ XF86MonBrightnessUp
 #+END_SRC
 
 :PROPERTIES:
-:header-args: :tangle "~/.config/bspwm/bspwmrc" :shebang "#! /bin/sh" :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/bspwm/bspwmrc") :shebang "#! /bin/sh" :mkdirp yes
 :END:
 
 With ~bspwmrc~ it's important that the file is executable. With tangle there are
@@ -895,7 +895,7 @@ super + Print
 
 ** Compositor
 :PROPERTIES:
-:header-args: :tangle ~/.config/compton.conf :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/compton.conf") :mkdirp yes :padline no
 :END:
 
 [[https://github.com/chjj/compton][Compton, a compositor for X]]
@@ -1036,7 +1036,7 @@ wintypes:
 
 *** launch script
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/launch.sh :shebang "#!/usr/bin/env bash" :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/polybar/launch.sh") :shebang "#!/usr/bin/env bash" :mkdirp yes :padline no
 :END:
 
 **** Kill active bars
@@ -1075,7 +1075,7 @@ fi
 
 *** configuration
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/config :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/polybar/config") :mkdirp yes :padline no
 :END:
 
 Ideas:
@@ -1128,13 +1128,13 @@ override-redirect = true
 width = 100%
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 height = 40
 offset-x = 0
 offset-y = 10
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 height = 20
 offset-x = 0
 offset-y = 5
@@ -1152,12 +1152,12 @@ border-size = 0
 border-color = #00000000
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 padding-left = 4
 padding-right = 4
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 padding-left = 2
 padding-right = 2
 #+END_SRC
@@ -1173,18 +1173,18 @@ cursor-scroll = ns-resize
 #+END_SRC
 
 **** Resolution
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 dpi-x = 227
 dpi-y = 227
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 dpi-x = 96
 dpi-y = 96
 #+END_SRC
 
 **** Fonts
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch)) :padline yes
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch)) :padline yes
 ;
 ;; Fonts
 font-0 = "Roboto Mono:style=Regular:size=8"
@@ -1192,7 +1192,7 @@ font-1 = "Material Icons:style=Regular:size=8"
 font-2 = siji:size=8
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :padline yes
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work)) :padline yes
 ;
 ;; Fonts
 font-0 = "Roboto Mono:style=Regular:size=10"
@@ -1222,13 +1222,13 @@ content-foreground = ${colors.fg-alt}
 #+END_SRC
 
 Due to font differences the audio bar has a different length on my different setups.
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 [module/pad-left]
 type = custom/text
 content = "         "
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 [module/pad-left]
 type = custom/text
 content = "   "
@@ -1549,11 +1549,11 @@ screenchange-reload = true
 margin-top = 0
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 margin-bottom = 40
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 margin-bottom = 30
 #+END_SRC
 
@@ -1565,7 +1565,7 @@ margin-bottom = 30
 
 **** bluetooth
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/modules/app-bluetooth.sh :shebang "#! /bin/bash" :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/polybar/modules/app-bluetooth.sh") :shebang "#! /bin/bash" :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
@@ -1603,7 +1603,7 @@ fi
 
 **** vpn
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/modules/app-vpn.sh :shebang "#! /bin/sh" :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/polybar/modules/app-vpn.sh") :shebang "#! /bin/sh" :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
@@ -1624,7 +1624,7 @@ fi
 #+END_SRC
 **** mail
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/modules/app-mail.sh :shebang "#! /bin/zsh" :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/polybar/modules/app-mail.sh") :shebang "#! /bin/zsh" :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
@@ -1648,7 +1648,7 @@ fi
 #+END_SRC
 **** redshift
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/modules/app-redshift :shebang "#!/usr/bin/env bash" :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/polybar/modules/app-redshift") :shebang "#!/usr/bin/env bash" :mkdirp yes
 :END:
 
 I am unsure which of these blocks are the one I want.
@@ -1708,7 +1708,7 @@ Start with the symbol
 #+END_SRC
 **** pad-volume
 :PROPERTIES:
-:header-args: :tangle ~/.config/polybar/modules/app-pad-volume.sh :shebang "#!/usr/bin/env bash" :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/polybar/modules/app-pad-volume.sh") :shebang "#!/usr/bin/env bash" :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
@@ -1727,7 +1727,7 @@ fi
 
 ** Application launcher
 :PROPERTIES:
-:header-args: :tangle ~/.config/rofi/config :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/rofi/config") :mkdirp yes :padline no
 :END:
 
 [[https://github.com/davatorium/rofi][Rofi, a window switcher and application launcher]].
@@ -1744,7 +1744,7 @@ rofi.color-active: argb:00171717, #65acff, argb:e44b5160, argb:00171717, #535c5c
 #+END_SRC
 
 Tweaked for ~Arch~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch)) :padline yes
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch)) :padline yes
 !
 !! Appearance
 rofi.width: 1500
@@ -1757,7 +1757,7 @@ rofi.eh: 1
 #+END_SRC
 
 Tweaked for ~Ubuntu~
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :padline yes
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work)) :padline yes
 !
 !! Appearance
 rofi.width: 1200
@@ -1798,7 +1798,7 @@ also looked at the [[https://wiki.archlinux.org/index.php/GTK%2B#Examples][arch 
 
 *** GTK+ 2.x
 :PROPERTIES:
-:header-args: :tangle ~/.gtkrc-2.0 :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.gtkrc-2.0") :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
@@ -1807,7 +1807,7 @@ include "/usr/share/themes/Arc-Dark/gtk-2.0/gtkrc"
 
 *** GTK+ 3.x
 :PROPERTIES:
-:header-args: :tangle ~/.config/gtk-3.0/settings.ini :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/gtk-3.0/settings.ini") :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
@@ -1819,7 +1819,7 @@ gtk-icon-theme-name = Arc-Dark
 
 **** TODO Mitigate GTK3+ window issues
 :PROPERTIES:
-:header-args: :tangle ~/.config/gtk-3.0/gtk.css :shebang :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/gtk-3.0/gtk.css") :shebang :mkdirp yes
 :END:
 
 
@@ -1866,7 +1866,7 @@ ln -s ~/src/doom-private ~/.doom.d
 
 *** Anywhere
 :PROPERTIES:
-:header-args: :tangle ~/bin/emacs-anywhere :shebang "#!/bin/bash"
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/emacs-anywhere") :shebang "#!/bin/bash"
 :END:
 
 [[https://github.com/zachcurry/emacs-anywhere][Emacs anywhere]] brings Emacs into new realms. Use it to edit text in ~Firefox~.
@@ -1939,7 +1939,7 @@ export EA_CLIPBOARD=$content
 
 ** Neovim
 :PROPERTIES:
-:header-args: :tangle ~/.config/nvim/init.vim :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/nvim/init.vim") :mkdirp yes
 :END:
 
 [[https://github.com/neovim/neovim][Vim-fork focused on extensibility and usability]]
@@ -2080,7 +2080,7 @@ set statusline+=%2c
 * Encryption
 ** GPG
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os '(ubuntu arch) "~/.gnupg/gpg-agent.conf") :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.gnupg/gpg-agent.conf") :mkdirp yes :padline no
 :END:
 
 Increase the cache validity for the ~gpg-agent~.
@@ -2089,13 +2089,13 @@ default-cache-ttl 86400
 max-cache-ttl 86400
 #+END_SRC
 
-#+BEGIN_SRC sh (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh (my/tangle-system '(work))
 pinentry-program /usr/bin/pinentry-rofi-guile
 #+END_SRC
 
 ** Rofi-pass
 :PROPERTIES:
-:header-args: :tangle ~/.config/rofi-pass/config :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/rofi-pass/config") :mkdirp yes
 :END:
 
 There is an extension to rofi for handling passwords, [[https://github.com/carnager/rofi-pass][rofi-pass]]. I have used the
@@ -2261,7 +2261,7 @@ that could be used in the tangling process.
 
 *** Minimal looks
 :PROPERTIES:
-:header-args: :tangle (concat (my/firefox-profile-directory) "/chrome/userChrome.css") :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) (concat (my/firefox-profile-directory) "/chrome/userChrome.css")) :mkdirp yes
 :END:
 
 I created [[https://niklascarlsson.github.io/posts/a-minimalists-firefox/][a blog post]] on where I found this configuration and what it does.
@@ -2317,7 +2317,7 @@ Tizonia and the remote control goes here.
 
 **** configuration
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os '(arch ubuntu) "~/.config/tizonia/tizonia.conf") :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/tizonia/tizonia.conf") :mkdirp yes :padline no
 :END:
 
 [[https://github.com/tizonia/tizonia-openmax-il][Tizonia]] is a command-line cloud music player for Linux with support for
@@ -2328,11 +2328,11 @@ Tizonia and the remote control goes here.
 # -*-Mode: conf; -*-
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 # tizonia-config v0.16.0 configuration file
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 # tizonia-config v0.17.0 configuration file
 #+END_SRC
 
@@ -2346,11 +2346,11 @@ Tizonia and the remote control goes here.
 # searching for component plugins
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 component-paths = /usr/lib/tizonia0-plugins12;
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 component-paths = /usr/lib/x86_64-linux-gnu/tizonia0-plugins12;
 #+END_SRC
 
@@ -2506,7 +2506,7 @@ Make sure to also have mpris enabled in the configuration.
 ** Reader
 *** Zathura
 :PROPERTIES:
-:header-args: :tangle ~/.config/zathura/zathurarc :mkdir p
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/zathura/zathurarc") :mkdir p
 :END:
 
 [[https://github.com/pwmt/zathura][Zathura, a highly customizable document viewer]]. I got some inspiration from the
@@ -2528,7 +2528,7 @@ set page-padding 1
 * Mail
 ** Retrieve
 :PROPERTIES:
-:header-args: :tangle ~/.mbsyncrc :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.mbsyncrc") :padline no
 :END:
 
 On the [[https://wiki.archlinux.org/index.php/isync#Configuring][Arch Wiki]] there is an example configuration file. I have just modified
@@ -2584,7 +2584,7 @@ SyncState *
 #+END_SRC
 
 *** Work
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)) :noweb tangle :padline yes
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work)) :noweb tangle :padline yes
 #
 ## Work
 #
@@ -2631,7 +2631,7 @@ Channel "zenuity-trash"
 
 ** Index
 :PROPERTIES:
-:header-args: :tangle ~/.notmuch-config :noweb tangle
+:header-args: :tangle (my/tangle-system '(arch work) "~/.notmuch-config") :noweb tangle
 :END:
 
 ~notmuch~ is an indexer providing a cli and ~Emacs~ interface. This
@@ -2659,11 +2659,11 @@ xapian.
 [database]
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 path=<<home()>>/.mail
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 path=<<home()>>/.mail
 #+END_SRC
 
@@ -2686,14 +2686,14 @@ path=<<home()>>/.mail
 #+END_SRC
 
 The default mail on my private computer.
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch)))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch)))
 [user]
 name=Niklas Carlsson
 primary_email=niklas.carlsson@posteo.net
 #+END_SRC
 
 The default mail on my work computer.
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu)))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work)))
 [user]
 name=Niklas Carlsson
 primary_email=niklas.carlsson@zenuity.com
@@ -2770,7 +2770,7 @@ gpg_path=gpg
 
 ** Send
 :PROPERTIES:
-:header-args: :tangle ~/.msmtprc :tangle-mode (identity #o600) :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.msmtprc") :tangle-mode (identity #o600) :padline no
 :END:
 
 I use ~msmtp~ for sending my emails [[https://wiki.archlinux.org/index.php/msmtp][more information in arch wiki]]. One important
@@ -2809,11 +2809,11 @@ passwordeval   "pass email/posteo.de"
 #+END_SRC
 
 Set a default account to private, if I am on my private computer.
-#+BEGIN_SRC conf :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC conf :tangle (my/tangle-system '(arch))
 account default : posteo
 #+END_SRC
 
-#+BEGIN_SRC conf :tangle (my/tangle-os '(ubuntu))) :padline yes
+#+BEGIN_SRC conf :tangle (my/tangle-system '(work))) :padline yes
 #
 ## Work
 #
@@ -2829,7 +2829,7 @@ account default : zenuity
 ** Automate
 *** timer
 :PROPERTIES:
-:header-args: :tangle ~/.config/systemd/user/mbsync.timer :mkdirp t :tangle-mode (identity #o644)
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/systemd/user/mbsync.timer") :mkdirp t :tangle-mode (identity #o644)
 :END:
 
 #+BEGIN_SRC sh
@@ -2846,7 +2846,7 @@ WantedBy=timers.target
 #+END_SRC
 *** service
 :PROPERTIES:
-:header-args: :tangle ~/.config/systemd/user/mbsync.service :mkdirp t :tangle-mode (identity #o644) :padline no :noweb tangle
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/systemd/user/mbsync.service") :mkdirp t :tangle-mode (identity #o644) :padline no :noweb tangle
 :END:
 
 #+BEGIN_SRC sh
@@ -2874,7 +2874,7 @@ systemctl --user start mbsync.timer
 #+END_SRC
 *** utility
 :PROPERTIES:
-:header-args: :tangle ~/bin/notmuch-pre :shebang "#!/bin/bash"
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/notmuch-pre") :shebang "#!/bin/bash"
 :END:
 
 Remove mails that has been taged as deleted the --no-run -if-empty prevents the
@@ -2900,7 +2900,7 @@ Make a function in Emacs to avoid deleting flagged emails.
 ** Zsh
 *** zshrc
 :PROPERTIES:
-:header-args: :tangle ~/.zshrc :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.zshrc") :mkdirp yes :padline no
 :END:
 
 **** Remote editing
@@ -3223,11 +3223,11 @@ bindkey '^S' fzf-history-widget
 #+END_SRC
 
 ***** Keybindings
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
 source /usr/share/fzf/key-bindings.zsh
 #+END_SRC
 
-#+BEGIN_SRC sh :tangel (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangel (my/tangle-system '(work))
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 #+END_SRC
 
@@ -3324,7 +3324,7 @@ z() {
 **** mounting
 
 Dealing with the sd card reader
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch)) :padline yes
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch)) :padline yes
 #
 ## Mounts
 #
@@ -3346,7 +3346,7 @@ publicly available.
 
 *** zshenv
 :PROPERTIES:
-:header-args: :tangle ~/.zshenv :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.zshenv") :mkdirp yes :padline no
 :END:
 
 Set the editors that I use. ~Emacs~ for the gui stuff and ~Neovim~ for the good
@@ -3393,7 +3393,7 @@ fi
 
 ** Bash
 :PROPERTIES:
-:header-args: :tangle /tmp/.bashrc
+:header-args: :tangle (my/tangle-system '(arch work) "/tmp/.bashrc")
 :END:
 *** default
 This is the default content that where in the rc file at start
@@ -3417,7 +3417,7 @@ alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
 ** Inputrc
 :PROPERTIES:
-:header-args: :tangle /tmp/.inputrc
+:header-args: :tangle (my/tangle-system '(arch work) "/tmp/.inputrc")
 :END:
 
 If zsh is not found on the computer this will create an inputrc file enabling
@@ -3473,7 +3473,7 @@ set keyseq-timeout 0
 * Terminal
 ** Multiplexing
 :PROPERTIES:
-:header-args: :tangle ~/.tmux.conf :mkdirp yes :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/.tmux.conf") :mkdirp yes :padline no
 :END:
 
 [[https://github.com/tmux/tmux][Tmux, a terminal multiplexer]]
@@ -3797,7 +3797,7 @@ These are my custom utility scripts that I use.
 
 *** Music player :tmux:tizonia:
 :PROPERTIES:
-:header-args: :tangle ~/bin/music-tmux :shebang "#! /bin/zsh"
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/music-tmux") :shebang "#! /bin/zsh"
 :END:
 
 A music player setup combining ~tizonia~ with the music visualizer ~cava~ and
@@ -3816,7 +3816,7 @@ tmux new-session \; \
 
 *** Glitch lock
 :PROPERTIES:
-:header-args: :tangle ~/bin/glitcher :shebang "#! /bin/zsh"
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/glitcher") :shebang "#! /bin/zsh"
 :END:
 
 Glitch locking the screen utilizing ~videoglitch~
@@ -3832,7 +3832,7 @@ i3lock -i $OUTPUT -t
 
 *** Vpn utility :vpn:
 :PROPERTIES:
-:header-args: :tangle ~/bin/vpn-toggle :shebang "#! /bin/zsh" :padline no
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/vpn-toggle") :shebang "#! /bin/zsh" :padline no
 :END:
 
 The purpose of this script should be to toggle a vpn connection between active
@@ -3854,12 +3854,12 @@ if [ "$connection" = "vpn" ]; then
 else
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(arch))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(arch))
     # activate
     printf $(pass network/ovpn)'\n' | nmcli connection up ovpn-se-tcp --ask >/dev/null 2>&1
 #+END_SRC
 
-#+BEGIN_SRC sh :tangle (my/tangle-os '(ubuntu))
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
     # activate
     printf $(pass work/zenuity/login | sed -n 1p)'\n' | nmcli con up Z-VPN-PKI-SE --ask >/dev/null 2>&1
 #+END_SRC
@@ -3872,7 +3872,7 @@ fi
 vpn connection to use when activating. Currently one is hardcoded.
 *** Control monitor brightness :python:xrandr:
 :PROPERTIES:
-:header-args: :tangle ~/bin/monitor-brightness :shebang "#!/usr/bin/env python"
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/monitor-brightness") :shebang "#!/usr/bin/env python"
 :END:
 
 Use xrandr and Python to adjust the monitor brightness.
@@ -3924,7 +3924,7 @@ if __name__ == '__main__':
 #+END_SRC
 *** Set keyboard map depending on external keyboard
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os '(arch ubuntu) "~/bin/set-keymap") :shebang "#!/usr/bin/env bash" :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/set-keymap") :shebang "#!/usr/bin/env bash" :mkdirp yes
 :END:
 
 Because I run Arch Linux on a Macbook I end up in the situation that if I have
@@ -3943,7 +3943,7 @@ fi
 #+END_SRC
 *** Print screen of primary monitor
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os '(arch ubuntu) "~/bin/printscreen-primary.sh") :shebang "#!/usr/bin/env zsh" :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/printscreen-primary.sh") :shebang "#!/usr/bin/env zsh" :mkdirp yes
 :END:
 
 [[https://gist.github.com/naelstrof/f9b74b5221cdc324c0911c89a47b8d97][Example of retriving size of screen]]
@@ -3997,11 +3997,10 @@ maim /dev/stdout | convert -crop  "${WIDTH}x${HEIGHT}+${X_OFFSET}x${Y_OFFSET}" /
 #+END_SRC
 *** Record primary monitor
 :PROPERTIES:
-:header-args: :tangle ~/bin/record-primary.sh :shebang "#! /bin/zsh" :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/record-primary.sh") :shebang "#! /bin/zsh" :mkdirp yes
 :END:
 
 #+BEGIN_SRC sh
-#
 ## Primary monitor dimensions
 MONITOR_DIMENSIONS=$(xrandr -q | grep 'primary' | cut -d' ' -f4)
 WIDTH=$(echo $MONITOR_DIMENSIONS | awk -F "[x+]" '{print $1}')
@@ -4021,7 +4020,7 @@ ffmpeg -video_size "${WIDTH}x${HEIGHT}" \
 * Utility applications
 ** Screen color temperature
 :PROPERTIES:
-:header-args: :tangle (my/tangle-os '(arch) "~/.config/redshift/redshift.conf") :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch) "~/.config/redshift/redshift.conf") :mkdirp yes
 :END:
 
 The configuration is a copy from [[https://github.com/hlissner/dotfiles][hlissner]].
@@ -4065,7 +4064,7 @@ Redshift
 
 ** Notifications
 :PROPERTIES:
-:header-args: :tangle ~/.config/dunst/dunstrc :padline no :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch) "~/.config/dunst/dunstrc") :padline no :mkdirp yes
 :END:
 
 [[https://github.com/dunst-project/dunst][Dunst, a lightweight and customizable notification daemon]]
