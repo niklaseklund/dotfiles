@@ -892,6 +892,25 @@ executable.
 super + Print
     printscreen-primary.sh
 #+END_SRC
+**** Media
+
+#+BEGIN_SRC sh
+#
+## Audio
+#
+
+# raise volume
+XF86AudioRaiseVolume
+    pactl set-sink-volume @DEFAULT_SINK@ +5%
+
+# lower volume
+XF86AudioLowerVolume
+    pactl set-sink-volume @DEFAULT_SINK@ -5%
+
+# mute
+XF86AudioMute
+    pactl set-sink-mute @DEFAULT_SINK@ toggle
+#+END_SRC
 
 ** Compositor
 :PROPERTIES:
