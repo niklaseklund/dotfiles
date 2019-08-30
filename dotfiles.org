@@ -1214,9 +1214,8 @@ font-2 = siji:size=8
 #+BEGIN_SRC sh :tangle (my/tangle-system '(work)) :padline yes
 ;
 ;; Fonts
-font-0 = "Roboto Mono:style=Regular:size=10"
-font-1 = unifont:fontformat=truetype:size=10:antialias=false;0
-font-2 = "Material Icons:style=Regular:size=8"
+font-0 = "Tamsyn:pixelsize=12;1"
+font-1 = "siji:pixelsize=10;0"
 #+END_SRC
 
 **** Modules setup
@@ -1319,15 +1318,15 @@ label-indicator-underline = ${colors.secondary}
 [module/bspwm]
 type = internal/bspwm
 ; icons
-ws-icon-0 = 1;
-ws-icon-1 = 2;
-ws-icon-2 = 3;
-ws-icon-3 = 4;
-ws-icon-4 = 5;
-ws-icon-5 = 6;
-ws-icon-6 = 7;
-ws-icon-7 = 8;
-ws-icon-8 = 9;
+ws-icon-0 = 1;
+ws-icon-1 = 2;
+ws-icon-2 = 3;
+ws-icon-3 = 4;
+ws-icon-4 = 5;
+ws-icon-5 = 6;
+ws-icon-6 = 7;
+ws-icon-7 = 8;
+ws-icon-8 = 9;
 ws-icon-default = x
 ; labels
 format = <label-state> <label-mode>
@@ -1342,7 +1341,6 @@ label-occupied-padding = 1
 label-urgent-foreground = ${colors.red}
 label-empty = %icon%
 label-empty-foreground = ${colors.fg-alt}
-label-empty-padding = 1
 #+END_SRC
 
 ***** wifi
@@ -1359,23 +1357,23 @@ nmcli device | grep 'wifi ' | cut -d' ' -f1
 ;; Wifi
 [module/wlan]
 type = internal/network
-interface = <<wifi-device()>>
+interface = wlp4s0
 interval = 3.0
 ; labels
 format-connected = <ramp-signal>
-format-disconnected = 
+format-disconnected = 
 format-disconnected-foreground = ${colors.red}
 label-disconnected = %ifname% disconnected
 ; icons
-ramp-signal-0 = 
+ramp-signal-0 = 
 ramp-signal-0-foreground = ${colors.foreground-alt}
-ramp-signal-1 = 
+ramp-signal-1 = 
 ramp-signal-1-foreground = ${colors.foreground-alt}
-ramp-signal-2 = 
+ramp-signal-2 = 
 ramp-signal-2-foreground = ${colors.foreground-alt}
-ramp-signal-3 = 
+ramp-signal-3 = 
 ramp-signal-3-foreground = ${colors.foreground-alt}
-ramp-signal-4 = 
+ramp-signal-4 = 
 ramp-signal-4-foreground = ${colors.foreground-alt}
 #+END_SRC
 
@@ -1412,7 +1410,7 @@ date = %A, %h %d
 date-alt = %Y-%m-%d
 time = %I:%M %p
 time-alt = %H:%M:%S
-format-prefix = 
+format-prefix = 
 format-prefix-padding = 1
 format-prefix-foreground = ${colors.icons}
 #+END_SRC
@@ -1441,9 +1439,9 @@ bar-volume-gradient = false
 bar-volume-indicator = |
 bar-volume-indicator-font = 2
 bar-volume-indicator-foreground = #ff
-bar-volume-fill = ─
+bar-volume-fill = -
 bar-volume-fill-font = 2
-bar-volume-empty = ─
+bar-volume-empty = -
 bar-volume-empty-font = 2
 bar-volume-empty-foreground = ${colors.fg-alt}
 ramp-volume-0 = 
@@ -1465,19 +1463,19 @@ format-charging = <animation-charging> <label-charging>
 format-charging-underline = #ffb52a
 format-discharging = <ramp-capacity> <label-discharging>
 format-discharging-underline = ${self.format-charging-underline}
-format-full-prefix = " "
-format-full-prefix-foreground = ${colors.fg-alt}
+format-full-prefix = " "
+format-full-prefix-foreground = ${colors.icons}
 format-full-underline = ${self.format-charging-underline}
 ; Icons
-ramp-capacity-0 = 
-ramp-capacity-1 = 
-ramp-capacity-2 = 
-ramp-capacity-foreground = ${colors.fg-alt}
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-foreground = ${colors.icons}
 ; Animation
-animation-charging-0 = 
-animation-charging-1 = 
-animation-charging-2 = 
-animation-charging-foreground = ${colors.fg-alt}
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-foreground = ${colors.icons}
 animation-charging-framerate = 750
 #+END_SRC
 
@@ -1490,7 +1488,7 @@ type = internal/cpu
 interval = 2
 ; Format
 format = <bar-load>
-format-prefix = ""
+format-prefix = ""
 format-foreground = ${colors.icons}
 format-padding = 1
 ; Animation
@@ -1515,7 +1513,7 @@ type = internal/memory
 interval = 3
 ; Format
 format = <bar-used>
-format-prefix = ""
+format-prefix = ""
 format-prefix-foreground = ${colors.icons}
 format-padding-left = 1
 ; Animation
@@ -1612,11 +1610,11 @@ fi
 #
 ## Set color and icon
 if [ "$connected" = "yes" ]; then
-    echo "%{F#81a2be}" # fg-blue
+    echo "%{F#81a2be}" # fg-blue
 elif [ "$active" = "active" ]; then
-    echo "%{F#c5c8c6}" # white
+    echo "%{F#c5c8c6}" # white
 else
-    echo "%{F#555856}" # grey
+    echo "%{F#555856}" # grey
 fi
 #+END_SRC
 
@@ -1635,10 +1633,10 @@ connection=$(nmcli connection show --active | awk '{print $3}' | grep vpn)
 ## Set color and icon
 if [ "$connection" = "vpn" ]; then
     # active
-    echo "%{F#81a2be}" # fg-blue
+    echo "%{F#81a2be}" # fg-blue
 else
     # inactive
-    echo "%{F#555856}" # grey
+    echo "%{F#555856}" # grey
 fi
 #+END_SRC
 **** mail
@@ -1654,7 +1652,7 @@ unread=$(notmuch search tag:unread | wc -l)
 #
 ## Set color and icon
 if [ "$unread" -eq "0" ]; then
-    echo "%{F#555856}   " # grey
+    echo "%{F#555856}   " # grey
 else
     # pad so that the total number of chars are always the same,
     # in this case 3
@@ -1662,7 +1660,7 @@ else
         unread="99+"
     fi
     unread=${(r:3:: :)unread}
-    echo "%{F#f0c674}$unread" # yellow
+    echo "%{F#f0c674}$unread" # yellow
 fi
 #+END_SRC
 **** redshift
@@ -1684,13 +1682,13 @@ fi
 
 # OPTIONAL: Append ' ${temp}K' after $icon
 if [[ -z $temp ]]; then
-    echo "%{F#65737E}$icon"       # Greyed out (not running)
+    echo "%{F#65737E}"       # Greyed out (not running)
 elif [[ $temp -ge 5000 ]]; then
-    echo "%{F#8FA1B3}$icon"       # Blue
+    echo "%{F#8FA1B3}"       # Blue
 elif [[ $temp -ge 4000 ]]; then
-    echo "%{F#EBCB8B}$icon"       # Yellow
+    echo "%{F#EBCB8B}"       # Yellow
 else
-    echo "%{F#D08770}$icon"       # Orange
+    echo "%{F#D08770}"       # Orange
 fi
 
 #+END_SRC
