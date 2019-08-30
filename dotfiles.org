@@ -632,6 +632,10 @@ bspc rule -a Peek state=floating
 bspc rule -a Zathura state=tiled
 #+END_SRC
 
+#+BEGIN_SRC sh :tangle (my/tangle-system '(work))
+bspc rule -a Firefox desktop='^7' follow=on
+#+END_SRC
+
 **** Status bar
 It was recomended in the polybar wiki,
 https://github.com/jaagr/polybar/wiki, to add a launch file which could be
