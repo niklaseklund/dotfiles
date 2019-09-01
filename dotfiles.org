@@ -1345,6 +1345,7 @@ label-occupied-padding = 1
 label-urgent-foreground = ${colors.red}
 label-empty = %icon%
 label-empty-foreground = ${colors.fg-alt}
+label-empty-padding = 1
 #+END_SRC
 
 ***** wifi
@@ -1361,7 +1362,7 @@ nmcli device | grep 'wifi ' | cut -d' ' -f1
 ;; Wifi
 [module/wlan]
 type = internal/network
-interface = wlp4s0
+interface = <<wifi-device()>>
 interval = 3.0
 ; labels
 format-connected = <ramp-signal>
