@@ -1210,9 +1210,8 @@ dpi-y = 96
 #+BEGIN_SRC sh :tangle (my/tangle-system '(arch)) :padline yes
 ;
 ;; Fonts
-font-0 = "Roboto Mono:style=Regular:size=8"
-font-1 = "Material Icons:style=Regular:size=8"
-font-2 = siji:size=8
+font-0 = "Tamsyn:pixelsize=12;0"
+font-1 = "siji:pixelsize=12;0"
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-system '(work)) :padline yes
