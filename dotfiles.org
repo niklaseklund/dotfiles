@@ -640,6 +640,18 @@ called from the ~bspwmrc~.
 ## Launch polybar
 $HOME/.config/polybar/launch.sh
 #+END_SRC
+**** Default desktop
+
+#+BEGIN_SRC sh :padline yes
+#
+## Set default desktop
+n_monitors="$(bspc query -M | wc -l)"
+if (( $n_monitors > 1 )); then
+    # multi monitor setup
+    bspc desktop -f ^2
+fi
+#+END_SRC
+
 **** Empty desktop shortcuts
 
 I got the idea and code from ~noctuid~ on how to implement empty desktop keybindings.
@@ -4128,9 +4140,15 @@ fi
 #+BEGIN_SRC sh
 # reload panel and empty desktop checker
 
+pkill -x bspc
+
 # set up home row navigation keybindings on empty desktops
+# make sure the script is run on the subscription events
 bspc subscribe desktop_focus node_add node_remove node_transfer \
     | xargs -n 1 ~/bin/bspwm/maybe_reload_sxhkd &
+
+# launch sxhkd
+~/bin/bspwm/maybe_reload_sxhkd &
 
 bspc rule -r '*'
 # https://github.com/baskerville/bspwm/issues/551
