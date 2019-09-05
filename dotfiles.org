@@ -672,6 +672,11 @@ super + grave
 #+END_SRC
 
 #+BEGIN_SRC sh
+super + e
+    emacs
+#+END_SRC
+
+#+BEGIN_SRC sh
 # make sxhkd reload its configuration files:
 super + Escape
 	pkill -USR1 -x sxhkd
