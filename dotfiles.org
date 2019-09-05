@@ -1030,7 +1030,7 @@ mark-ovredir-focused = false;
 detect-rounded-corners = true;
 detect-client-opacity = true;
 refresh-rate = 0;
-vsync = "none";
+vsync = false;
 focus-exclude = [ "class_g = 'Cairo-clock'" ];
 #+END_SRC
 
@@ -1042,7 +1042,6 @@ detect-client-leader = false;
 
 #+BEGIN_SRC sh
 invert-color-include = [ ];
-glx-swap-method = "undefined";
 wintypes:
 {
   tooltip = { fade = true; shadow = true; opacity = 0.75; focus = true; full-shadow = false; };
