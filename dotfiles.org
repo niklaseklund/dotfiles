@@ -285,8 +285,8 @@ use sed commands to set non hidpi dpi/font settings.
 # hidpi hack
 if [ "$(bspc query -M | wc -l)" -eq "1" ]; then
     # no external monitor connected, adjust to hidpi settings
-    sed -i '/font-[[:digit:]]./ {s/size=[[:digit:]]\+/size=8/; }' ~/.config/polybar/config
-    sed -i '/dpi-./ {s/[[:digit:]]\+/227/; }' ~/.config/polybar/config
+    # sed -i '/font-[[:digit:]]./ {s/size=[[:digit:]]\+/size=8/; }' ~/.config/polybar/config
+    # sed -i '/dpi-./ {s/[[:digit:]]\+/227/; }' ~/.config/polybar/config
     sed -i '/Xft.dpi:./ {s/[[:digit:]]\+/227/; }' ~/.Xresources
     sed -i '/URxvt*.\+ont./ {s/[[:digit:]]\+/8/; }' ~/.Xresources
     sed -i '/rofi.font./ {s/[[:digit:]]\+/8/; }' ~/.config/rofi/config
@@ -302,8 +302,8 @@ if [ "$(bspc query -M | wc -l)" -eq "1" ]; then
     xrandr --output eDP-1 --dpi 227
 else
     # external monitor connected, adjust to non hidpi settings
-    sed -i '/font-[[:digit:]]./ {s/size=[[:digit:]]\+/size=10/; }' ~/.config/polybar/config
-    sed -i '/dpi-./ {s/[[:digit:]]\+/96/; }' ~/.config/polybar/config
+    # sed -i '/font-[[:digit:]]./ {s/size=[[:digit:]]\+/size=10/; }' ~/.config/polybar/config
+    # sed -i '/dpi-./ {s/[[:digit:]]\+/96/; }' ~/.config/polybar/config
     sed -i '/Xft.dpi:./ {s/[[:digit:]]\+/96/; }' ~/.Xresources
     sed -i '/URxvt*.\+ont./ {s/[[:digit:]]\+/10/; }' ~/.Xresources
     sed -i '/rofi.font./ {s/[[:digit:]]\+/10/; }' ~/.config/rofi/config
@@ -1209,8 +1209,8 @@ dpi-y = 96
 #+BEGIN_SRC sh :tangle (my/tangle-system '(arch)) :padline yes
 ;
 ;; Fonts
-font-0 = "Tamsyn:pixelsize=12;0"
-font-1 = "siji:pixelsize=12;0"
+font-0 = "Misc Tamsyn:pixelsize=12;0"
+font-1 = "Wuncon Siji:pixelsize=12;0"
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (my/tangle-system '(work)) :padline yes
