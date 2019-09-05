@@ -694,6 +694,9 @@ super + grave
 
 #+BEGIN_SRC sh
 super + e
+    emacsclient -c -a ""
+
+super + shift + e
     emacs
 #+END_SRC
 
@@ -954,6 +957,9 @@ f
     firefox
 
 e
+    emacsclient -c -a ""
+
+shift + e
     emacs
 
 g
