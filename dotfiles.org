@@ -659,7 +659,7 @@ configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
 
 # terminal emulator
 super + Return
-	urxvt
+    urxvt
 #+END_SRC
 
 A dropdown terminal can come in handy, [[https://github.com/noctuid/tdrop][tdrop]] provides that. The parameters are
@@ -679,13 +679,13 @@ super + e
 #+BEGIN_SRC sh
 # make sxhkd reload its configuration files:
 super + Escape
-	pkill -USR1 -x sxhkd
+    pkill -USR1 -x sxhkd
 #+END_SRC
 
 Add a shortcut for launching a floating org-capture window
 #+BEGIN_SRC sh
 mod4 + ctrl + shift + grave
-	bspc rule -a 'Emacs' -o state=floating && org-capture
+    bspc rule -a 'Emacs' -o state=floating && org-capture
 #+END_SRC
 
 Add a shortcut for Emacs anywhere. Make it always appear tiled at the bottom
@@ -699,7 +699,7 @@ mod4 + apostrophe
 I have changed the application launcher from ~dmenu~ to ~rofi~.
 #+BEGIN_SRC sh
 super + space
-	rofi -show run
+    rofi -show run
 
 #+END_SRC
 
@@ -726,23 +726,23 @@ super + backslash
 
 # quit bspwm normally
 super + alt + Escape
-	bspc quit
+    bspc quit
 
 # close and kill
 super + {_,shift + }w
-	bspc node -{c,k}
+    bspc node -{c,k}
 
 # alternate between the tiled and monocle layout
 super + m
-	bspc desktop -l next
+    bspc desktop -l next
 
 # send the newest marked node to the newest preselected node
 super + y
-	bspc node newest.marked.local -n newest.!automatic.local
+    bspc node newest.marked.local -n newest.!automatic.local
 
 # swap the current node and the biggest node
 super + g
-	bspc node -s biggest
+    bspc node -s biggest
 
 #+END_SRC
 
@@ -755,11 +755,11 @@ super + g
 
 # set the window state
 super + {t,shift + t,s,f}
-	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+    bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
 # set the node flags
 super + ctrl + {m,x,y,z}
-	bspc node -g {marked,locked,sticky,private}
+    bspc node -g {marked,locked,sticky,private}
 
 #+END_SRC
 
@@ -771,33 +771,33 @@ super + ctrl + {m,x,y,z}
 
 # focus the node in the given direction
 super + {_,shift + }{h,j,k,l}
-	bspc node -{f,s} {west,south,north,east}
+    bspc node -{f,s} {west,south,north,east}
 
 # focus the node for the given path jump
 super + {p,b,comma,period}
-	bspc node -f @{parent,brother,first,second}
+    bspc node -f @{parent,brother,first,second}
 
 # focus the next/previous node in the current desktop
 super + {_,shift + }c
-	bspc node -f {next,prev}.local
+    bspc node -f {next,prev}.local
 
 # focus the next/previous desktop in the current monitor
 super + bracket{left,right}
-	bspc desktop -f {prev,next}.local
+    bspc desktop -f {prev,next}.local
 
 # focus the last node/desktop
 super + {grave,Tab}
-	bspc {node,desktop} -f last
+    bspc {node,desktop} -f last
 
 # focus the older or newer node in the focus history
 super + {o,i}
-	bspc wm -h off; \
-	bspc node {older,newer} -f; \
-	bspc wm -h on
+    bspc wm -h off; \
+    bspc node {older,newer} -f; \
+    bspc wm -h on
 
 # focus or send to the given desktop
 super + {_,shift + }{1-9,0}
-	bspc {desktop -f,node -d} '^{1-9,10}'
+    bspc {desktop -f,node -d} '^{1-9,10}'
 
 #+END_SRC
 
@@ -810,19 +810,19 @@ super + {_,shift + }{1-9,0}
 
 # preselect the direction
 super + ctrl + {h,j,k,l}
-	bspc node -p {west,south,north,east}
+    bspc node -p {west,south,north,east}
 
 # preselect the ratio
 super + ctrl + {1-9}
-	bspc node -o 0.{1-9}
+    bspc node -o 0.{1-9}
 
 # cancel the preselection for the focused node
 super + ctrl + space
-	bspc node -p cancel
+    bspc node -p cancel
 
 # cancel the preselection for the focused desktop
 super + ctrl + shift + space
-	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+    bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
 #+END_SRC
 
@@ -834,15 +834,15 @@ super + ctrl + shift + space
 
 # expand a window by moving one of its side outward
 super + alt + {h,j,k,l}
-	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+    bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
 
 # contract a window by moving one of its side inward
 super + alt + shift + {h,j,k,l}
-	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+    bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
 
 # move a floating window
 super + {Left,Down,Up,Right}
-	bspc node -v {-20 0,0 20,0 -20,20 0}
+    bspc node -v {-20 0,0 20,0 -20,20 0}
 #+END_SRC
 
 Resize the gaps in tiled layout. Found inspiration [[https://github.com/desyncr/bspwmrc/blob/master/sxhkdrc ][here]]
@@ -873,9 +873,9 @@ I want to be able to control the brightness of the screen. To my help I have
 # Brightness
 #
 XF86MonBrightnessDown
-	light -U 5
+    light -U 5
 XF86MonBrightnessUp
-	light -A 5
+    light -A 5
 #+END_SRC
 
 :PROPERTIES:
@@ -2134,7 +2134,7 @@ _rofi () {
 #+BEGIN_SRC sh
 # default command to generate passwords
 _pwgen () {
-	pwgen -y "$@"
+    pwgen -y "$@"
 }
 
 # image viewer to display qrcode of selected entry
@@ -2695,9 +2695,9 @@ path=<<home()>>/.mail
 # addressed. Valid settings are
 #
 #   name        Your full name.
-#	primary_email	Your primary email address.
-#	other_email	A list (separated by ';') of other email addresses
-#			at which you receive email.
+#   primary_email   Your primary email address.
+#   other_email     A list (separated by ';') of other email addresses
+#           at which you receive email.
 #
 # Notmuch will use the various email addresses configured here when
 # formatting replies. It will avoid including your own addresses in the
@@ -2725,15 +2725,15 @@ primary_email=niklas.carlsson@zenuity.com
 #
 # The following options are supported here:
 #
-#	tags	A list (separated by ';') of the tags that will be
-#		added to all messages incorporated by "notmuch new".
+#   tags    A list (separated by ';') of the tags that will be
+#       added to all messages incorporated by "notmuch new".
 #
-#	ignore	A list (separated by ';') of file and directory names
-#		that will not be searched for messages by "notmuch new".
+#   ignore  A list (separated by ';') of file and directory names
+#       that will not be searched for messages by "notmuch new".
 #
-#		NOTE: *Every* file/directory that goes by one of those
-#		names will be ignored, independent of its depth/location
-#		in the mail store.
+#       NOTE: *Every* file/directory that goes by one of those
+#       names will be ignored, independent of its depth/location
+#       in the mail store.
 #
 [new]
 tags=unread;inbox;
@@ -2743,10 +2743,10 @@ ignore=
 #
 # The following option is supported here:
 #
-#	exclude_tags
-#		A ;-separated list of tags that will be excluded from
-#		search results by default.  Using an excluded tag in a
-#		query will override that exclusion.
+#   exclude_tags
+#       A ;-separated list of tags that will be excluded from
+#       search results by default.  Using an excluded tag in a
+#       query will override that exclusion.
 #
 [search]
 exclude_tags=deleted;spam;
@@ -2755,22 +2755,22 @@ exclude_tags=deleted;spam;
 #
 # The following option is supported here:
 #
-#	synchronize_flags      Valid values are true and false.
+#   synchronize_flags      Valid values are true and false.
 #
-#	If true, then the following maildir flags (in message filenames)
-#	will be synchronized with the corresponding notmuch tags:
+#   If true, then the following maildir flags (in message filenames)
+#   will be synchronized with the corresponding notmuch tags:
 #
-#		Flag	Tag
-#		----	-------
-#		D	draft
-#		F	flagged
-#		P	passed
-#		R	replied
-#		S	unread (added when 'S' flag is not present)
+#       Flag    Tag
+#       ----    -------
+#       D   draft
+#       F   flagged
+#       P   passed
+#       R   replied
+#       S   unread (added when 'S' flag is not present)
 #
-#	The "notmuch new" command will notice flag changes in filenames
-#	and update tags, while the "notmuch tag" and "notmuch restore"
-#	commands will notice tag changes and update flags in filenames
+#   The "notmuch new" command will notice flag changes in filenames
+#   and update tags, while the "notmuch tag" and "notmuch restore"
+#   commands will notice tag changes and update flags in filenames
 #
 [maildir]
 synchronize_flags=true
@@ -2779,10 +2779,10 @@ synchronize_flags=true
 #
 # The following *deprecated* option is currently supported:
 #
-#	gpg_path
-#		binary name or full path to invoke gpg.
-#		NOTE: In a future build, this option will be ignored.
-#		Setting $PATH is a better approach.
+#   gpg_path
+#       binary name or full path to invoke gpg.
+#       NOTE: In a future build, this option will be ignored.
+#       Setting $PATH is a better approach.
 #
 [crypto]
 gpg_path=gpg
@@ -4224,8 +4224,8 @@ xinput -list | grep "Keyboard"
 #+END_SRC
 
 #+RESULTS:
-: ⎜   ↳ USB Keyboard                            	id=11	[slave  pointer  (2)]
-:     ↳ USB Keyboard                            	id=12	[slave  keyboard (3)]
+: ⎜   ↳ USB Keyboard                                id=11   [slave  pointer  (2)]
+:     ↳ USB Keyboard                                id=12   [slave  keyboard (3)]
 ** Remotely control tizonia
 
 To switch to the next song
