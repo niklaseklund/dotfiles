@@ -630,7 +630,6 @@ bspc rule -a Zathura state=tiled
 #+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 bspc rule -a Firefox desktop='^7' follow=on
 #+END_SRC
-
 **** Status bar
 It was recomended in the polybar wiki,
 https://github.com/jaagr/polybar/wiki, to add a launch file which could be
@@ -641,8 +640,18 @@ called from the ~bspwmrc~.
 ## Launch polybar
 $HOME/.config/polybar/launch.sh
 #+END_SRC
+**** Empty desktop shortcuts
+
+I got the idea and code from ~noctuid~ on how to implement empty desktop keybindings.
+
+#+BEGIN_SRC sh :padline yes
+#
+## Configure bindings
+rldbspc
+#+END_SRC
 
 *** sxhkd
+**** sxhkd default
 :PROPERTIES:
 :header-args: :tangle (my/tangle-system '(arch work) "~/.config/sxhkd/sxhkdrc") :mkdirp yes
 :END:
@@ -650,7 +659,7 @@ $HOME/.config/polybar/launch.sh
 I followed the instructions from the manual and copied over the example
 configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
 
-**** Independent hotkeys
+***** Independent hotkeys
 
 #+BEGIN_SRC sh
 #
@@ -694,7 +703,7 @@ mod4 + apostrophe
     emacsclient -e nil && bspc rule -a 'Emacs' -o split_ratio=0.7 state=tiled split_dir=south && emacs-anywhere
 #+END_SRC
 
-***** Application launcher
+****** Application launcher
 
 I have changed the application launcher from ~dmenu~ to ~rofi~.
 #+BEGIN_SRC sh
@@ -703,13 +712,13 @@ super + space
 
 #+END_SRC
 
-***** Lock
+****** Lock
 
 #+BEGIN_SRC sh :tangle (my/tangle-system '(work))
 @F2
     lock -n -p
 #+END_SRC
-***** Password
+****** Password
 
 Quickly search through my passwords
 
@@ -718,7 +727,7 @@ super + backslash
     rofi-pass
 #+END_SRC
 
-**** Hotkeys
+***** Hotkeys
 #+BEGIN_SRC sh
 #
 # bspwm hotkeys
@@ -746,7 +755,7 @@ super + g
 
 #+END_SRC
 
-**** State flags
+***** State flags
 
 #+BEGIN_SRC sh
 #
@@ -763,7 +772,7 @@ super + ctrl + {m,x,y,z}
 
 #+END_SRC
 
-**** Focus and swapping
+***** Focus and swapping
 #+BEGIN_SRC sh
 #
 # focus/swap
@@ -801,7 +810,7 @@ super + {_,shift + }{1-9,0}
 
 #+END_SRC
 
-**** Preselect
+***** Preselect
 
 #+BEGIN_SRC sh
 #
@@ -826,7 +835,7 @@ super + ctrl + shift + space
 
 #+END_SRC
 
-**** Move/resize
+***** Move/resize
 #+BEGIN_SRC sh
 #
 # move/resize
@@ -864,7 +873,7 @@ super + minus
     bspc config -d focused window_gap $((`bspc config -d focused window_gap` - 5 ))
 #+END_SRC
 
-**** Brightness
+***** Brightness
 
 I want to be able to control the brightness of the screen. To my help I have
 [[https://haikarainen.github.io/light/][light]].
@@ -887,7 +896,7 @@ two different ways of making a tangled file executable
 https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
 argument which will org will make sure to add the shebang and make the file
 executable.
-**** Record
+***** Record
 
 #+BEGIN_SRC sh
 #
@@ -896,7 +905,7 @@ executable.
 super + Print
     printscreen-primary.sh
 #+END_SRC
-**** Media
+***** Media
 
 #+BEGIN_SRC sh
 #
@@ -914,6 +923,35 @@ XF86AudioLowerVolume
 # mute
 XF86AudioMute
     pactl set-sink-mute @DEFAULT_SINK@ toggle
+#+END_SRC
+**** sxhkd empty
+:PROPERTIES:
+:header-args: :tangle (my/tangle-system '(arch work) "~/.config/sxhkd/empty_sxhkdrc") :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+# * Single-key Hotkeys
+# launcher
+space
+    rofi -show run
+
+u
+    urxvt
+
+f
+    firefox
+
+e
+    emacs
+
+g
+    urxvt -e gotop
+
+d
+    darktable
+
+p
+    rofi-pass
 #+END_SRC
 
 ** Compositor
@@ -4048,6 +4086,56 @@ ffmpeg -video_size "${WIDTH}x${HEIGHT}" \
     -f alsa -thread_queue_size 512 -i default \
     -c:v libx264 -crf 0 -preset ultrafast -framerate 25\
     $1
+#+END_SRC
+*** Maybe reload sxhkd
+:PROPERTIES:
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/bspwm/maybe_reload_sxhkd") :shebang "#!/bin/bash" :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+# switch bindings when changing from empty to occupied desktop and vice versa
+
+touch /tmp/bspwm-last-desktop-empty
+previously_empty=$(< /tmp/bspwm-last-desktop-empty)
+# helps when rapid close then open (e.g. tdrop's auto_hide):
+sleep 0.2
+
+nodes=$(bspc query --desktop --nodes)
+if [[ -n "$nodes" ]]; then
+    empty=false
+else
+    empty=true
+fi
+echo "$empty" > /tmp/bspwm-last-desktop-empty
+
+if [[ $previously_empty != "$empty" ]] || ! pgrep sxhkd &> /dev/null; then
+    pkill -x sxhkd
+    # since using mouse buttons as modifiers; see .sxhkdrc
+    # xdotool keyup control shift alt super
+    if $empty; then
+        sxhkd ~/.config/sxhkd/empty_sxhkdrc &>> /tmp/sxhkd.log &
+    else
+        sxhkd &>> /tmp/sxhkd.log &
+    fi
+fi
+#+END_SRC
+
+*** Reload checker
+:PROPERTIES:
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/rldbspc") :shebang "#!/usr/bin/env bash" :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+# reload panel and empty desktop checker
+
+# set up home row navigation keybindings on empty desktops
+bspc subscribe desktop_focus node_add node_remove node_transfer \
+    | xargs -n 1 ~/bin/bspwm/maybe_reload_sxhkd &
+
+bspc rule -r '*'
+# https://github.com/baskerville/bspwm/issues/551
+bspc rule -a Emacs state=tiled
+bspc rule -a Zathura state=tiled
 #+END_SRC
 
 * Utility applications
