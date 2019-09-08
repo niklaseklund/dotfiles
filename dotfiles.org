@@ -752,22 +752,39 @@ super + backslash
 super + alt + Escape
     bspc quit
 
-# close and kill
-super + {_,shift + }w
-    bspc node -{c,k}
+#+END_SRC
 
-# alternate between the tiled and monocle layout
+Close the current node
+#+BEGIN_SRC sh :padline
+# close current node
+super + w
+    bspc node -c
+
+# close all nodes on current desktop
+super + shift + w
+    bspc query -N -d | xargs -I id -n 1 bspc node id -c
+#+END_SRC
+
+#+BEGIN_SRC sh :padline
+# maximize the current node, close all others
 super + m
+    bspc-maximize
+#+END_SRC
+
+#+BEGIN_SRC sh
+# alternate between the tiled and monocle layout
+super + shift + m
     bspc desktop -l next
 
 # send the newest marked node to the newest preselected node
 super + y
     bspc node newest.marked.local -n newest.!automatic.local
+#+END_SRC
 
+#+BEGIN_SRC sh :tangle no
 # swap the current node and the biggest node
 super + g
     bspc node -s biggest
-
 #+END_SRC
 
 ***** State flags
@@ -788,27 +805,53 @@ super + ctrl + {m,x,y,z}
 #+END_SRC
 
 ***** Focus and swapping
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :padline yes
 #
 # focus/swap
 #
+#+END_SRC
 
-# focus the node in the given direction
-super + {_,shift + }{h,j,k,l}
-    bspc node -{f,s} {west,south,north,east}
+Use a more intuitive focus switching. This will switch to next node (or monitor)
+depending on if we are at the node edge of a desktop. With the extra modifer
+move directly to another monitor.
+#+BEGIN_SRC sh
+# focus/swap the node in the given direction
+super + {_,ctrl +}{h,j,k,l}
+    bspc-focus {_,-m }{west,south,north,east}
 
-# focus the node for the given path jump
-super + {p,b,comma,period}
-    bspc node -f @{parent,brother,first,second}
+#+END_SRC
 
+Improved swapping
+#+BEGIN_SRC sh
+super + shift + {_,ctrl +}{h,j,k,l}
+    bspc-swap {_,-m }{west,south,north,east}
+
+#+END_SRC
+
+#+BEGIN_SRC sh
 # focus the next/previous node in the current desktop
 super + {_,shift + }c
     bspc node -f {next,prev}.local
 
+#+END_SRC
+
+#+BEGIN_SRC sh
 # focus the next/previous desktop in the current monitor
 super + bracket{left,right}
     bspc desktop -f {prev,next}.local
 
+#+END_SRC
+
+Only moved to the next or previous dekstop that are actually occupied on the
+current monitor.
+#+BEGIN_SRC sh
+# focus the next/previous occupied desktop on the current monitor
+super + {n, p}
+    bspc-switch {_,-m}
+
+#+END_SRC
+
+#+BEGIN_SRC sh
 # focus the last node/desktop
 super + {grave,Tab}
     bspc {node,desktop} -f last
@@ -823,6 +866,13 @@ super + {o,i}
 super + {_,shift + }{1-9,0}
     bspc {desktop -f,node -d} '^{1-9,10}'
 
+#+END_SRC
+
+Move all the nodes on the current desktop to another desktop
+#+BEGIN_SRC sh
+# send all nodes to the given desktop
+super + shift + ctrl + {1-9,0}
+    bspc node -f @/ ; bspc node -d '^{1-9,10}'
 #+END_SRC
 
 ***** Preselect
@@ -4152,6 +4202,195 @@ bspc rule -r '*'
 # https://github.com/baskerville/bspwm/issues/551
 bspc rule -a Emacs state=tiled
 bspc rule -a Zathura state=tiled
+#+END_SRC
+*** bspwm focus
+:PROPERTIES:
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/bspc-focus") :shebang "#!/usr/bin/env bash" :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+# bspc-focus
+# Jump to the next window in a direction. If -m is supplied, jump to the next
+# monitor in that direction.
+#
+# Makes switching nodes more intuitive.
+#
+# Usage: bspc-focus [-m] (west|south|north|east)
+# Example:
+#   + bspc-focus south
+#   + bspc-focus -m west
+
+set -e
+
+leap=
+if [[ $1 == -m ]]; then
+    leap=1; shift
+fi
+dir=$1
+opposite=
+
+case $dir in
+    west)  opposite=east  ;;
+    east)  opposite=west  ;;
+    north) opposite=north ;;
+    south) opposite=south ;;
+    *) >&2 echo "Not a valid direction: $dir"
+        exit 1
+esac
+
+if [[ -n $leap ]]; then
+    # jump to monitor in direction
+    bspc monitor -f "$dir"
+else
+    # jump to window in direction (unless at edge of last monitor)
+    if ! bspc node -f "$dir.local"; then
+        if [[ $(bspc query -M -m "$dir") ]]; then
+            bspc monitor -f "$dir"
+            # Ensure we start at the edge of the window we arrived from
+            while bspc node -f "$opposite.local"; do :; done
+        fi
+    fi
+fi
+#+END_SRC
+*** bspwm swap
+:PROPERTIES:
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/bspc-swap") :shebang "#!/usr/bin/env bash" :mkdirp yes
+:END:
+
+#+BEGIN_SRC sh
+# bspc-swap
+# swaps current window with the next window in a direction. If -m is set, moves
+# window to the next monitor in that direction.
+#
+# Makes swapping nodes more intuitive.
+#
+# Usage: bspc-swap (west|south|north|east) (1|0)
+# Example:
+#   + bspc-swap south
+#   + bspc-swap -m west
+
+set -e
+
+leap=
+if [[ $1 == -m ]]; then
+    leap=1
+    dir=$2
+else
+    dir=$1
+fi
+
+case $dir in west|south|north|east) ;;
+    ,*) >&2 echo "Not a valid direction: $dir"
+        exit 1
+esac
+
+if [[ -n $leap ]]; then
+    # move window to monitor in direction
+    old_id=$(bspc query -N -n focused)
+    if [[ $(bspc query -M -m "$dir") ]]; then
+        bspc node -m "$dir"
+        bspc node -f "$old_id"
+    fi
+else
+    # move window in direction
+    old_id=$(bspc query -N -n focused)
+    if bspc node -s "$dir.local"; then
+        bspc node -f "$old_id"
+    elif [[ -n $(bspc query -M -m "$dir") ]]; then
+        bspc node -m "$dir"
+        bspc node -f "$old_id"
+    fi
+fi
+
+#+END_SRC
+*** bspwm switch
+:PROPERTIES:
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/bspc-switch") :shebang "#!/usr/bin/env python"
+:END:
+
+#+BEGIN_SRC python
+# -*- mode: python-*-
+
+import subprocess
+import sys
+
+def run(direction="next"):
+    # Get the id of the focused desktop
+    focused_id = subprocess.check_output(
+        "bspc query -D -d",
+        shell=True,
+        universal_newlines=True).strip().split()[0]
+
+    # Get the id of all desktops on the current monitor
+    monitor_desktop_ids = subprocess.check_output(
+        "bspc query -D -m",
+        shell=True,
+        universal_newlines=True).strip().split()
+
+    # Get all the desktop ids
+    all_desktop_ids = subprocess.check_output(
+        "bspc query -D",
+        shell=True,
+        universal_newlines=True).strip().split()
+
+    # See which index the current monitor has in the list
+    index = [i for i, x in enumerate(monitor_desktop_ids) if x == focused_id][0]
+
+    # Reorganize the list depending on the direction
+    # skip the current desktop, I don't need to check that
+    if direction == "next":
+        ordered_ids = monitor_desktop_ids[index+1:] + monitor_desktop_ids[0:index]
+    else:
+        ordered_ids = monitor_desktop_ids[index+1:] + monitor_desktop_ids[0:index]
+        ordered_ids = ordered_ids[::-1]
+
+
+    # Go through all the desktops until another occupied is found, or returned to the start
+    for desktop_id in ordered_ids:
+        command = "bspc query -N -d " + desktop_id
+        try:
+            # if the command is successful the desktop contrains nodes
+            subprocess.check_output(
+                command,
+                shell=True,
+                universal_newlines=True).strip().split()
+
+            # Switch desktop (find the corresponding id in the list of all desktops)
+            index = [i for i, x in enumerate(all_desktop_ids) if x == desktop_id][0]
+            # it's 1 based and not zero based, need to add a 1
+            command = "bspc desktop -f ^" + str(index + 1)
+            subprocess.check_output(
+                command,
+                shell=True,
+                universal_newlines=True)
+            break
+        except subprocess.CalledProcessError:
+            pass
+
+
+if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        if sys.argv[1] == '-m':
+            run(direction="previous")
+    else:
+        run(direction="next")
+#+END_SRC
+*** bspwm maximize
+:PROPERTIES:
+:header-args: :tangle (my/tangle-system '(arch work) "~/bin/bspc-maximize") :shebang "#!/usr/bin/env bash"
+:END:
+
+#+BEGIN_SRC sh
+nodes=$(bspc query -N -d)
+current_node=$(bspc query -N -n)
+root_node=$(bspc query -N -n @/)
+
+for node in $nodes; do
+    if [ "$node" != "$current_node" ] && [ "$node" != "$root_node" ]; then
+       bspc node "$node" -c
+    fi
+done
+
 #+END_SRC
 
 * Utility applications
