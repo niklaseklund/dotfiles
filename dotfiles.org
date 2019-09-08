@@ -2013,46 +2013,42 @@ export EA_CLIPBOARD=$content
 (get-string-from-file filename)
 #+END_SRC
 
-** Neovim
+** Vim
 :PROPERTIES:
-:header-args: :tangle (my/tangle-system '(arch work) "~/.config/nvim/init.vim") :mkdirp yes
+:header-args: :tangle (my/tangle-system '(arch work) "~/.vimrc") :mkdirp yes
 :END:
 
-[[https://github.com/neovim/neovim][Vim-fork focused on extensibility and usability]]
-
 *** Load plugins
+
 #+BEGIN_SRC text
 "
 "" Plugins
 
 " Install plugin manager
-if empty(glob('~/.config/nvim/autoload/plug.vim'))
-  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source ~/.config/nvim/init.vim
+  autocmd VimEnter * PlugInstall --sync | source ~/.vimrc
 endif
 
 " Load plugins
-call plug#begin(expand('~/.config/nvim/plugged'))
+call plug#begin(expand('~/.vim/plugged'))
+Plug 'tpope/vim-fugitive' " Integrate git
+Plug 'airblade/vim-gitgutter' " Git changes are seen in the gutter
 Plug 'tpope/vim-commentary' " Comments
 Plug 'tpope/vim-surround' " Change surrounding chars
-Plug 'tpope/vim-unimpaired' " Improve navigation
-Plug 'kana/vim-textobj-user' " Enable custom text objects
-Plug 'kana/vim-textobj-indent' " Indentation text object
-Plug 'sgur/vim-textobj-parameter' " Function argument text object
 Plug 'justinmk/vim-sneak' " Snipe characters with greater precision
-Plug 'tommcdo/vim-exchange' " Provide exchange object
-Plug 'qpkorr/vim-bufkill' " Improve buffer handling
-Plug 'Konfekt/FastFold' " Improve folding performance
+Plug 'junegunn/fzf.vim'
 call plug#end()
 #+END_SRC
 
 *** Vim core settings
+
 #+BEGIN_SRC text
+
 
 "
 "" Vim core settings
-
 syntax enable " Enable syntax highlighting
 set number " Show line number
 set updatetime=100 " Decrease update time from 4s to 0.1 s, useful for gutter
@@ -2065,21 +2061,21 @@ set splitbelow splitright " Set Split behavior
 set mouse=a "Enable mouse interaction
 set clipboard+=unnamedplus " Enable clipboard paste from other sources
 set equalalways " Keep windows equal
-set foldmethod=syntax " determine fold method
-set foldlevelstart=99 " start unfolded
 set tabstop=4 shiftwidth=4 expandtab
 set ignorecase smartcase " smart case enabled
-set inccommand=nosplit " Get live visualization of substitution (Neovim exclusive)
 set background=dark " Dark theme
+#+END_SRC
+
+*** Keybindings
+
+#+BEGIN_SRC text
+"
+"" Keybindings
 " Define leader key
-let mapleader=","
-" Autoread when switching buffer or Vim got the focus again
-au FocusGained,BufEnter * :checktime
+let mapleader="\<space>"
 " Mappings
 " Harmonize Y behavior with (C, D)
 map Y y$
-"" Remap t/f movement in reverse direction
-noremap \ ,
 " Change mark behavior to position rather than line
 " Improve search behavior
 nnoremap n nzzzv
@@ -2092,9 +2088,23 @@ inoremap jk <ESC>
 inoremap Jk <ESC>
 inoremap JK <ESC>
 inoremap jK <ESC>
-" Macro, fast access to macro q
-nmap Q @q
+" Git
+nnoremap <silent> <leader>gR :Gread<CR>
+nmap <leader>gs <Plug>GitGutterStageHunk
+nmap <leader>gr <Plug>GitGutterUndoHunk
+nmap <leader>g[ <Plug>GitGutterPrevHunk
+nmap <leader>g] <Plug>GitGutterNextHunk
+" Fzf
+nnoremap <silent> <leader>/b :BLines<CR>
+nnoremap <silent> <Leader><leader> :Files <CR>
+nnoremap <leader>/p :Rg<Space>
+" Buffers
+nnoremap <silent> <leader>, :Buffers<CR>
 " Windows
+nnoremap <silent> <C-h> <C-w>h
+nnoremap <silent> <C-j> <C-w>j
+nnoremap <silent> <C-k> <C-w>k
+nnoremap <silent> <C-l> <C-w>l
 nnoremap <silent> <leader>wh <C-w>h
 nnoremap <silent> <leader>wj <C-w>j
 nnoremap <silent> <leader>wk <C-w>k
@@ -2110,34 +2120,11 @@ nnoremap <silent> <leader>wp <C-w>p
 nnoremap <silent> <leader>ws <C-w>s <C-w>p
 nnoremap <silent> <leader>wS <C-w>s
 nnoremap <silent> <leader>wd <C-w>c
-" Built in terminal
-nnoremap <leader>ot :term<CR>
-" Open a terminal in a popup window
+
 " Quiting
 nnoremap <silent> <leader>qq :qall!<CR>
-" Disable current highlight search
-nnoremap <silent> <Esc> :noh<CR>
-#+END_SRC
-
-*** Customize plugins
-#+BEGIN_SRC text
-"
-"" Customize plugins
-
-" Kill current buffer
-nnoremap <silent> <leader>bk :BD!<CR>
-" Move to previous buffer
-nnoremap <silent> <leader>b[ :BB<CR>
-" Move to next buffer
-nnoremap <silent> <leader>b] :BF<CR>
-" Create a new empty buffer
-nnoremap <silent> <leader>bn :enew<CR>
-" vim-textobj-parameter
-let g:vim_textobj_parameter_mapping = 'a'
-" Exchange
-nmap gx <Plug>(Exchange)
-nmap gxc <Plug>(ExchangeClear)
-nmap gxx <Plug>(ExchangeLine)
+" Saving
+nnoremap <silent> <leader>fs :w!<CR>
 #+END_SRC
 
 *** Status line
@@ -3188,6 +3175,11 @@ alias bd=". bd -si"
 Set ~d~ to ~ranger~. Gives a similar behavior to my ~eshell~ setup.
 #+BEGIN_SRC sh
 alias d="ranger"
+#+END_SRC
+
+Set ~f~ to ~vim~
+#+BEGIN_SRC sh
+alias f="vim"
 #+END_SRC
 
 **** Tmux
