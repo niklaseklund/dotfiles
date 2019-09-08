@@ -679,8 +679,12 @@ configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
 #
 
 # terminal emulator
-super + Return
+super + shift + Return
     urxvt
+
+# (e)shell
+super + Return
+    emacsclient -c -e '(+eshell/here)'
 #+END_SRC
 
 A dropdown terminal can come in handy, [[https://github.com/noctuid/tdrop][tdrop]] provides that. The parameters are
@@ -695,9 +699,6 @@ super + grave
 #+BEGIN_SRC sh
 super + e
     emacsclient -c -a ""
-
-super + shift + e
-    emacs
 #+END_SRC
 
 #+BEGIN_SRC sh
@@ -1013,13 +1014,28 @@ shift + e
     emacs
 
 g
-    urxvt -e gotop
+    urxvt -e glances
 
 d
-    darktable
+    emacsclient -c -e '(dired-jump)'
+
+s
+    emacsclient -c -e '(+eshell/here)'
+
+c
+    emacsclient -c -e '(erc)'
+
+a
+    emacsclient -c -e '(org-agenda-list)'
+
+m
+    emacsclient -c -e '(notmuch-search "tag:inbox")'
 
 p
     rofi-pass
+
+x
+    bspc rule -a hidden=on
 #+END_SRC
 
 ** Compositor
