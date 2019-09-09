@@ -758,7 +758,7 @@ super + alt + Escape
 Close the current node
 #+BEGIN_SRC sh :padline
 # close current node
-super + w
+super + shift + q
     bspc node -c
 
 # close all nodes on current desktop
