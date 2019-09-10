@@ -1019,6 +1019,9 @@ g
 d
     emacsclient -c -e '(dired-jump)'
 
+r
+    emacsclient -c -e '(elfeed)'
+
 s
     emacsclient -c -e '(+eshell/here)'
 
