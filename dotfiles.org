@@ -437,12 +437,12 @@ This is the more hardcoded setup for my work station
 #+BEGIN_SRC sh :tangle (nc/tangle-system '(work))
 MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
 if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
+    # Left
+    xrandr --output eDP-1-1 --dpi 96 --scale 0.75x0.75
     # Center
     xrandr --output $EXTERNAL_MONITOR --primary --right-of eDP-1-1 --auto
     # Right
     xrandr --output DP-1-1-1 --right-of $EXTERNAL_MONITOR --auto
-    # Left
-    xrandr --output eDP-1-1 --dpi 96 --scale 1.25 1.25 --left-of $EXTERNAL_MONITOR --auto
 else
     # Center
     xrandr --output eDP-1-1 --primary --auto
@@ -3965,6 +3965,24 @@ convert $OUTPUT -scale '50%' $OUTPUT
 videoglitch -c gm $OUTPUT $OUTPUT
 convert $OUTPUT -scale '200%' $OUTPUT
 i3lock -i $OUTPUT -t
+#+END_SRC
+*** Emacs lock
+:PROPERTIES:
+:header-args: :tangle (nc/tangle-system '(arch work) "~/bin/my-lock") :shebang "#!/usr/bin/env bash"
+:END:
+
+The utility [[https://github.com/leonnnn/pyxtrlock][pyxtrlock]] basically locks the screen by grabbing all of the mouse
+and keyboard input. The windows that are currently displayed will still be
+visible. One can run the mode ~zone~ on the Emacs buffers to obfuscate the
+content.
+
+This wrapper script is necessary on my work computer because the pyenv is not
+correctly setup to work with all dependencies of pyxtrlock. I got it to work on
+the system Python setup though.
+
+#+BEGIN_SRC sh
+export PYENV_VERSION=system
+pyxtrlock
 #+END_SRC
 
 *** Vpn utility :vpn:
