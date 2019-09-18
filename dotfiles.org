@@ -4429,6 +4429,33 @@ for node in $nodes; do
 done
 
 #+END_SRC
+*** vlccast
+:PROPERTIES:
+:header-args: :tangle (nc/tangle-system '(arch) "~/bin/vlccast") :shebang "#!/bin/bash"
+:END:
+
+
+On my machine VLC fails to connect to chromecast. If I specify the IP it fails
+to connect because of certificate errors. I can manually download the
+certificate but it is only valid for 2 days. This little script gets it all
+working.
+
+Set your ip address below and call this script with the filename.
+#+BEGIN_SRC sh
+CHROMECAST_IP=192.168.1.133
+#+END_SRC
+
+Make the certificate and move it to certificates folder.
+#+BEGIN_SRC sh :tangle no
+# gnutls-cli --save-cert=chromecast.pem --insecure $CHROMECAST_IP:8009
+# mkdir -p ~/.local/share/vlc/certs
+# mv chromecast.pem ~/.local/share/vlc/certs
+#+END_SRC
+
+Use the ncurses interface.
+#+BEGIN_SRC sh
+nvlc "$1" --sout "#chromecast"  --gnutls-dir-trust=/home/$USER  --sout-chromecast-ip=$CHROMECAST_IP --demux-filter=demux_chromecast
+#+END_SRC
 
 * Utility applications
 ** Screen color temperature
