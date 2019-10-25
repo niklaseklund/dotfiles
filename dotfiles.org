@@ -1944,83 +1944,6 @@ exec /usr/bin/pinentry-curses "$@"
 #+END_SRC
 
 * Media
-** Browser
-
-For now Firefox is my browser. I keep my eyes on the development of the
-common-lisp based [[https://github.com/atlas-engineer/next][next browser]].
-
-*** Finding the profile directory
-
-The tricky aspect with tangling this configuration file is that the path to the
-~profile directory~, in which this file should be tangled, is dynamic. It varies
-from computer to computer. Now maybe I could have done this with some regexp
-directly, I am not sure, but it was quite easy to just write an ~Elisp~ function
-that could be used in the tangling process.
-
-#+BEGIN_SRC elisp :tangle no
-(defun my/firefox-profile-directory ()
-  "Find the path to the Firefox profile directory where settings recide."
-  (let ((profile-directory '())
-        (firefox-path (expand-file-name "~/.mozilla/firefox/")))
-    (with-temp-buffer (shell-command (concat "ls " firefox-path) t)
-                      (goto-char (point-min))
-                      (while (not (eobp))
-                          (let ((content (string-trim (thing-at-point 'line))))
-                            (if (string-match "default" content)
-                                (setq profile-directory (concat firefox-path content))))
-                          (forward-line 1)))
-    profile-directory))
-#+END_SRC
-
-*** Minimal looks
-:PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) (concat (my/firefox-profile-directory) "/chrome/userChrome.css")) :mkdirp yes
-:END:
-
-I created [[https://niklascarlsson.github.io/posts/a-minimalists-firefox/][a blog post]] on where I found this configuration and what it does.
-
-#+BEGIN_SRC sh
-/*
- * Do not remove the @namespace line -- it's required for correct functioning
- */
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* set default namespace to XUL */
-
-/*
- * Hide tab bar, navigation bar and scrollbars
- * !important may be added to force override, but not necessary
- */
-#TabsToolbar {visibility: collapse;}
-#navigator-toolbox {visibility: collapse;}
-#content browser {margin-right: -14px; margin-bottom: -14px;}
-#+END_SRC
-
-Getting rid of the status bar
-#+BEGIN_SRC sh
-/* Suppress Connecting/Waiting/Reading/Transerring */
-#statuspanel[type="status"] {
-  display: none !important;
-}
-/* Suppress Link Destination Overlay */
-#statuspanel[type="overLink"] {
-  display: none !important;
-}
-
-window[inFullscreen="true"] #statuspanel {
-bottom: 0px !important; /* adjust*/
-height: 0px !important; /* adjust */
-}
-#+END_SRC
-
-#+BEGIN_SRC sh
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* only needed once */
-
-statuspanel[type="status"] .statuspanel-label {display:none!important;}
-#+END_SRC
-
-*** Keyboard driven
-
-Tridactyl. Need to add how to customize the colors.
-
 ** Music
 *** Tizonia
 
@@ -2236,6 +2159,131 @@ Control the paddings
 set statusbar-h-padding 0
 set statusbar-v-padding 0
 set page-padding 1
+#+END_SRC
+
+* Browser
+
+** Firefox
+Firefox is my browser. I keep my eyes on the development of the common-lisp
+based [[https://github.com/atlas-engineer/next][next browser]].
+
+*** Finding the profile directory
+
+The tricky aspect with tangling this configuration file is that the path to the
+~profile directory~, in which this file should be tangled, is dynamic. It varies
+from computer to computer. Now maybe I could have done this with some regexp
+directly, I am not sure, but it was quite easy to just write an ~Elisp~ function
+that could be used in the tangling process.
+
+#+BEGIN_SRC elisp :tangle no
+(defun my/firefox-profile-directory ()
+  "Find the path to the Firefox profile directory where settings recide."
+  (let ((profile-directory '())
+        (firefox-path (expand-file-name "~/.mozilla/firefox/")))
+    (with-temp-buffer (shell-command (concat "ls " firefox-path) t)
+                      (goto-char (point-min))
+                      (while (not (eobp))
+                          (let ((content (string-trim (thing-at-point 'line))))
+                            (if (string-match "default" content)
+                                (setq profile-directory (concat firefox-path content))))
+                          (forward-line 1)))
+    profile-directory))
+#+END_SRC
+
+*** Minimal looks
+:PROPERTIES:
+:header-args: :tangle (nc/tangle-system '(arch work) (concat (my/firefox-profile-directory) "/chrome/userChrome.css")) :mkdirp yes
+:END:
+
+I created [[https://niklascarlsson.github.io/posts/a-minimalists-firefox/][a blog post]] on where I found this configuration and what it does.
+
+#+BEGIN_SRC sh
+/*
+ * Do not remove the @namespace line -- it's required for correct functioning
+ */
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* set default namespace to XUL */
+
+/*
+ * Hide tab bar, navigation bar and scrollbars
+ * !important may be added to force override, but not necessary
+ */
+#TabsToolbar {visibility: collapse;}
+#navigator-toolbox {visibility: collapse;}
+#content browser {margin-right: -14px; margin-bottom: -14px;}
+#+END_SRC
+
+Getting rid of the status bar
+#+BEGIN_SRC sh
+/* Suppress Connecting/Waiting/Reading/Transerring */
+#statuspanel[type="status"] {
+  display: none !important;
+}
+/* Suppress Link Destination Overlay */
+#statuspanel[type="overLink"] {
+  display: none !important;
+}
+
+window[inFullscreen="true"] #statuspanel {
+bottom: 0px !important; /* adjust*/
+height: 0px !important; /* adjust */
+}
+#+END_SRC
+
+#+BEGIN_SRC sh
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* only needed once */
+
+statuspanel[type="status"] .statuspanel-label {display:none!important;}
+#+END_SRC
+
+*** Keyboard driven
+
+Tridactyl. Need to add how to customize the colors.
+
+** TODO Next
+:PROPERTIES:
+:header-args: :mkdirp t :tangle ~/.config/next/init.lisp
+:END:
+
+For the time being I don't prioritize to delve into ~Next~. But I have tried out
+the following configuration. And it worked quite nicely with ~Vi-bindings~.
+
+There are some things like the handling of ~input boxes~ that I miss from my
+Firefox setup. And although I am excited about the possibilities of hacking
+through ~sly~ it seems like ~slime/swank~ might be what is working for now cause
+I can't get it to connect properly.
+
+#+BEGIN_SRC common-lisp
+(in-package :next)
+
+;;
+;; Init
+
+;; I needed to add this to get the rest of the code to work
+(setf (get-default 'port 'path)
+      "/usr/bin/next-gtk-webkit")
+
+;;
+;; VI-mode
+
+;; Add VI-mode to the list of default modes
+(defun my-buffer-defaults (buffer)
+  (pushnew 'vi-normal-mode (default-modes buffer)))
+
+(defun my-interface-defaults ()
+  (hooks:add-to-hook (hooks:object-hook *interface* 'buffer-make-hook)
+                     #'my-buffer-defaults))
+
+(hooks:add-to-hook '*after-init-hook* #'my-interface-defaults)
+
+;;
+;; Git
+
+;; user-name for different forges
+(setf next/vcs:*vcs-usernames-alist* '(("github.com" . "niklascarlsson")
+                                       ("gitlab.com" . "niklascarlsson")))
+
+;; download locations
+(setf next/vcs:*vcs-projects-roots* '("~/src" "~/opensource"))
 #+END_SRC
 
 * Mail
