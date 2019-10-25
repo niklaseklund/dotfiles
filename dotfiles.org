@@ -383,662 +383,243 @@ It's therefore important to set this environmental variable, which I do in
 XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CONFIG_HOME
 #+END_SRC
+** Window Manager
 
-** Window manager
+[[https://github.com/stumpwm/stumpwm][Stumpwm, the emacs of WMs]]
 
-[[https://github.com/baskerville/bspwm][bspwm, a tiling window manager]]. The ~bspwm~ window manager relies upon
-[[https://github.com/baskerville/sxhkd][sxhkd, an X daemon]] which is where the keybindings are specified.
-
-*** bspwm
+*** config
 :PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "~/.config/bspwm/bspwmrc") :shebang "#!/usr/bin/env zsh" :mkdirp yes :padline no
+:header-args: :mkdirp t :tangle ~/.config/stumpwm/config
 :END:
 
-**** Monitors and desktops
-***** Define the primary monitor
-
-I will start by setting up the correct monitor to be primary using ~randr~. The
-benefit of that is that I later can just refer to the primary monitor, for
-example to only put the polybar on the primary. Or use other type of bars for
-the ones that ain't primary.
-
-First step is to define the name of the primary. If there are no screens
-connected then the internal screen will automatically be set to primary which
-means that I don't need to do antyhing more.
-
-
-This is my primary monitor for my ~ubuntu~ setup
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(work)) :padline yes
-#
-## Monitor setup
-EXTERNAL_MONITOR="DP-1-1-8"
-#+END_SRC
-
-This is my primary monitor for my ~arch~ setup
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(arch)) :padline yes
-#
-## Monitor setup
-EXTERNAL_MONITOR="DP-2"
-#+END_SRC
-
-***** Setup the screen layout
-
-Setup for external monitors. I found inspiration on how to find out wether the
-external monitor is among the items in the list [[https://stackoverflow.com/questions/8063228/how-do-i-check-if-a-variable-exists-in-a-list-in-bash][here]]
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(arch))
-MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
-if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
-    # if external monitor is connected set it to primary
-    xrandr --output $EXTERNAL_MONITOR --primary
-fi
-#+END_SRC
-
-This is the more hardcoded setup for my work station
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(work))
-MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
-if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
-    # Left
-    xrandr --output eDP-1-1 --dpi 96 --scale 0.75x0.75
-    # Center
-    xrandr --output $EXTERNAL_MONITOR --primary --right-of eDP-1-1 --auto
-    # Right
-    xrandr --output DP-1-1-1 --right-of $EXTERNAL_MONITOR --auto
-else
-    # Center
-    xrandr --output eDP-1-1 --primary --auto
-fi
-#+END_SRC
-
-***** Distribute workspaces among the screens
-
-The distribution of desktops in bspwm seems very powerful and customizable but I
-have a hard time figuring out how it really works. It seems like the names are
-not necessarily connected to how I can access them.
-
-For example giving the primary monitor dekstops 1-5 below doesn't mean that I
-will use ~super+{1...5}~ to access those. Because there will be a screen to the
-left of the primary monitor and that one will get one dekstop that I will access
-with the ~super+1~. So the primary monitor becomes shifted by one.
-
-#+BEGIN_SRC sh :padline yes
-#
-## Workspace distribution
-export MONITOR=$(xrandr -q | grep primary | grep ' connected' | cut -d' ' -f1)
-export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
-MONITOR=${MONITOR:-${MONITORS[1]}}
-bspc monitor $MONITOR -d {1,2,3,4,5}
-for mon in ${MONITORS[@]/${MONITOR}}; do
-    bspc monitor $mon -d $mon/1
-done
-#+END_SRC
-
-Using the above code on my 3-monitor setup yields the following desktop names:
-#+BEGIN_SRC sh :results output :tangle no
-bspc query -D --names
-#+END_SRC
-
-#+RESULTS:
-: eDP-1-1/1
-: 1
-: 2
-: 3
-: 4
-: 5
-: DP-1-1-1/1
-
-**** The look
-
-These settings are from hlissner's setup
-#+BEGIN_SRC sh :padline yes
-#
-## Looks
-bspc config split_ratio          0.50
-bspc config gapless_monocle      true
-bspc config borderless_monocle   true
-bspc config paddingless_monocle  true
-
-bspc config pointer_modifier mod4
-bspc config pointer_action1 move
-bspc config pointer_action2 resize_side
-bspc config pointer_action3 resize_corner
-
-bspc config remove_disabled_monitors false
-bspc config remove_unplugged_monitors true
-
-bspc config border_width    0
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(arch))
-bspc config window_gap      50
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(work))
-bspc config window_gap      30
-#+END_SRC
-
-#+BEGIN_SRC sh
-bspc config top_padding     0
-bspc config bottom_padding  0
-bspc config left_padding    0
-bspc config right_padding   0
-#+END_SRC
-
-To make it possible to use youtube in fullscreen tiled mode
-[[https://www.reddit.com/r/bspwm/comments/a4ju19/youtube_video_in_fullscreen_tiled_mode/][a thread about the issue]]
-#+BEGIN_SRC sh
-bspc config ignore_ewmh_fullscreen all
-#+END_SRC
-
-Settings for the primary monitor
-#+BEGIN_SRC sh
-export MONITOR=$(xrandr -q | grep 'primary' | cut -d' ' -f1)
-
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(arch))
-bspc config -m $MONITOR window_gap     50
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(work))
-bspc config -m $MONITOR window_gap     30
-#+END_SRC
-
-This sets the padding value. If it's matched to the ~height~ value in ~polybar~
-config the bar will be shown even if the window is in a full screen mode.
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(arch))
-bspc config -m $MONITOR bottom_padding 40
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(work))
-bspc config -m $MONITOR bottom_padding 30
-#+END_SRC
-
-#+BEGIN_SRC sh
-bspc config -m $MONITOR top_padding    0
-bspc config -m $MONITOR left_padding   0
-bspc config -m $MONITOR right_padding  0
-#+END_SRC
-
-***** Selection color
-
-#+BEGIN_SRC sh :tangle no
-# Set the border colors.
-# bspc config normal_border_color "$color1"
-# bspc config active_border_color "$color2"
-# bspc config focused_border_color "$color15"
-#+END_SRC
-
-Use the line below if you are on bspwm >= 0.9.4
-#+BEGIN_SRC sh
-bspc config presel_feedback_color "$color1"
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle no
-# Use the line below if you are on bspwm < 0.9.4
-#bspc config presel_border_color "$color1"
-#+END_SRC
-
-**** Default window rules
-
-#+BEGIN_SRC sh :padline yes
-#
-## Custom rules
-bspc rule -a Gimp desktop='^8' state=floating follow=on
-bspc rule -a Chromium desktop='^2'
-bspc rule -a mplayer2 state=floating
-bspc rule -a Kupfer.py focus=on
-bspc rule -a Screenkey manage=off
-bspc rule -a URxvt state=tiled
-#+END_SRC
-**** Custom window rules
-
-***** How to know what to name to use for the rule
-I want peek to be floating as it's suppose to record what is underneath it.
-This code did however not work
-#+BEGIN_SRC sh :tangle no
-bspc rule -a peek state=floating
-#+END_SRC
-
-But consulting the [[https://wiki.archlinux.org/index.php/bspwm#Rules][arch wiki]] I found that I need to make sure I provide the
-right class name. To figure that out run the following command and click on the
-window of the application you want to add a rule for.
-#+BEGIN_SRC sh :tangle no
-# run it in the terminal not here
-xprop | grep WM_CLASS                                                                                                                                                                  ~
-#+END_SRC
-
-The output when clicking on the top of the ~Peek~ window is
-#+BEGIN_EXAMPLE
-WM_CLASS(STRING) = "peek", "Peek"
-#+END_EXAMPLE
-
-***** Rules
-
-#+BEGIN_SRC sh
-bspc rule -a 'Emacs:org*' state=floating
-bspc rule -a Emacs split_ratio=0.5 border=off state=tiled
-#+END_SRC
-
-#+BEGIN_SRC sh
-bspc rule -a Peek state=floating
-#+END_SRC
-
-#+BEGIN_SRC sh
-bspc rule -a Zathura state=tiled
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(work))
-bspc rule -a Firefox desktop='^7' follow=on
-#+END_SRC
-**** Status bar
-It was recomended in the polybar wiki,
-https://github.com/jaagr/polybar/wiki, to add a launch file which could be
-called from the ~bspwmrc~.
-
-#+BEGIN_SRC sh :padline yes
-#
-## Launch polybar
-$HOME/.config/polybar/launch.sh
-#+END_SRC
-**** Default desktop
-
-#+BEGIN_SRC sh :padline yes
-#
-## Set default desktop
-n_monitors="$(bspc query -M | wc -l)"
-if (( $n_monitors > 1 )); then
-    # multi monitor setup
-    bspc desktop -f ^2
-fi
-#+END_SRC
-
-**** Empty desktop shortcuts
-
-I got the idea and code from ~noctuid~ on how to implement empty desktop keybindings.
-
-#+BEGIN_SRC sh :padline yes
-#
-## Configure bindings
-rldbspc
-#+END_SRC
-
-*** sxhkd
-**** sxhkd default
-:PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "~/.config/sxhkd/sxhkdrc") :mkdirp yes
-:END:
-
-I followed the instructions from the manual and copied over the example
-configuration from ~/usr/share/doc/bspwm/examples/sxhkdrc/~.
-
-***** Independent hotkeys
-
-#+BEGIN_SRC sh
-#
-# wm independent hotkeys
-#
-
-# terminal emulator
-super + shift + Return
-    urxvt
-
-# (e)shell
-super + Return
-    emacsclient -c -e '(+eshell/here)'
-#+END_SRC
-
-A dropdown terminal can come in handy, [[https://github.com/noctuid/tdrop][tdrop]] provides that. The parameters are
-the following, a for autodection of the window manager, m for monitor awareness,
-s for creating a session named scratch and urxvt is the program that launches.
-#+BEGIN_SRC sh
-# dropdown terminal
-super + grave
-    tdrop -ma -s scratch urxvt
-#+END_SRC
-
-#+BEGIN_SRC sh
-super + e
-    emacsclient -c -a ""
-#+END_SRC
-
-#+BEGIN_SRC sh
-# make sxhkd reload its configuration files:
-super + Escape
-    pkill -USR1 -x sxhkd
-#+END_SRC
-
-Add a shortcut for launching a floating org-capture window
-#+BEGIN_SRC sh
-mod4 + ctrl + shift + grave
-    bspc rule -a 'Emacs' -o state=floating && org-capture
-#+END_SRC
-
-Add a shortcut for Emacs anywhere. Make it always appear tiled at the bottom
-#+BEGIN_SRC sh
-mod4 + apostrophe
-    emacsclient -e nil && bspc rule -a 'Emacs' -o split_ratio=0.7 state=tiled split_dir=south && emacs-anywhere
-#+END_SRC
-
-****** Application launcher
-
-I have changed the application launcher from ~dmenu~ to ~rofi~.
-#+BEGIN_SRC sh
-super + space
-    rofi -show run
-
-#+END_SRC
-
-****** Lock
-
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(work))
-@F2
-    lock -n -p
-#+END_SRC
-****** Password
-
-Quickly search through my passwords
-
-#+BEGIN_SRC sh
-super + backslash
-    rofi-pass
-#+END_SRC
-
-***** Hotkeys
-#+BEGIN_SRC sh
-#
-# bspwm hotkeys
-#
-
-# quit bspwm normally
-super + alt + Escape
-    bspc quit
-
-#+END_SRC
-
-Close the current node
-#+BEGIN_SRC sh :padline
-# close current node
-super + shift + q
-    bspc node -c
-
-# close all nodes on current desktop
-super + shift + w
-    bspc query -N -d | xargs -I id -n 1 bspc node id -c
-#+END_SRC
-
-#+BEGIN_SRC sh :padline
-# maximize the current node, close all others
-super + m
-    bspc-maximize
-#+END_SRC
-
-#+BEGIN_SRC sh
-# alternate between the tiled and monocle layout
-super + shift + m
-    bspc desktop -l next
-
-# send the newest marked node to the newest preselected node
-super + y
-    bspc node newest.marked.local -n newest.!automatic.local
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle no
-# swap the current node and the biggest node
-super + g
-    bspc node -s biggest
-#+END_SRC
-
-***** State flags
-
-#+BEGIN_SRC sh
-#
-# state/flags
-#
-
-# set the window state
-super + {t,shift + t,s,f}
-    bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
-
-# set the node flags
-super + ctrl + {m,x,y,z}
-    bspc node -g {marked,locked,sticky,private}
-
-#+END_SRC
-
-***** Focus and swapping
-#+BEGIN_SRC sh :padline yes
-#
-# focus/swap
-#
-#+END_SRC
-
-Use a more intuitive focus switching. This will switch to next node (or monitor)
-depending on if we are at the node edge of a desktop. With the extra modifer
-move directly to another monitor.
-#+BEGIN_SRC sh
-# focus/swap the node in the given direction
-super + {_,ctrl +}{h,j,k,l}
-    bspc-focus {_,-m }{west,south,north,east}
-
-#+END_SRC
-
-Improved swapping
-#+BEGIN_SRC sh
-super + shift + {_,ctrl +}{h,j,k,l}
-    bspc-swap {_,-m }{west,south,north,east}
-
-#+END_SRC
-
-#+BEGIN_SRC sh
-# focus the next/previous node in the current desktop
-super + {_,shift + }c
-    bspc node -f {next,prev}.local
-
-#+END_SRC
-
-#+BEGIN_SRC sh
-# focus the next/previous desktop in the current monitor
-super + bracket{left,right}
-    bspc desktop -f {prev,next}.local
-
-#+END_SRC
-
-Only moved to the next or previous dekstop that are actually occupied on the
-current monitor.
-#+BEGIN_SRC sh
-# focus the next/previous occupied desktop on the current monitor
-super + {n, p}
-    bspc-switch {_,-m}
-
-#+END_SRC
-
-#+BEGIN_SRC sh
-# focus the last node/desktop
-super + {grave,Tab}
-    bspc {node,desktop} -f last
-
-# focus the older or newer node in the focus history
-super + {o,i}
-    bspc wm -h off; \
-    bspc node {older,newer} -f; \
-    bspc wm -h on
-
-# focus or send to the given desktop
-super + {_,shift + }{1-9,0}
-    bspc {desktop -f,node -d} '^{1-9,10}'
-
-#+END_SRC
-
-Move all the nodes on the current desktop to another desktop
-#+BEGIN_SRC sh
-# send all nodes to the given desktop
-super + shift + ctrl + {1-9,0}
-    bspc node -f @/ ; bspc node -d '^{1-9,10}'
-#+END_SRC
-
-***** Preselect
-
-#+BEGIN_SRC sh
-#
-# preselect
-#
-
-# preselect the direction
-super + ctrl + {h,j,k,l}
-    bspc node -p {west,south,north,east}
-
-# preselect the ratio
-super + ctrl + {1-9}
-    bspc node -o 0.{1-9}
-
-# cancel the preselection for the focused node
-super + ctrl + space
-    bspc node -p cancel
-
-# cancel the preselection for the focused desktop
-super + ctrl + shift + space
-    bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
-
-#+END_SRC
-
-***** Move/resize
-#+BEGIN_SRC sh
-#
-# move/resize
-#
-
-# expand a window by moving one of its side outward
-super + alt + {h,j,k,l}
-    bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
-
-# contract a window by moving one of its side inward
-super + alt + shift + {h,j,k,l}
-    bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
-
-# move a floating window
-super + {Left,Down,Up,Right}
-    bspc node -v {-20 0,0 20,0 -20,20 0}
-#+END_SRC
-
-Resize the gaps in tiled layout. Found inspiration [[https://github.com/desyncr/bspwmrc/blob/master/sxhkdrc ][here]]
-#+BEGIN_SRC sh
-#
-# gaps
-#
-
-# change window gap at run time
-super + plus
-    bspc config -d focused window_gap $((`bspc config -d focused window_gap` + 5 ))
-
-# Restore original gap
-super + equal
-    bspc config top_padding 6; bspc config -d focused window_gap 15
-
-# decrease gap
-super + minus
-    bspc config -d focused window_gap $((`bspc config -d focused window_gap` - 5 ))
-#+END_SRC
-
-***** Brightness
-
-I want to be able to control the brightness of the screen. To my help I have
-[[https://haikarainen.github.io/light/][light]].
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(arch))
-#
-# Brightness
-#
-XF86MonBrightnessDown
-    light -U 5
-XF86MonBrightnessUp
-    light -A 5
-#+END_SRC
-
-:PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "~/.config/bspwm/bspwmrc") :shebang "#! /bin/sh" :mkdirp yes
-:END:
-
-With ~bspwmrc~ it's important that the file is executable. With tangle there are
-two different ways of making a tangled file executable
-https://orgmode.org/manual/tangle_002dmode.html. I will be using the ~shebang~
-argument which will org will make sure to add the shebang and make the file
-executable.
-***** Record
-
-#+BEGIN_SRC sh
-#
-# Record
-#
-super + Print
-    printscreen-primary.sh
-#+END_SRC
-***** Media
-
-#+BEGIN_SRC sh
-#
-## Audio
-#
-
-# raise volume
-XF86AudioRaiseVolume
-    pactl set-sink-volume @DEFAULT_SINK@ +5%
-
-# lower volume
-XF86AudioLowerVolume
-    pactl set-sink-volume @DEFAULT_SINK@ -5%
-
-# mute
-XF86AudioMute
-    pactl set-sink-mute @DEFAULT_SINK@ toggle
-#+END_SRC
-**** sxhkd empty
-:PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "~/.config/sxhkd/empty_sxhkdrc") :mkdirp yes
-:END:
-
-#+BEGIN_SRC sh
-# * Single-key Hotkeys
-# launcher
-space
-    rofi -show run
-
-u
-    urxvt
-
-f
-    firefox
-
-e
-    emacsclient -c -a ""
-
-shift + e
-    emacs
-
-g
-    urxvt -e glances
-
-d
-    emacsclient -c -e '(dired-jump)'
-
-r
-    emacsclient -c -e '(elfeed)'
-
-s
-    emacsclient -c -e '(+eshell/here)'
-
-c
-    emacsclient -c -e '(erc)'
-
-a
-    emacsclient -c -e '(org-agenda-list)'
-
-m
-    emacsclient -c -e '(notmuch-search "tag:inbox")'
-
-p
-    rofi-pass
-
-x
-    bspc rule -a hidden=on
+#+BEGIN_SRC common-lisp
+;; -*-lisp-*-
+;;
+;; Here is a sample .stumpwmrc file
+
+(in-package :stumpwm)
+
+;;
+;; Slynk
+(ql:quickload :slynk)
+(slynk:create-server :style slynk:*communication-style*
+                     :dont-close t
+                     :port 4010)
+
+
+;;
+;; Basics
+
+(setf *startup-message* NIL
+      ,*suppress-abort-messages* t
+      ,*shell-program* (getenv "SHELL"))
+
+(defvar *message-filters* '("Group dumped")
+  "Don't show the messages from winner-mode.")
+
+(defun message (fmt &rest args)
+  "Overwritten message function to allow filters"
+  (let ((msg-string (apply 'format nil fmt args)))
+    (unless (member msg-string *message-filters* :test #'string=)
+      (echo-string (current-screen) msg-string))))
+
+;;
+;; Modules
+
+;; Load
+(set-module-dir
+ (pathname-as-directory (concat (getenv "HOME") "/stumpwm")))
+(load-module "swm-gaps")
+(load-module "winner-mode")
+(load-module "command-history") ; save commands after quiting stump
+(load-module "end-session") ; gracefully shutdown
+
+;; Customize
+(add-hook *post-command-hook* (lambda (command)
+                                (when (member command winner-mode:*default-commands*)
+                                  (winner-mode:dump-group-to-file))))
+
+
+;;
+;; Gaps
+
+(setf swm-gaps:*head-gaps-size* 30) ;; Head gaps run along the 4 borders of the monitor(s)
+(setf swm-gaps:*inner-gaps-size* 10) ;; Inner gaps run along all the 4 borders of a window
+(setf swm-gaps:*outer-gaps-size* 30) ;; Outer gaps add more padding to the outermost borders of a window
+(eval-command "toggle-gaps")
+
+;;
+;; Looks
+(setf *message-window-gravity* :center
+      ,*input-window-gravity* :center
+      ,*window-border-style* :none
+      ,*message-window-padding* 10
+      ,*maxsize-border-width* 0
+      ,*normal-border-width* 0
+      ,*transient-border-width* 0
+      stumpwm::*float-window-border* 0
+      stumpwm::*float-window-title-height* 0
+      ,*mouse-focus-policy* :click)
+
+(set-normal-gravity :center)
+(set-maxsize-gravity :center)
+(set-transient-gravity :center)
+
+(set-fg-color "#eeeeee")
+(set-bg-color "#1C2028")
+(set-border-color "#232731")
+(set-focus-color "#3B4252")
+(set-unfocus-color "#232731")
+(set-win-bg-color "#22272F")
+(set-float-focus-color "#3B4252")
+(set-float-unfocus-color "#232731")
+
+(setf *colors* (list "#1C2028"      ; 0 black
+                     "#BF616A"      ; 1 red
+                     "#A3BE8C"      ; 2 green
+                     "#EBCB8B"      ; 3 yellow
+                     "#5E81AC"      ; 4 blue
+                     "#B48EAD"      ; 5 magenta
+                     "#8FBCBB"      ; 6 cyan
+                     "#ECEFF4"))    ; 7 white
+
+
+;;
+;; Functions
+(defun rofi (mode)
+  (run-shell-command (concat "rofi -show " mode)))
+
+
+;;
+;; Commands
+(defcommand rofi-run () () (rofi "run"))
+(defcommand rofi-window () () (rofi "window"))
+(defcommand colon1 (&optional (initial "")) (:rest)
+  (let ((cmd (read-one-line (current-screen) ": " :initial-input initial)))
+    (when cmd
+      (eval-command cmd t))))
+
+
+;;
+;; Keymaps
+;; TODO: Think about the way to split up things here. Frames and windows are
+;; tightly connected but they are different. Need to think about how that works.
+(defvar *my-frame-bindings*
+  (let ((m (stumpwm:make-sparse-keymap)))
+    (stumpwm:define-key m (stumpwm:kbd "s") "vsplit")
+    (stumpwm:define-key m (stumpwm:kbd "v") "hsplit")
+    (stumpwm:define-key m (stumpwm:kbd "c") "delete-window")
+    (stumpwm:define-key m (stumpwm:kbd "m") "only")
+    (stumpwm:define-key m (stumpwm:kbd "m") "only")
+    (stumpwm:define-key m (kbd "=") "balance-frames")
+    (stumpwm:define-key m (kbd "r") "iresize")
+    (stumpwm:define-key m (kbd "u") "winner-undo")
+    (stumpwm:define-key m (kbd "C-r") "winner-redo")
+    m ; NOTE: this is important
+  ))
+(stumpwm:define-key stumpwm:*top-map* (stumpwm:kbd "s-w") '*my-frame-bindings*)
+
+(defvar *my-groups-bindings*
+  (let ((m (stumpwm:make-sparse-keymap)))
+    (stumpwm:define-key m (kbd "g") "vgroups")
+    (stumpwm:define-key m (kbd "l") "gother")
+    (stumpwm:define-key m (kbd "k") "gkill")
+    (stumpwm:define-key m (kbd "c") "gnew")
+    (stumpwm:define-key m (kbd "r") "grename")
+    m ; NOTE: this is important
+  ))
+(stumpwm:define-key stumpwm:*top-map* (stumpwm:kbd "s-g") '*my-groups-bindings*)
+
+(defvar *my-open-bindings*
+  (let ((m (stumpwm:make-sparse-keymap)))
+    (stumpwm:define-key m (kbd "a") "exec emacsclient -c -e '(org-agenda-list)'")
+    (stumpwm:define-key m (kbd "c") "exec emacsclient -c -e '(erc)'")
+    (stumpwm:define-key m (kbd "m") "exec emacsclient -c -e '(notmuch-search \"tag:inbox\")'")
+    (stumpwm:define-key m (kbd "r") "exec emacsclient -c -e '(elfeed)'")
+    m ; NOTE: this is important
+  ))
+(stumpwm:define-key stumpwm:*top-map* (stumpwm:kbd "s-o") '*my-open-bindings*)
+
+;;
+;; Keybindings
+
+;; Commands
+(define-key *top-map* (kbd "s-;") "eval-line")
+(define-key *top-map* (kbd "s-:") "colon")
+(define-key *top-map* (kbd "s-&") "exec")
+;; Focus within frame
+(define-key *top-map* (kbd "s-n") "pull-hidden-next")
+(define-key *top-map* (kbd "s-p") "pull-hidden-previous")
+;; Focus windows
+(define-key *top-map* (kbd "s-h") "move-focus left")
+(define-key *top-map* (kbd "s-j") "move-focus down")
+(define-key *top-map* (kbd "s-k") "move-focus up")
+(define-key *top-map* (kbd "s-l") "move-focus right")
+;; Move windows
+(define-key *top-map* (kbd "s-H") "move-window left")
+(define-key *top-map* (kbd "s-J") "move-window down")
+(define-key *top-map* (kbd "s-K") "move-window up")
+(define-key *top-map* (kbd "s-L") "move-window right")
+;; Groups
+(define-key *top-map* (kbd "s-[") "gprev")
+(define-key *top-map* (kbd "s-]") "gnext")
+;; Rofi
+(define-key *top-map* (kbd "s-SPC") "rofi-run")
+(define-key *top-map* (kbd "s-\\") "exec rofi-pass")
+;; Programs
+(define-key *top-map* (kbd "s-e") "exec emacsclient -c -a \"\"")
+(define-key *top-map* (kbd "s-RET") "exec emacsclient -c -e '(+eshell/here)'")
+(define-key *top-map* (kbd "s-S-RET") "exec urxvt")
+(define-key *top-map* (kbd "s-b") "exec firefox")
+
+;; Message window font
+(set-font "-xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso8859-15")
+
+;;
+;; Window rules
+
+;; Clear rules
+(clear-window-placement-rules)
+
+;; Last rule to match takes precedence!
+;; TIP: if the argument to :title or :role begins with an ellipsis, a substring
+;; match is performed.
+;; TIP: if the :create flag is set then a missing group will be created and
+;; restored from *data-dir*/create file.
+;; TIP: if the :restore flag is set then group dump is restored even for an
+;; existing group using *data-dir*/restore file.
+(define-frame-preference "Default"
+  ;; frame raise lock (lock AND raise == jumpto)
+  (0 t nil :class "Konqueror" :role "...konqueror-mainwindow")
+  (1 t nil :class "XTerm"))
+
+(define-frame-preference "Ardour"
+  (0 t   t   :instance "ardour_editor" :type :normal)
+  (0 t   t   :title "Ardour - Session Control")
+  (0 nil nil :class "XTerm")
+  (1 t   nil :type :normal)
+  (1 t   t   :instance "ardour_mixer")
+  (2 t   t   :instance "jvmetro")
+  (1 t   t   :instance "qjackctl")
+  (3 t   t   :instance "qjackctl" :role "qjackctlMainForm"))
+
+(define-frame-preference "Shareland"
+  (0 t   nil :class "XTerm")
+  (1 nil t   :class "aMule"))
+
+;; Init
+(run-shell-command "xrdb -merge ~/.Xresources")
+(run-shell-command "feh --no-fehbg --image-bg black --bg-center ~/wallpaper")
+(run-shell-command "sh $HOME/bin/set-keymap")
+(run-shell-command "sh $HOME/bin/monitor-setup")
+
+
+;; Programs
+(run-shell-command "polybar main --reload")
+(run-shell-command "dunst")
+(run-shell-command "redshift")
+(run-shell-command "compton")
+(run-shell-command "xcape")
 #+END_SRC
 
 ** Compositor
