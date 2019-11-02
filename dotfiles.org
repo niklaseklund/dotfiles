@@ -540,6 +540,13 @@ export XDG_CONFIG_HOME
   ))
 (stumpwm:define-key stumpwm:*top-map* (stumpwm:kbd "s-o") '*my-open-bindings*)
 
+(defvar *my-toggle-bindings*
+  (let ((m (stumpwm:make-sparse-keymap)))
+    (stumpwm:define-key m (kbd "g") "toggle-gaps")
+    m ; NOTE: this is important
+  ))
+(stumpwm:define-key stumpwm:*top-map* (stumpwm:kbd "s-t") '*my-toggle-bindings*)
+
 ;;
 ;; Keybindings
 
