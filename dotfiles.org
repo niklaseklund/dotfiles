@@ -3235,6 +3235,7 @@ set -x NAME Niklas Carlsson
 set -x EDITOR vim
 set -x PAGER less
 set -x BROWSER firefox
+set -x SKIM_DEFAULT_OPTIONS '--color bw'
 #+END_SRC
 
 Paths:
