@@ -2668,7 +2668,7 @@ Make a function in Emacs to avoid deleting flagged emails.
 ** Zsh
 *** zshrc
 :PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "~/.zshrc") :mkdirp yes :padline no
+:header-args: :tangle (nc/tangle-system '(work) "~/.zshrc") :mkdirp yes :padline no
 :END:
 
 **** Remote editing
@@ -2996,7 +2996,7 @@ bindkey '^S' fzf-history-widget
 #+END_SRC
 
 ***** Keybindings
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(arch))
+#+BEGIN_SRC sh :tangle none
 source /usr/share/fzf/key-bindings.zsh
 #+END_SRC
 
@@ -3097,7 +3097,7 @@ z() {
 **** mounting
 
 Dealing with the sd card reader
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(arch)) :padline yes
+#+BEGIN_SRC sh :tangle none :padline yes
 #
 ## Mounts
 #
@@ -3119,7 +3119,7 @@ publicly available.
 
 *** zshenv
 :PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "~/.zshenv") :mkdirp yes :padline no
+:header-args: :tangle (nc/tangle-system '(work) "~/.zshenv") :mkdirp yes :padline no
 :END:
 
 Set the editors that I use. ~Emacs~ for the gui stuff and ~Neovim~ for the good
@@ -3166,7 +3166,7 @@ fi
 
 ** Bash
 :PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "/tmp/.bashrc")
+:header-args: :tangle (nc/tangle-system '(work) "/tmp/.bashrc")
 :END:
 *** default
 This is the default content that where in the rc file at start
@@ -3188,9 +3188,70 @@ Mount external
 # mount ssd
 alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
+** Fish
+*** Fishfile
+
+#+BEGIN_SRC sh :tangle ~/.config/fish/fishfile
+jethrokuan/z
+0rax/fish-bd
+franciscolourenco/done
+fishpkg/fish-humanize-duration
+#+END_SRC
+
+***
+*** Config
+:PROPERTIES:
+:header-args: :tangle ~/.config/fish/config.fish
+:END:
+
+#+BEGIN_SRC sh
+# Fish config
+set fish_greeting ""
+set fish_home ~/.config/fish
+
+# Source
+source $fish_home/environment.fish
+#+END_SRC
+
+I should to investigate what these ~eterm-color~ is.
+#+BEGIN_SRC sh
+# Emacs
+if test -n "$EMACS"
+  set -x TERM eterm-color
+end
+#+END_SRC
+
+#+BEGIN_SRC sh
+function fish_title
+  true
+end
+#+END_SRC
+*** Environment
+
+Environmental variables:
+#+BEGIN_SRC sh
+set -x EMAIL niklas.carlsson@posteo.net
+set -x NAME Niklas Carlsson
+set -x EDITOR vim
+set -x PAGER less
+set -x BROWSER firefox
+#+END_SRC
+
+Paths:
+#+BEGIN_SRC sh
+set -a PATH ~/bin
+set -a PATH ~/.local/bin
+set -a PATH ~/.pyenv/bin
+set -a PATH ~/go/bin
+#+END_SRC
+
+Configs (~I should investigate if I could speed this up, like I did with zsh~):
+#+BEGIN_SRC sh :tangle none
+status --is-interactive; and source (pyenv init -|psub)
+#+END_SRC
 ** Inputrc
 :PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "/tmp/.inputrc")
+:header-args: :tangle (nc/tangle-system '(work) "/tmp/.inputrc")
 :END:
 
 If zsh is not found on the computer this will create an inputrc file enabling
@@ -3246,7 +3307,7 @@ set keyseq-timeout 0
 * Terminal
 ** Multiplexing
 :PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "~/.tmux.conf") :mkdirp yes :padline no
+:header-args: :tangle (nc/tangle-system '(work) "~/.tmux.conf") :mkdirp yes :padline no
 :END:
 
 [[https://github.com/tmux/tmux][Tmux, a terminal multiplexer]]
