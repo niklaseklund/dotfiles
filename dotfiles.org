@@ -1746,17 +1746,7 @@ cnoremap <C-p> <up>
 cnoremap <C-n> <down>
 " Easier than escape
 inoremap jk <ESC>
-" Git
-nnoremap <silent> <leader>gR :Gread<CR>
-nmap <leader>gs <Plug>GitGutterStageHunk
-nmap <leader>gr <Plug>GitGutterUndoHunk
-nmap <leader>g[ <Plug>GitGutterPrevHunk
-nmap <leader>g] <Plug>GitGutterNextHunk
 " Windows
-nnoremap <silent> <C-h> <C-w>h
-nnoremap <silent> <C-j> <C-w>j
-nnoremap <silent> <C-k> <C-w>k
-nnoremap <silent> <C-l> <C-w>l
 nnoremap <silent> <leader>wh <C-w>h
 nnoremap <silent> <leader>wj <C-w>j
 nnoremap <silent> <leader>wk <C-w>k
@@ -1765,7 +1755,6 @@ nnoremap <silent> <leader>wc <C-w>c
 nnoremap <silent> <leader>wv <C-w>v
 nnoremap <silent> <leader>wp <C-w>p
 nnoremap <silent> <leader>ws <C-w>s <C-w>p
-
 " Quiting
 nnoremap <silent> <leader>qq :qall!<CR>
 " Saving
