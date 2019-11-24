@@ -1696,6 +1696,7 @@ Plug 'tpope/vim-commentary' " Comments
 Plug 'tpope/vim-surround' " Change surrounding chars
 Plug 'justinmk/vim-sneak' " Snipe characters with greater precision
 Plug 'junegunn/fzf.vim'
+Plug 'andreypopp/vim-colors-plain'
 call plug#end()
 #+END_SRC
 
@@ -1721,6 +1722,7 @@ set equalalways " Keep windows equal
 set tabstop=4 shiftwidth=4 expandtab
 set ignorecase smartcase " smart case enabled
 set background=dark " Dark theme
+colorscheme plain
 #+END_SRC
 
 *** Keybindings
@@ -1782,19 +1784,6 @@ nnoremap <silent> <leader>wd <C-w>c
 nnoremap <silent> <leader>qq :qall!<CR>
 " Saving
 nnoremap <silent> <leader>fs :w!<CR>
-#+END_SRC
-
-*** Status line
-#+BEGIN_SRC text
-
-"
-"" Statusline
-
-set statusline=
-set statusline+=%#Identifier#\ %F " Use %f for shorter name
-set statusline+=%m
-set statusline+=%=
-set statusline+=%2c
 #+END_SRC
 
 * Encryption
