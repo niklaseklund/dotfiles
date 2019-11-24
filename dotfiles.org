@@ -1695,8 +1695,7 @@ Plug 'airblade/vim-gitgutter' " Git changes are seen in the gutter
 Plug 'tpope/vim-commentary' " Comments
 Plug 'tpope/vim-surround' " Change surrounding chars
 Plug 'justinmk/vim-sneak' " Snipe characters with greater precision
-Plug 'junegunn/fzf.vim'
-Plug 'andreypopp/vim-colors-plain'
+Plug 'andreypopp/vim-colors-plain' " Colors
 call plug#end()
 #+END_SRC
 
@@ -1721,6 +1720,9 @@ set clipboard+=unnamedplus " Enable clipboard paste from other sources
 set equalalways " Keep windows equal
 set tabstop=4 shiftwidth=4 expandtab
 set ignorecase smartcase " smart case enabled
+
+"
+"" Colors
 set background=dark " Dark theme
 colorscheme plain
 #+END_SRC
@@ -1744,21 +1746,12 @@ cnoremap <C-p> <up>
 cnoremap <C-n> <down>
 " Easier than escape
 inoremap jk <ESC>
-inoremap Jk <ESC>
-inoremap JK <ESC>
-inoremap jK <ESC>
 " Git
 nnoremap <silent> <leader>gR :Gread<CR>
 nmap <leader>gs <Plug>GitGutterStageHunk
 nmap <leader>gr <Plug>GitGutterUndoHunk
 nmap <leader>g[ <Plug>GitGutterPrevHunk
 nmap <leader>g] <Plug>GitGutterNextHunk
-" Fzf
-nnoremap <silent> <leader>/b :BLines<CR>
-nnoremap <silent> <Leader><leader> :Files <CR>
-nnoremap <leader>/p :Rg<Space>
-" Buffers
-nnoremap <silent> <leader>, :Buffers<CR>
 " Windows
 nnoremap <silent> <C-h> <C-w>h
 nnoremap <silent> <C-j> <C-w>j
@@ -1769,16 +1762,9 @@ nnoremap <silent> <leader>wj <C-w>j
 nnoremap <silent> <leader>wk <C-w>k
 nnoremap <silent> <leader>wl <C-w>l
 nnoremap <silent> <leader>wc <C-w>c
-nnoremap <silent> <leader>wo <C-w>o
-nnoremap <silent> <leader>wO <C-w>o
-nnoremap <silent> <leader>wr <C-w>r
 nnoremap <silent> <leader>wv <C-w>v
-nnoremap <silent> <leader>wV <C-w>v <C-w>p
-nnoremap <silent> <leader>w= <C-w>=
 nnoremap <silent> <leader>wp <C-w>p
 nnoremap <silent> <leader>ws <C-w>s <C-w>p
-nnoremap <silent> <leader>wS <C-w>s
-nnoremap <silent> <leader>wd <C-w>c
 
 " Quiting
 nnoremap <silent> <leader>qq :qall!<CR>
