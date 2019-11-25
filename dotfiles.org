@@ -2429,6 +2429,7 @@ The default mail on my work computer.
 [user]
 name=Niklas Carlsson
 primary_email=niklas.carlsson@zenuity.com
+other_email=niklas.carlsson@posteo.net;carlsson.niklas@gmail.com
 #+END_SRC
 
 #+BEGIN_SRC sh
