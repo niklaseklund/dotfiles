@@ -492,6 +492,8 @@ export XDG_CONFIG_HOME
 
 ;;
 ;; Commands
+(defcommand toggle-emacs () ()
+  (run-shell-command "$HOME/bin/emacs-service-toggle.fish"))
 (defcommand rofi-run () () (rofi "run"))
 (defcommand rofi-window () () (rofi "window"))
 (defcommand colon1 (&optional (initial "")) (:rest)
@@ -543,6 +545,7 @@ export XDG_CONFIG_HOME
 (defvar *my-toggle-bindings*
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "g") "toggle-gaps")
+    (stumpwm:define-key m (kbd "e") "toggle-emacs")
     m ; NOTE: this is important
   ))
 (stumpwm:define-key stumpwm:*top-map* (stumpwm:kbd "s-t") '*my-toggle-bindings*)
