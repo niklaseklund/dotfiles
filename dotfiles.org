@@ -3158,15 +3158,17 @@ alias mountssd='sudo ldm -d -u niklascarlsson'
 #+END_SRC
 ** Fish
 *** Fishfile
+:PROPERTIES:
+:header-args: :tangle ~/.config/fish/fishfile
+:END:
 
-#+BEGIN_SRC sh :tangle ~/.config/fish/fishfile
+#+BEGIN_SRC sh
 jethrokuan/z
 0rax/fish-bd
 franciscolourenco/done
 fishpkg/fish-humanize-duration
 #+END_SRC
 
-***
 *** Config
 :PROPERTIES:
 :header-args: :tangle ~/.config/fish/config.fish
@@ -3195,18 +3197,36 @@ function fish_title
 end
 #+END_SRC
 *** Environment
+:PROPERTIES:
+:header-args: :tangle ~/.config/fish/environment.fish
+:END:
 
-Environmental variables:
+**** Variables
+
 #+BEGIN_SRC sh
 set -x EMAIL niklas.carlsson@posteo.net
 set -x NAME Niklas Carlsson
 set -x EDITOR vim
 set -x PAGER less
 set -x BROWSER firefox
+#+END_SRC
+
+I want to simplify my color configuration. Ideally I should look into
+configuring skim to use the ~--color 16~ option to align with the rest of the
+terminal configuration. But the simplest solution for now is to just go with a
+plain black and white.
+#+BEGIN_SRC sh
 set -x SKIM_DEFAULT_OPTIONS '--color bw'
 #+END_SRC
 
-Paths:
+I want to be able to use parts of directories when using bd as well as not
+bother with case sensitivity.
+#+BEGIN_SRC sh
+set -gx BD_OPT 'insensitive'
+#+END_SRC
+
+**** Paths
+
 #+BEGIN_SRC sh
 set -a PATH ~/bin
 set -a PATH ~/.local/bin
@@ -3214,10 +3234,13 @@ set -a PATH ~/.pyenv/bin
 set -a PATH ~/go/bin
 #+END_SRC
 
-Configs (~I should investigate if I could speed this up, like I did with zsh~):
+**** Configurations
+
+~I should investigate if I could speed this up, like I did with zsh~:
 #+BEGIN_SRC sh :tangle none
 status --is-interactive; and source (pyenv init -|psub)
 #+END_SRC
+
 ** Inputrc
 :PROPERTIES:
 :header-args: :tangle (nc/tangle-system '(work) "/tmp/.inputrc")
