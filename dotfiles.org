@@ -4129,21 +4129,30 @@ to connect because of certificate errors. I can manually download the
 certificate but it is only valid for 2 days. This little script gets it all
 working.
 
-Set your ip address below and call this script with the filename.
+Check the ip adress of the Chromecast:
+#+BEGIN_SRC sh :tangle no
+sudo nmap -sn 192.168.1.0/24 | grep Google -B 2
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_EXAMPLE
+Nmap scan report for 192.168.1.133
+Host is up (0.23s latency).
+MAC Address: F4:F5:D8:9C:7B:6E (Google)
+#+END_EXAMPLE
+
+Make a certificate for the chromecast which vlc will utilize:
+#+BEGIN_SRC sh :tangle no
+CHROMECAST_IP=192.168.1.133
+gnutls-cli --save-cert=chromecast.pem --insecure $CHROMECAST_IP:8009
+mkdir -p ~/.local/share/vlc/certs
+mv chromecast.pem ~/.local/share/vlc/certs
+#+END_SRC
+
+Use the ncurses interface (~nvlc~):
 #+BEGIN_SRC sh
 CHROMECAST_IP=192.168.1.133
-#+END_SRC
-
-Make the certificate and move it to certificates folder.
-#+BEGIN_SRC sh :tangle no
-# gnutls-cli --save-cert=chromecast.pem --insecure $CHROMECAST_IP:8009
-# mkdir -p ~/.local/share/vlc/certs
-# mv chromecast.pem ~/.local/share/vlc/certs
-#+END_SRC
-
-Use the ncurses interface.
-#+BEGIN_SRC sh
-nvlc "$1" --sout "#chromecast"  --gnutls-dir-trust=/home/$USER  --sout-chromecast-ip=$CHROMECAST_IP --demux-filter=demux_chromecast
+nvlc "$1" --sout "#chromecast" --gnutls-dir-trust=/home/$USER --sout-chromecast-ip=$CHROMECAST_IP --demux-filter=demux_chromecast
 #+END_SRC
 
 * Utility applications
