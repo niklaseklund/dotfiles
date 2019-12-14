@@ -1705,8 +1705,6 @@ call plug#end()
 *** Vim core settings
 
 #+BEGIN_SRC text
-
-
 "
 "" Vim core settings
 syntax enable " Enable syntax highlighting
