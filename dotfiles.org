@@ -234,8 +234,8 @@ Choosing fonts are never easy. These are my current setup.
 #+BEGIN_SRC sh :tangle (nc/tangle-system '(arch))
 !!
 !! Fonts
-URxvt.font: xft:Iosevka Term:style=regular:size=6
-URxvt.boldFont: xft:Iosevka Term:style=bold:size=6
+URxvt.font: xft:Fira Mono:style=Regular:size=14
+URxvt.boldFont: xft:Fira Mono:style=Bold:size=14
 #+END_SRC
 
 ~Ubuntu~
@@ -927,7 +927,8 @@ dpi-y = 96
 ;
 ;; Fonts
 font-0 = "Misc Tamsyn:pixelsize=12;0"
-font-1 = "Wuncon Siji:pixelsize=12;0"
+font-1 = "FontAwesome:style=Regular"
+font-2 = "file\-icons:style=icons"
 #+END_SRC
 
 #+BEGIN_SRC sh :tangle (nc/tangle-system '(work)) :padline yes
