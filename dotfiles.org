@@ -518,8 +518,8 @@ export XDG_CONFIG_HOME
     (stumpwm:define-key m (kbd "r") "iresize")
     (stumpwm:define-key m (kbd "u") "winner-undo")
     (stumpwm:define-key m (kbd "C-r") "winner-redo")
-    m ; NOTE: this is important
-  ))
+    m                                   ; NOTE: this is important
+    ))
 (stumpwm:define-key stumpwm:*top-map* (stumpwm:kbd "s-w") '*my-frame-bindings*)
 
 (defvar *my-groups-bindings*
@@ -539,6 +539,7 @@ export XDG_CONFIG_HOME
     (stumpwm:define-key m (kbd "c") "exec emacsclient -c -e '(erc)'")
     (stumpwm:define-key m (kbd "m") "exec emacsclient -c -e '(notmuch-search \"tag:inbox\")'")
     (stumpwm:define-key m (kbd "r") "exec emacsclient -c -e '(elfeed)'")
+    (stumpwm:define-key m (kbd "t") "exec emacsclient -c -e '(vterm)'")
     m ; NOTE: this is important
   ))
 (stumpwm:define-key stumpwm:*top-map* (stumpwm:kbd "s-o") '*my-open-bindings*)
@@ -547,8 +548,12 @@ export XDG_CONFIG_HOME
   (let ((m (stumpwm:make-sparse-keymap)))
     (stumpwm:define-key m (kbd "g") "toggle-gaps")
     (stumpwm:define-key m (kbd "e") "toggle-emacs")
-    m ; NOTE: this is important
-  ))
+    (stumpwm:define-key m (kbd "t") "exec emacsclient -n -e '(yequake-toggle \"eshell-scratch\")'")
+    (stumpwm:define-key m (kbd "c") "exec emacsclient -n -e '(yequake-toggle \"org-capture\")'")
+    (stumpwm:define-key m (kbd "a") "exec emacsclient -n -e '(yequake-toggle \"org-agenda\")'")
+    (stumpwm:define-key m (kbd "r") "exec emacsclient -n -e '(yequake-toggle \"elfeed\")'")
+    m                                   ; NOTE: this is important
+    ))
 (stumpwm:define-key stumpwm:*top-map* (stumpwm:kbd "s-t") '*my-toggle-bindings*)
 
 ;;
@@ -582,6 +587,14 @@ export XDG_CONFIG_HOME
 (define-key *top-map* (kbd "s-RET") "exec emacsclient -c -e '(+eshell/here)'")
 (define-key *top-map* (kbd "s-S-RET") "exec urxvt")
 (define-key *top-map* (kbd "s-b") "exec firefox")
+;; Light
+(define-key *top-map* (kbd "XF86MonBrightnessDown") "exec light -U 5")
+(define-key *top-map* (kbd "XF86MonBrightnessUp") "exec light -A 5")
+;; Sound
+(define-key *top-map* (kbd "XF86AudioRaiseVolume") "exec pactl set-sink-volume @DEFAULT_SINK@ +5%")
+(define-key *top-map* (kbd "XF86AudioLowerVolume") "exec pactl set-sink-volume @DEFAULT_SINK@ -5%")
+(define-key *top-map* (kbd "XF86AudioMute") "exec pactl set-sink-mute @DEFAULT_SINK@ toggle")
+
 
 ;; Message window font
 (set-font "-xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso8859-15")
