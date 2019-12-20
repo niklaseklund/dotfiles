@@ -234,8 +234,8 @@ Choosing fonts are never easy. These are my current setup.
 #+BEGIN_SRC sh :tangle (nc/tangle-system '(arch))
 !!
 !! Fonts
-URxvt.font: xft:Fira Mono:style=Regular:size=14
-URxvt.boldFont: xft:Fira Mono:style=Bold:size=14
+URxvt.font: xft:Fira Mono:style=Regular:size=10
+URxvt.boldFont: xft:Fira Mono:style=Bold:size=10
 #+END_SRC
 
 ~Ubuntu~
@@ -1487,7 +1487,7 @@ Tweaked for ~Arch~
 !! Appearance
 rofi.width: 1500
 rofi.lines: 10
-rofi.font: Roboto Mono 14
+rofi.font: Fira Mono 12
 rofi.bw: 0
 rofi.padding: 50
 rofi.line-margin: 5
@@ -4194,8 +4194,8 @@ else
     # sed -i '/font-[[:digit:]]./ {s/size=[[:digit:]]\+/size=10/; }' ~/.config/polybar/config
     # sed -i '/dpi-./ {s/[[:digit:]]\+/96/; }' ~/.config/polybar/config
     sed -i '/Xft.dpi:./ {s/[[:digit:]]\+/96/; }' ~/.Xresources
-    sed -i '/URxvt*.\+ont./ {s/[[:digit:]]\+/14/; }' ~/.Xresources
-    sed -i '/rofi.font./ {s/[[:digit:]]\+/14/; }' ~/.config/rofi/config
+    sed -i '/URxvt*.\+ont./ {s/[[:digit:]]\+/12/; }' ~/.Xresources
+    sed -i '/rofi.font./ {s/[[:digit:]]\+/12/; }' ~/.config/rofi/config
     sed -i '/layout.css.devPixelsPerPx./ {s/[[:digit:]]*\.[[:digit:]]/1/; }' /home/niklascarlsson/.mozilla/firefox/eeakdoa8.default'/prefs.js'
 
     # xrandr --output eDP-1 --dpi 227 --scale 0.75x0.75
