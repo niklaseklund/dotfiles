@@ -639,9 +639,11 @@ export XDG_CONFIG_HOME
 
 
 ;; Programs
-(run-shell-command "polybar main --reload")
+(run-shell-command "sh $HOME/.config/polybar/launch.sh")
+;; (run-shell-command "polybar main --reload")
+;; (run-shell-command "polybar laptop --reload")
 (run-shell-command "dunst")
-(run-shell-command "redshift")
+;; (run-shell-command "redshift")
 (run-shell-command "compton")
 (run-shell-command "xcape")
 #+END_SRC
