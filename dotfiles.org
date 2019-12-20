@@ -2112,30 +2112,7 @@ chmod +x ~/bin/tizonia-remote
 
 Make sure to also have mpris enabled in the configuration.
 
-** Reader
-*** Zathura
-:PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "~/.config/zathura/zathurarc") :mkdir p
-:END:
-
-[[https://github.com/pwmt/zathura][Zathura, a highly customizable document viewer]]. I got some inspiration from the
-[[https://wiki.archlinux.org/index.php/Zathura][the arch wiki]] and the video from Luke Smith [[https://www.youtube.com/watch?v=V_Iz4zdyRM4&t=315s][zathura: a vim based minimalist pdf
-reader]]
-
-Enable copy to clipboard
-#+BEGIN_SRC sh
-set selection-clipboard clipboard
-#+END_SRC
-
-Control the paddings
-#+BEGIN_SRC sh
-set statusbar-h-padding 0
-set statusbar-v-padding 0
-set page-padding 1
-#+END_SRC
-
 * Browser
-
 ** Firefox
 Firefox is my browser. I keep my eyes on the development of the common-lisp
 based [[https://github.com/atlas-engineer/next][next browser]].
