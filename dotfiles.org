@@ -1712,6 +1712,7 @@ syntax enable " Enable syntax highlighting
 set number " Show line number
 set updatetime=100 " Decrease update time from 4s to 0.1 s, useful for gutter
 set undofile " Enables persistent undo
+set undodir=~/.vim/undo " Store the undo files in one place
 set noswapfile " Disables swapfile
 set spelllang=en_us " Sets spelling language to english
 filetype plugin indent on " Enable filetype detection
