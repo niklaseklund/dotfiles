@@ -2625,7 +2625,8 @@ fi
 
 Make a function in Emacs to avoid deleting flagged emails.
 
-* Shells
+ * Shells
+* Shell
 ** Zsh
 *** zshrc
 :PROPERTIES:
