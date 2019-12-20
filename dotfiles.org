@@ -373,10 +373,10 @@ unclutter &
 :END:
 
 In the [[https://wiki.archlinux.org/index.php/bspwm][configuration section for bspwm in the ArchWiki]] it is stated that:
-#+BEGIN_EXAMPLE
-Important: Make sure your environment variable $XDG_CONFIG_HOME is set or your
-bspwmrc will not be found
-#+END_EXAMPLE
+#+BEGIN_QUOTE
+Important: Make sure your environment variable $XDG_CONFIG_HOME is
+set or your bspwmrc will not be found
+#+END_QUOTE
 
 It's therefore important to set this environmental variable, which I do in
 ~profile~.
