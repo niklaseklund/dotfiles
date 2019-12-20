@@ -444,9 +444,9 @@ export XDG_CONFIG_HOME
 ;;
 ;; Gaps
 
-(setf swm-gaps:*head-gaps-size* 30) ;; Head gaps run along the 4 borders of the monitor(s)
-(setf swm-gaps:*inner-gaps-size* 10) ;; Inner gaps run along all the 4 borders of a window
-(setf swm-gaps:*outer-gaps-size* 30) ;; Outer gaps add more padding to the outermost borders of a window
+(setf swm-gaps:*head-gaps-size* 20) ;; Head gaps run along the 4 borders of the monitor(s)
+(setf swm-gaps:*inner-gaps-size* 39) ;; Inner gaps run along all the 4 borders of a window
+(setf swm-gaps:*outer-gaps-size* 20) ;; Outer gaps add more padding to the outermost borders of a window
 (eval-command "toggle-gaps")
 
 ;;
@@ -455,11 +455,11 @@ export XDG_CONFIG_HOME
       ,*input-window-gravity* :center
       ,*window-border-style* :none
       ,*message-window-padding* 10
-      ,*maxsize-border-width* 0
-      ,*normal-border-width* 0
-      ,*transient-border-width* 0
-      stumpwm::*float-window-border* 0
-      stumpwm::*float-window-title-height* 0
+      ,*maxsize-border-width* 5
+      ,*normal-border-width* 5
+      ,*transient-border-width* 2
+      stumpwm::*float-window-border* 2
+      stumpwm::*float-window-title-height* 5
       ,*mouse-focus-policy* :click)
 
 (set-normal-gravity :center)
