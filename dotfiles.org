@@ -28,7 +28,8 @@ X client applications like the terminal emulator ~urxvt~.
 # customize xresources
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
 # set wallpaper
-[[ -e ~/wallpaper ]] && feh --no-fehbg --image-bg black --bg-center ~/wallpaper
+[[ -e ~/wallpaper ]] && feh --no-fehbg \
+    --image-bg black --bg-center ~/wallpaper
 #+END_SRC
 
 **** DONE HIDPI screen support
