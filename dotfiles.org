@@ -384,7 +384,7 @@ It's therefore important to set this environmental variable, which I do in
 XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CONFIG_HOME
 #+END_SRC
-** Window Manager
+** StumpWM
 
 [[https://github.com/stumpwm/stumpwm][Stumpwm, the emacs of WMs]]
 
@@ -633,7 +633,7 @@ export XDG_CONFIG_HOME
 (run-shell-command "xcape")
 #+END_SRC
 
-** Compositor
+** Compton
 :PROPERTIES:
 :header-args: :tangle (nc/tangle-system '(arch work) "~/.config/compton.conf") :mkdirp yes :padline no
 :END:
@@ -769,7 +769,7 @@ wintypes:
 };
 #+END_SRC
 
-** Status bar
+** Polybar
 
 [[https://github.com/polybar/polybar][Polybar, a fast and easy-to-use tool for creating status bars]]
 
@@ -1462,7 +1462,7 @@ else
 fi
 #+END_SRC
 
-** Application launcher
+** Rofi
 :PROPERTIES:
 :header-args: :tangle (nc/tangle-system '(arch work) "~/.config/rofi/config") :mkdirp yes :padline no
 :END:
@@ -1561,8 +1561,7 @@ gtk-icon-theme-name = Arc-Dark
 
 
 I have had an issue with the ~Emacs~ window that the box is rendered larger than
-actual ~Emacs~. The issue seems to be this
-https://wiki.archlinux.org/index.php/bspwm#Window_box_larger_than_the_actual_application.
+actual ~Emacs~. The issue seems to be this [[https://wiki.archlinux.org/index.php/bspwm#Window_box_larger_than_the_actual_application][Window box larger than the actual application]].
 
 #+BEGIN_EXAMPLE
 M-x emacs-version
@@ -1844,7 +1843,7 @@ BROWSER='xdg-open'
 
 ## Misc settings
 
-default_do='menu' # menu, autotype, copyPass, typeUser, typePass, copyUser, copyUrl, viewEntry, typeMenu, actionMenu, copyMenu, openUrl
+default_do='menu'
 auto_enter='false'
 notify='false'
 default_autotype='user :tab pass'
@@ -1917,14 +1916,13 @@ exec /usr/bin/pinentry-curses "$@"
 #+END_SRC
 
 * Media
-** Music
-*** Tizonia
+** Tizonia
 
 [[https://github.com/tizonia/tizonia-openmax-il][Tizonia, command-line music player]]
 
 Tizonia and the remote control goes here.
 
-**** configuration
+*** configuration
 :PROPERTIES:
 :header-args: :tangle (nc/tangle-system '(arch work) "~/.config/tizonia/tizonia.conf") :mkdirp yes :padline no
 :END:
@@ -1932,7 +1930,7 @@ Tizonia and the remote control goes here.
 [[https://github.com/tizonia/tizonia-openmax-il][Tizonia]] is a command-line cloud music player for Linux with support for
 ~Youtube~, ~Spotify~ and ~SoundCloud~.
 
-***** Start
+**** Start
 #+BEGIN_SRC sh
 # -*-Mode: conf; -*-
 #+END_SRC
@@ -2018,7 +2016,7 @@ mpris-enabled = true
 
 #+END_SRC
 
-***** Spotify
+**** Spotify
 #+BEGIN_SRC sh
 # Spotify configuration
 # -------------------------------------------------------------------------
@@ -2032,7 +2030,7 @@ spotify.password = $(pass web/spotify)
 
 #+END_SRC
 
-***** Google Play Music
+**** Google Play Music
 #+BEGIN_SRC sh
 # Google Play Music configuration
 # -------------------------------------------------------------------------
@@ -2047,7 +2045,7 @@ spotify.password = $(pass web/spotify)
 
 #+END_SRC
 
-***** SoundCloud
+**** SoundCloud
 
 I got the token by following the link at the tizonia project's homepage.
 #+BEGIN_SRC sh
@@ -2064,7 +2062,7 @@ I got the token by following the link at the tizonia project's homepage.
 soundcloud.oauth_token = $(pass web/soundcloud | grep OAuth | cut -d ":" -f2)
 #+END_SRC
 
-***** Dirble
+**** Dirble
 
 #+BEGIN_SRC sh
 # Dirble configuration
@@ -2079,7 +2077,7 @@ soundcloud.oauth_token = $(pass web/soundcloud | grep OAuth | cut -d ":" -f2)
 
 #+END_SRC
 
-***** Plex
+**** Plex
 #+BEGIN_SRC sh
 # Plex configuration
 # -------------------------------------------------------------------------
@@ -2093,7 +2091,7 @@ soundcloud.oauth_token = $(pass web/soundcloud | grep OAuth | cut -d ":" -f2)
 # plex.auth_token = xxxxxxxxxxxxxx (e.g. SrPEojhap3H5Qj2DmjhX)
 #+END_SRC
 
-**** remote control
+*** remote control
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -2101,7 +2099,9 @@ soundcloud.oauth_token = $(pass web/soundcloud | grep OAuth | cut -d ":" -f2)
 Download the tizonia remote script which can use mpris2 to communicate with the
 running tizonia instance
 #+BEGIN_SRC sh
-wget -O /tmp/tizonia-remote https://raw.githubusercontent.com/tizonia/tizonia-openmax-il/master/player/tools/tizonia-remote.in /tmp/tizonia-remote.in
+wget -O /tmp/tizonia-remote \
+    https://raw.githubusercontent.com/tizonia/tizonia-openmax-il/master/player/tools/tizonia-remote.in \
+    /tmp/tizonia-remote.in
 #+END_SRC
 
 Move it to somewhere in path and make it executable
@@ -2881,6 +2881,7 @@ else # From outside tmux
     tdup() { tmux new-session -t "${1:-`tmux display-message -p '#S'`}"; }
 fi
 #+END_SRC
+
 **** Configure zsh options
 
 #+BEGIN_SRC sh :padline yes
@@ -3131,30 +3132,6 @@ if command -v pyenv 1>/dev/null 2>&1; then
 fi
 #+END_SRC
 
-** Bash
-:PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(work) "/tmp/.bashrc")
-:END:
-*** default
-This is the default content that where in the rc file at start
-#+BEGIN_SRC sh
-#
-# ~/.bashrc
-#
-
-# If not running interactively, don't do anything
-[[ $- != *i* ]] && return
-
-alias ls='ls --color=auto'
-PS1='[\u@\h \W]\$ '
-#+END_SRC
-
-*** external harddrive
-Mount external
-#+BEGIN_SRC sh
-# mount ssd
-alias mountssd='sudo ldm -d -u niklascarlsson'
-#+END_SRC
 ** Fish
 *** Fishfile
 :PROPERTIES:
@@ -4263,9 +4240,54 @@ Use the ncurses interface (~nvlc~):
 CHROMECAST_IP=192.168.1.133
 nvlc "$1" --sout "#chromecast" --gnutls-dir-trust=/home/$USER --sout-chromecast-ip=$CHROMECAST_IP --demux-filter=demux_chromecast
 #+END_SRC
+*** Monitor setup
+:PROPERTIES:
+:header-args: :tangle (nc/tangle-system '(arch) "~/bin/monitor-setup")
+:END:
+
+#+BEGIN_SRC sh
+#
+# hidpi hack
+if [ "$(xrandr -q | grep " connected" | wc -l)" -eq "1" ]; then
+    # no external monitor connected, adjust to hidpi settings
+    # sed -i '/font-[[:digit:]]./ {s/size=[[:digit:]]\+/size=8/; }' ~/.config/polybar/config
+    # sed -i '/dpi-./ {s/[[:digit:]]\+/227/; }' ~/.config/polybar/config
+    sed -i '/Xft.dpi:./ {s/[[:digit:]]\+/227/; }' ~/.Xresources
+    sed -i '/URxvt*.\+ont./ {s/[[:digit:]]\+/8/; }' ~/.Xresources
+    sed -i '/rofi.font./ {s/[[:digit:]]\+/8/; }' ~/.config/rofi/config
+    sed -i '/layout.css.devPixelsPerPx./ {s/[[:digit:]]*\.[[:digit:]]/1.5/; }' /home/niklascarlsson/.mozilla/firefox/eeakdoa8.default'/prefs.js'
+
+    # hidpi settings
+    export GDK_SCALE=1.5
+    export GDK_DPI_SCALE=0.5
+    export QT_SCREEN_SCALE_FACTORS=0.9
+    export QT_AUTO_SCREEN_SCALE_FACTOR=2
+    export QT_SCALE_FACTOR=2
+
+    xrandr --output eDP-1 --dpi 227
+else
+    # external monitor connected, adjust to non hidpi settings
+    # sed -i '/font-[[:digit:]]./ {s/size=[[:digit:]]\+/size=10/; }' ~/.config/polybar/config
+    # sed -i '/dpi-./ {s/[[:digit:]]\+/96/; }' ~/.config/polybar/config
+    sed -i '/Xft.dpi:./ {s/[[:digit:]]\+/96/; }' ~/.Xresources
+    sed -i '/URxvt*.\+ont./ {s/[[:digit:]]\+/14/; }' ~/.Xresources
+    sed -i '/rofi.font./ {s/[[:digit:]]\+/14/; }' ~/.config/rofi/config
+    sed -i '/layout.css.devPixelsPerPx./ {s/[[:digit:]]*\.[[:digit:]]/1/; }' /home/niklascarlsson/.mozilla/firefox/eeakdoa8.default'/prefs.js'
+
+    # xrandr --output eDP-1 --dpi 227 --scale 0.75x0.75
+    # xrandr --output DP-2 --right-of eDP-1 --auto
+fi
+
+## Set the primary monitor
+EXTERNAL_MONITOR="DP-2"
+MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
+if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
+    xrandr --output $EXTERNAL_MONITOR --primary
+fi
+#+END_SRC
 
 * Utility applications
-** Screen color temperature
+** Redshift
 :PROPERTIES:
 :header-args: :tangle (nc/tangle-system '(arch) "~/.config/redshift/redshift.conf") :mkdirp yes
 :END:
@@ -4309,7 +4331,7 @@ Redshift
 
 [[https://github.com/jonls/redshift][Redshift, color temperature adjustor]]
 
-** Notifications
+** Dunst
 :PROPERTIES:
 :header-args: :tangle (nc/tangle-system '(arch) "~/.config/dunst/dunstrc") :padline no :mkdirp yes
 :END:
@@ -4388,29 +4410,29 @@ Use something to detect if a keyboard is plugged in so I can update the
 doesn't have an external keyboard plugged in.
 
 Detect the active usb devices:
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :results output
 lsusb
 #+END_SRC
 
 #+RESULTS:
-| Bus | 2 | Device | 003: | ID | 05ac:8406 | Apple,    | Inc.           |           |                   |            |     |    |
-| Bus | 2 | Device | 002: | ID | 04e8:61f5 | Samsung   | Electronics    | Co.,      | Ltd               | Portable   | SSD | T5 |
-| Bus | 2 | Device | 001: | ID | 1d6b:0003 | Linux     | Foundation     | 3.0       | root              | hub        |     |    |
-| Bus | 1 | Device | 005: | ID | 05ac:0273 | Apple,    | Inc.           | Internal  | Keyboard/Trackpad | (ISO)      |     |    |
-| Bus | 1 | Device | 003: | ID | 05ac:8290 | Apple,    | Inc.           | Bluetooth | Host              | Controller |     |    |
-| Bus | 1 | Device | 008: | ID | 046d:c01d | Logitech, | Inc.           | MX510     | Optical           | Mouse      |     |    |
-| Bus | 1 | Device | 006: | ID | 04d9:0167 | Holtek    | Semiconductor, | Inc.      |                   |            |     |    |
-| Bus | 1 | Device | 007: | ID | 0424:4063 | Standard  | Microsystems   | Corp.     |                   |            |     |    |
-| Bus | 1 | Device | 004: | ID | 0424:2640 | Standard  | Microsystems   | Corp.     | USB               | 2.0        | Hub |    |
-| Bus | 1 | Device | 002: | ID | 0424:2514 | Standard  | Microsystems   | Corp.     | USB               | 2.0        | Hub |    |
-| Bus | 1 | Device | 001: | ID | 1d6b:0002 | Linux     | Foundation     | 2.0       | root              | hub        |     |    |
+#+begin_example
+Bus 002 Device 003: ID 05ac:8406 Apple, Inc. Card Reader
+Bus 002 Device 002: ID 04e8:61f5 Samsung Electronics Co., Ltd Portable SSD T5
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 005: ID 05ac:0273 Apple, Inc. Internal Keyboard/Trackpad (ISO)
+Bus 001 Device 003: ID 05ac:8290 Apple, Inc. Bluetooth Host Controller
+Bus 001 Device 008: ID 056a:033b Wacom Co., Ltd CTL-490 [Intuos Draw (S)]
+Bus 001 Device 006: ID 04d9:0167 Holtek Semiconductor, Inc.
+Bus 001 Device 007: ID 0424:4063 Microchip Technology, Inc. (formerly SMSC)
+Bus 001 Device 004: ID 0424:2640 Microchip Technology, Inc. (formerly SMSC) USB 2.0 Hub
+Bus 001 Device 002: ID 0424:2514 Microchip Technology, Inc. (formerly SMSC) USB 2.0 Hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+#+end_example
 
 Extract if there is an external keyboard plugged in
 #+BEGIN_SRC sh
 lsusb -d 04d9:0167
 #+END_SRC
-
-#+RESULTS:
 
 ** Mouse toggle
 
@@ -4426,11 +4448,10 @@ An improvement will be to make this conditional. I want to only start
 xcape as long as the keyboardio can't be detected that it is plugged in. Cause
 in that case this modification is not needed.
 
-https://askubuntu.com/questions/337411/how-to-permanently-assign-a-different-keyboard-layout-to-a-usb-keyboard
-
-I should probably have a strategy that when there is a usb keyboard detected.
-Investigate if it is my special external keyboard. If so don't do any remaping.
-Otherwise do it since I will only have the internal keyboard at my disposal.
+[[https://askubuntu.com/questions/337411/how-to-permanently-assign-a-different-keyboard-layout-to-a-usb-keyboard][How to permanently assign a different keyboard layout]]. I should probably have a
+strategy that when there is a usb keyboard detected. Investigate if it is my
+special external keyboard. If so don't do any remaping. Otherwise do it since I
+will only have the internal keyboard at my disposal.
 
 #+BEGIN_SRC sh :results output
 xinput -list | grep "Keyboard"
@@ -4439,6 +4460,7 @@ xinput -list | grep "Keyboard"
 #+RESULTS:
 : ⎜   ↳ USB Keyboard                                id=11   [slave  pointer  (2)]
 :     ↳ USB Keyboard                                id=12   [slave  keyboard (3)]
+
 ** Remotely control tizonia
 
 To switch to the next song
