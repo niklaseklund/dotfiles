@@ -633,9 +633,9 @@ export XDG_CONFIG_HOME
 
 ;; Init
 (run-shell-command "xrdb -merge ~/.Xresources")
-(run-shell-command "feh --no-fehbg --image-bg black --bg-center ~/wallpaper")
 (run-shell-command "sh $HOME/bin/set-keymap")
 (run-shell-command "sh $HOME/bin/monitor-setup")
+(run-shell-command "feh --no-fehbg --image-bg black --bg-fill ~/wallpaper")
 
 
 ;; Programs
