@@ -3188,6 +3188,7 @@ terminal configuration. But the simplest solution for now is to just go with a
 plain black and white.
 #+BEGIN_SRC sh
 set -x SKIM_DEFAULT_OPTIONS '--color bw'
+set -x FZF_DEFAULT_OPTS '--color bw'
 #+END_SRC
 
 I want to be able to use parts of directories when using bd as well as not
