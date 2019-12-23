@@ -780,7 +780,7 @@ killall -q polybar
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
 # Launch Polybar, using default config location ~/.config/polybar/config
-sleep 1
+sleep 1 # add delay to make sure monitors are properly initialized
 polybar --reload --log=trace laptop 2>/tmp/polybar_laptop.log &
 polybar --reload --log=trace main 2>/tmp/polybar_main.log &
 
