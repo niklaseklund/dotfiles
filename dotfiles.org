@@ -95,7 +95,7 @@ times when I hadn't installed rofi. Can probably be removed now.
 sxhkd &
 urxvt &
 # redshift &
-compton &
+picom &
 exec bspwm
 #+END_SRC
 
@@ -359,7 +359,7 @@ sxhkd &
 
 Launch the compositor compton to enable semi-trasparency.
 #+BEGIN_SRC sh
-compton &
+picom &
 #+END_SRC
 
 Launch keyboard/mouserelated programs.
@@ -644,7 +644,7 @@ export XDG_CONFIG_HOME
 ;; (run-shell-command "polybar laptop --reload")
 (run-shell-command "dunst")
 ;; (run-shell-command "redshift")
-(run-shell-command "compton")
+(run-shell-command "picom")
 (run-shell-command "xcape")
 #+END_SRC
 
