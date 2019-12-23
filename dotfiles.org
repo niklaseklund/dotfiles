@@ -648,103 +648,78 @@ export XDG_CONFIG_HOME
 (run-shell-command "xcape")
 #+END_SRC
 
-** Compton
+** Picom
 :PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "~/.config/compton.conf") :mkdirp yes :padline no
+:header-args: :tangle (nc/tangle-system '(arch work) "~/.config/picom/picom.conf") :mkdirp yes :padline no
 :END:
 
-[[https://github.com/chjj/compton][Compton, a compositor for X]]
+[[https://wiki.archlinux.org/index.php/Picom][Picom, a compositor for X]]
 
 *** Shadows
-I disabled the shadows. I need to understand better how these shadows work
-before I use them.
+
+I don't use shadows for now. I think it works without it.
 
 #+BEGIN_SRC sh
 #
 ## Shadows
-
-shadow = false;
-shadow-radius = 7;
-shadow-offset-x = -7;
-shadow-offset-y = -7;
+shadow = false; # Enable shadowing on windows
+shadow-radius = 7; # The radius of the shadow (default 7)
+shadow-offset-x = -7; # The x offset of the shadow blur (default -7)
+shadow-offset-y = -7; # The y offset of the shadow blur (default -7)
 log-level = "warn";
+# log-file = "/path/to/your/log/file";
+shadow-opacity = 0.7; # Opacity of the shadows
+# shadow-red = 0.0;
+# shadow-green = 0.0;
+# shadow-blue = 0.0;
 shadow-exclude = [
-    "name = 'Notification'",
-    "class_g = 'Conky'",
-    "class_g ?= 'Notify-osd'",
-    "class_g = 'Cairo-clock'",
-    "_GTK_FRAME_EXTENTS@:c"
-];
+  "name = 'Notification'",
+  "name = 'Polybar tray window'"
+]; # Exclude conditions for shadows
+# shadow-exclude = "n:e:Notification";
+# shadow-exclude-reg = "x10+0+0";
+# xinerama-shadow-crop = true;
 #+END_SRC
 
 *** Opacity and blur
-It seems like compton gives emacs some kind of dark frame on the right side,
-which dissapears if I go to monocle view and back. Need to investigate that.
 
 #+BEGIN_SRC sh :padline yes
 #
 ## Opacity
-inactive-opacity = 1.0; # 0.8
-frame-opacity = 0.7;
-inactive-opacity-override = false;
-#+END_SRC
-
-#+BEGIN_SRC sh
-inactive-dim = 0.1;
+inactive-opacity = 1.0;
+# active-opacity = 0.8;
+# frame-opacity = 0.7;
+inactive-opacity-override = true; # Overrides overall opacity rules
+# inactive-dim = 0.2; # Dims inactive windows           (0.0 - 1.0, default 0.2)
 # inactive-dim-fixed = true;
-#+END_SRC
-
-#+BEGIN_SRC sh
+blur-background = false; # Blurs transparent background         (default false)
+blur-background-frame = false; # Blurs transparent frame        (default false)
 blur-kern = "3x3box";
+# blur-kern = "5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
+blur-background-fixed = true;
 blur-background-exclude = [
-    "window_type = 'dock'",
-    "window_type = 'desktop'",
-    "_GTK_FRAME_EXTENTS@:c"
+  "window_type = 'dock'",
+  "window_type = 'desktop'",
+  "_GTK_FRAME_EXTENTS@:c"
 ];
+opacity-rule = [ "80:class_g = 'URxvt'"];
+# max-brightness = 0.66
 #+END_SRC
 
-*** Application opacity rules
+*** Fading
 
-I have here the example opacity rule from the arch wiki,
-https://wiki.archlinux.org/index.php/compton.
-
-In the ~man~ pages there is information about how to further customize the
-rules. By adding a ~*=~ one can make a wildcard match and a ~!~ prefix will
-negate the match. Currently there are three different rules for URxvt. One that
-applies for a scratch buffer, one that applys for windows that isn't named
-scratch and for the windows that are not in focus.
- #+BEGIN_SRC sh :padline yes
+#+BEGIN_SRC sh :padline yes
 #
-# Opacity rules
- opacity-rule = [
-   "90:class_g = 'URxvt' && WM_NAME@:s *= 'scratch'",
-   "80:class_g = 'URxvt' && !focused && WM_NAME@:s !*= 'scratch'",
-   "90:class_g = 'URxvt' && focused && WM_NAME@:s !*= 'scratch'",
- #+END_SRC
-
- Making rofi a little bit transparent too
- #+BEGIN_SRC sh :padline no
-   "100:class_g = 'Rofi'",
- #+END_SRC
-
-One improvement for bspwm is also making the preselected areas transparent, the
-default opaque look is a bit distracting.
-#+BEGIN_SRC sh :padline no
-   "40:class_g = 'Bspwm' && class_i = 'presel_feedback'",
+## Fading
+fading = true; # Fade windows during opacity changes
+fade-delta = 10; # The time between steps in milliseconds     (default 30)
+fade-in-step = 0.1; # Opacity delta when fading in        (default 0.03)
+fade-out-step = 0.1; # Opacity delta when fading in         (default 0.03)
+no-fading-openclose = false;    # Fade windows in/out when opening/closing
+# no-fading-destroyed-argb = true;
+# fade-exclude = [ ];
 #+END_SRC
 
-It's also possible to make a program transparent depending on it's content. For
-example the global org-capture window is launched with a title of ~org-capture~.
-This can be seen by using the utility function ~xprop~ and clicking on the
-window. So if the program is Emacs and the wm_name is org-capture then make it
-transparent.
-#+BEGIN_SRC sh :padline no
-   "40:class_g = 'Emacs' && WM_NAME@:s = 'org-capture'",
-#+END_SRC
-
-#+BEGIN_SRC sh :padline no
-];
-#+END_SRC
 
 *** Other
 
@@ -752,28 +727,31 @@ I haven't looked into these settings.
 #+BEGIN_SRC sh :padline yes
 #
 ## Other
-fading = true;
-fade-in-step = 0.03;
-fade-out-step = 0.03;
-fade-exclude = [ ];
 backend = "xrender";
-mark-wmwin-focused = false;
-mark-ovredir-focused = false;
-detect-rounded-corners = true;
-detect-client-opacity = true;
+mark-wmwin-focused = true; # Tries to detect WM windows and mark as active
+mark-ovredir-focused = true; # Overrides focused windows as active
+# use-ewmh-active-win = true;
+detect-rounded-corners = true; # Tries to detect rounded cornered windows
+detect-client-opacity = true; # Detects if the window itself supports transparency
 refresh-rate = 0;
-vsync = false;
+vsync = true;
+# sw-opti = true;
+# unredir-if-possible = true;
+# unredir-if-possible-delay = 5000;
+# unredir-if-possible-exclude = [ ];
 focus-exclude = [ "class_g = 'Cairo-clock'" ];
-#+END_SRC
-
-https://github.com/chjj/compton/issues/392
-#+BEGIN_SRC sh
-detect-transient = false;
-detect-client-leader = false;
-#+END_SRC
-
-#+BEGIN_SRC sh
+detect-transient = true;
+detect-client-leader = true;
 invert-color-include = [ ];
+# resize-damage = 1;
+
+# GLX backend
+# glx-no-stencil = true;
+# glx-no-rebind-pixmap = true;
+# xrender-sync-fence = true;
+use-damage = true;
+
+# Window type settings
 wintypes:
 {
   tooltip = { fade = true; shadow = true; opacity = 0.75; focus = true; full-shadow = false; };
@@ -783,7 +761,6 @@ wintypes:
   dropdown_menu = { opacity = 0.8; }
 };
 #+END_SRC
-
 ** Polybar
 
 [[https://github.com/polybar/polybar][Polybar, a fast and easy-to-use tool for creating status bars]]
