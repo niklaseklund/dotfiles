@@ -2515,11 +2515,6 @@ alias bluedis='echo -e "disconnect" | bluetoothctl &>/dev/null; echo "Disconnect
 alias bd=". bd -si"
 #+END_SRC
 
-Set ~d~ to ~ranger~. Gives a similar behavior to my ~eshell~ setup.
-#+BEGIN_SRC sh
-alias d="ranger"
-#+END_SRC
-
 Set ~f~ to ~vim~
 #+BEGIN_SRC sh
 alias f="vim"
