@@ -3965,8 +3965,7 @@ Redshift
     browser = /usr/bin/firefox -new-tab
     dmenu = /usr/bin/rofi -dmenu -p dunst:
     follow = none
-    font = UW Ttyp0 10
-    # font = Misc Tamsyn 12
+    font = Iosevka Term Regular 6
     format = "%s\n%b"
     # geometry [{width}]x{height}][+/-{x}+/-{y}]
     geometry = "365x15-21+21"
