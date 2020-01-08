@@ -2838,6 +2838,13 @@ function fish_title
   true
 end
 #+END_SRC
+
+[[https://github.com/direnv/direnv/blob/master/docs/hook.md][direnv]] needs to be hooked into the shell to work properly.
+#+BEGIN_SRC sh
+# Direnv
+direnv hook fish | source
+#+END_SRC
+
 *** Environment
 :PROPERTIES:
 :header-args: :tangle ~/.config/fish/environment.fish
@@ -4008,6 +4015,25 @@ Redshift
     background = "#cc6666"
     foreground = "#131416"
     timeout = 0
+#+END_SRC
+** Direnv
+:PROPERTIES:
+:header-args: :tangle "~/.config/direnv/direnvrc" :mkdirp t
+:END:
+
+Add [[https://github.com/direnv/direnv/wiki/Python][python layout]] in direnv.
+#+BEGIN_SRC sh
+layout_poetry() {
+  if [[ ! -f pyproject.toml ]]; then
+    log_error 'No pyproject.toml found.  Use `poetry new` or `poetry init` to create one first.'
+    exit 2
+  fi
+
+  local VENV=$(dirname $(poetry run which python))
+  export VIRTUAL_ENV=$(echo "$VENV" | rev | cut -d'/' -f2- | rev)
+  export POETRY_ACTIVE=1
+  PATH_add "$VENV"
+}
 #+END_SRC
 
 * WIP
