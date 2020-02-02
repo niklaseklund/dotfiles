@@ -3086,44 +3086,18 @@ pyxtrlock
 
 *** Vpn utility :vpn:
 :PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "~/bin/vpn-toggle") :shebang "#! /bin/zsh" :padline no
+:header-args: :tangle (nc/tangle-system '(arch work) "~/bin/vpn-toggle") :shebang "#!/usr/bin/env fish" :padline no
 :END:
 
-The purpose of this script should be to toggle a vpn connection between active
-and inactive.
-
-The third column contains the type of connection. To not be fooled by a name
-of a connection that might contain the word vpn I extract this column and grep
-for vpn.
+Fish compatible toggle script for vpn.
 #+BEGIN_SRC sh
-connection=$(nmcli connection show --active | awk '{print $3}' | grep vpn)
-#+END_SRC
+set -lx connection (nmcli connection show --active | awk '{print $3}' | grep vpn)
 
-If a connection is detected set it to down otherwise start it.
-#+BEGIN_SRC sh
-if [ "$connection" = "vpn" ]; then
-    # deactivate
-    active_connection=$(nmcli connection show --active | grep vpn | awk '{print $1}')
-    nmcli connection down $active_connection >/dev/null 2>&1
+if [ "$connection" = "vpn" ]
+   # deactivate
+   set -lx active_connection (nmcli connection show --active | grep vpn | awk '{print $1}')
+   nmcli connection down $active_connection >/dev/null 2>&1
 else
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(arch))
-    # activate
-    printf $(pass network/ovpn)'\n' | nmcli connection up ovpn-se-tcp --ask >/dev/null 2>&1
-#+END_SRC
-
-#+BEGIN_SRC sh :tangle (nc/tangle-system '(work))
-    # activate
-    printf $(pass work/zenuity/login | sed -n 1p)'\n' | nmcli con up Z-VPN-PKI-SE --ask >/dev/null 2>&1
-#+END_SRC
-
-#+BEGIN_SRC sh
-fi
-#+END_SRC
-
-~Note:~ an idea for the future might be to utilize a rofi popup to select which
-vpn connection to use when activating. Currently one is hardcoded.
 *** Control monitor brightness :python:xrandr:
 :PROPERTIES:
 :header-args: :tangle (nc/tangle-system '(arch work) "~/bin/monitor-brightness") :shebang "#!/usr/bin/env python"
@@ -3608,6 +3582,8 @@ MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
 if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
     xrandr --output $EXTERNAL_MONITOR --primary
 fi
+   printf (pass network/ovpn)'\n' | nmcli connection up ovpn-se-tcp --ask >/dev/null 2>&1
+end
 #+END_SRC
 
 * Utility applications
