@@ -3050,21 +3050,6 @@ run -b '~/.tmux/plugins/tpm/tpm'
 
 These are my custom utility scripts that I use.
 
-*** Glitch lock
-:PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(arch work) "~/bin/glitcher") :shebang "#! /bin/zsh"
-:END:
-
-Glitch locking the screen utilizing ~videoglitch~
-
-#+BEGIN_SRC sh
-OUTPUT='/tmp/i3lock.png'
-scrot -z $OUTPUT
-convert $OUTPUT -scale '50%' $OUTPUT
-videoglitch -c gm $OUTPUT $OUTPUT
-convert $OUTPUT -scale '200%' $OUTPUT
-i3lock -i $OUTPUT -t
-#+END_SRC
 *** Emacs lock
 :PROPERTIES:
 :header-args: :tangle (nc/tangle-system '(arch work) "~/bin/my-lock") :shebang "#!/usr/bin/env bash"
