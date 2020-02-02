@@ -2018,503 +2018,10 @@ Make a function in Emacs to avoid deleting flagged emails.
 
  * Shells
 * Shell
-** Zsh
-*** zshrc
-:PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(work) "~/.zshrc") :mkdirp yes :padline no
-:END:
 
-**** Remote editing
+[[https://fishshell.com/][A command line shell for the 90s]]
 
-Emacs TRAMP uses a dumb terminal and can't handle some of the features of zsh.
-So instead of being forced to switch to bash on devices that I want to be able
-to edit remotely, I found the [[https://blog.karssen.org/2016/03/02/fixing-emacs-tramp-mode-when-using-zsh/][Fixing Emacs Tramp when using zsh]] post.
-
-In short this detects if the term variable is set to dumb, disable zsh line
-editing, and change the appearance of the prompt before exiting the script.
-
-#+BEGIN_SRC sh :padline yes
-#
-## TRAMP compatible
-#
-[[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
-#+END_SRC
-
-**** Extend zsh with plugins
-
-Following the setup details on [[https://github.com/tarjoilija/zgen][zgen wiki]]. Starting with sourcing zgen on start
-in zshrc.
-
-#+BEGIN_SRC sh :padline yes
-#
-## Plugins
-#
-source "${HOME}/.zgen/zgen.zsh"
-if ! zgen saved; then
-    # the init script doesn't exist
-    echo "Creating a zgen save"
-
-    # plugins
-    zgen load zsh-users/zsh-syntax-highlighting
-    zgen load hlissner/zsh-autopair autopair.zsh develop
-    zgen load zsh-users/zsh-history-substring-search
-    zgen load zdharma/history-search-multi-word
-    zgen load zsh-users/zsh-completions src
-    zgen load zsh-users/zsh-autosuggestions
-    zgen load rupa/z z.sh
-
-    # save all to init script
-    zgen save
-fi
-#+END_SRC
-
-**** Vim keybindings
-
-Enable vi-mode and set the keybindings. I copied this from [[https://github.com/hlissner/dotfiles/tree/master/shell/zsh][hlissner]].
-#+BEGIN_SRC sh :padline yes
-#
-## Keybindings
-#
-bindkey -v # vi-mode
-bindkey -M viins 'jk' vi-cmd-mode
-bindkey -M viins ' ' magic-space
-
-bindkey -M viins '^n' history-substring-search-down
-bindkey -M viins '^p' history-substring-search-up
-bindkey -M viins '^s' history-incremental-pattern-search-backward
-bindkey -M viins '^u' backward-kill-line
-bindkey -M viins '^w' backward-kill-word
-bindkey -M viins '^b' backward-word
-bindkey -M viins '^f' forward-word
-bindkey -M viins '^g' push-line-or-edit
-bindkey -M viins '^a' beginning-of-line
-bindkey -M viins '^e' end-of-line
-bindkey -M viins '^d' push-line-or-edit
-
-bindkey -M vicmd '^k' kill-line
-bindkey -M vicmd 'H'  run-help
-#+END_SRC
-
-Also make sure to set the timeout to a low value to avoid delays when pressing
-escape, [[https://www.johnhawthorn.com/2012/09/vi-escape-delays/][vi-escape-delays]].
-#+BEGIN_SRC sh
-export KEYTIMEOUT=10
-#+END_SRC
-
-**** Configure variables
-
-#+BEGIN_SRC sh :padline yes
-#
-## Variables
-#
-export BROWSER="firefox"
-export EDITOR="nvim"
-#+END_SRC
-
-**** Prompt
-
-#+BEGIN_SRC sh :padline yes
-#
-## Prompt
-#
-#+END_SRC
-
-https://github.com/hlissner/dotfiles/blob/master/shell/zsh/prompt.zsh
-
-#+BEGIN_SRC sh
-_strlen() { echo ${#${(S%%)1//$~%([BSUbfksu]|([FB]|){*})/}}; }
-
-# fastest possible way to check if repo is dirty
-prompt_git_dirty() {
-
-  # check if we're in a git repo
-  [[ "$(command git rev-parse --is-inside-work-tree 2>/dev/null)" == "true" ]] || return
-  # check if it's dirty
-  command test -n "$(git status --porcelain --ignore-submodules -unormal)" || return
-
-  local r=$(command git rev-list --right-only --count HEAD...@'{u}' 2>/dev/null)
-  local l=$(command git rev-list --left-only --count HEAD...@'{u}' 2>/dev/null)
-
-  (( ${r:-0} > 0 )) && echo -n " %F{red}${r}-"
-  (( ${l:-0} > 0 )) && echo -n " %F{green}${l}+"
-  echo -n '%f'
-}
-
-## Hooks ###############################
-prompt_hook_precmd() {
-  vcs_info # get git info
-  # Newline before prompt, except on init
-  [[ -n $PROMPT_DONE ]] && print ""; PROMPT_DONE=1
-}
-
-## Initialization ######################
-prompt_init() {
-  # prevent percentage showing up
-  # if output doesn't end with a newline
-  export PROMPT_EOL_MARK=
-
-  # prompt_opts=(cr subst percent)
-  setopt promptsubst
-  autoload -Uz add-zsh-hook
-  autoload -Uz vcs_info
-
-  add-zsh-hook precmd prompt_hook_precmd
-  # Updates cursor shape and prompt symbol based on vim mode
-  zle-keymap-select() {
-    case $KEYMAP in
-      vicmd)      PROMPT_SYMBOL="%F{magenta}« " ;;
-      main|viins) PROMPT_SYMBOL="%(?.%F{green}.%F{red})λ " ;;
-    esac
-    zle reset-prompt
-    zle -R
-  }
-  zle -N zle-keymap-select
-  zle -A zle-keymap-select zle-line-init
-
-  zstyle ':vcs_info:*' enable git
-  zstyle ':vcs_info:*' use-simple true
-  zstyle ':vcs_info:*' max-exports 2
-  zstyle ':vcs_info:git*' formats ' %b'
-  zstyle ':vcs_info:git*' actionformats ' %b (%a)'
-
-  RPROMPT='%F{blue}%~%F{magenta}${vcs_info_msg_0_}$(prompt_git_dirty)%f'
-  PROMPT='%F{blue}${prompt_username}%f${PROMPT_SYMBOL:-$ }'
-}
-
-prompt_init "$@"
-#+END_SRC
-
-***** TODO Make zsh prompt look good in tty as well
-
-The prompt doesn't look that good when in the tty. Should I use
-something else then lambda when in such a console with a restricted font.
-
-This is a solution for how to detect if the shell is running in a virtual terminal
-https://unix.stackexchange.com/questions/96463/detect-if-running-in-a-virtual-terminal
-**** Aliases
-
-#+BEGIN_SRC sh :padline yes
-#
-## Aliases
-#
-#+END_SRC
-
-***** Move/Copy/Remove
-#+BEGIN_SRC sh
-alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
-#+END_SRC
-
-***** List
-
-List content. ~LC_COLLATE=C~ sorts in upper case letters before lower.
-#+BEGIN_SRC sh
-alias ln="${aliases[ln]:-ln} -v"  # verbose ln
-alias ls='ls --color=auto'
-alias l='ls -1'
-alias ll='ls -l'
-alias la='LC_COLLATE=C ls -la'
-#+END_SRC
-
-***** Bluetooth
-
-#+BEGIN_SRC sh
-alias bluecon='echo -e "connect 2C:41:A1:4C:1A:B8" | bluetoothctl &>/dev/null; echo "Connected"'
-alias bluedis='echo -e "disconnect" | bluetoothctl &>/dev/null; echo "Disconnected"'
-#+END_SRC
-***** Directory
-
-[[https://github.com/vigneshwaranr/bd][The recommended rebinding of bd]]
-#+BEGIN_SRC sh
-alias bd=". bd -si"
-#+END_SRC
-
-Set ~f~ to ~vim~
-#+BEGIN_SRC sh
-alias f="vim"
-#+END_SRC
-
-**** Tmux
-
-https://github.com/hlissner/dotfiles/blob/master/shell/tmux/tmux.conf
-#+BEGIN_SRC sh :padline yes
-#
-## Tmux
-#
-alias ta='tmux attach'
-alias tl='tmux ls'
-if [[ -n $TMUX ]]; then # From inside tmux
-    alias tf='tmux find-window'
-    # Detach all other clients to this session
-    alias mine='tmux detach -a'
-    # Send command to other tmux window
-    tt() { tmux send-keys -t .+ C-u && tmux set-buffer "$*" && tmux paste-buffer -t .+ && tmux send-keys -t .+ Enter; }
-    # Create new session (from inside one)
-    tn() {
-        local name="${1:-`basename $PWD`}"
-        TMUX= tmux new-session -d -s "$name"
-        tmux switch-client -t "$name"
-        tmux display-message "Session #S created"
-    }
-else # From outside tmux
-    # Start grouped session so I can be in two different windows in one session
-    tdup() { tmux new-session -t "${1:-`tmux display-message -p '#S'`}"; }
-fi
-#+END_SRC
-
-**** Configure zsh options
-
-#+BEGIN_SRC sh :padline yes
-#
-## Zsh
-#
-#+END_SRC
-
-***** General
-
-#+BEGIN_SRC sh
-WORDCHARS='_-*?[]~&.;!#$%^(){}<>' # Treat these characters as part of a word.
-# General
-unsetopt BRACE_CCL        # Allow brace character class list expansion.
-setopt COMBINING_CHARS    # Combine zero-length punc chars (accents) with base char
-setopt RC_QUOTES          # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'
-setopt HASH_LIST_ALL
-unsetopt CORRECT_ALL
-unsetopt NOMATCH
-unsetopt MAIL_WARNING     # Don't print a warning message if a mail file has been accessed.
-unsetopt BEEP             # Hush now, quiet now.
-setopt IGNOREEOF
-# Jobs
-setopt LONG_LIST_JOBS     # List jobs in the long format by default.
-setopt AUTO_RESUME        # Attempt to resume existing job before creating a new process.
-setopt NOTIFY             # Report status of background jobs immediately.
-unsetopt BG_NICE          # Don't run all background jobs at a lower priority.
-unsetopt HUP              # Don't kill jobs on shell exit.
-unsetopt CHECK_JOBS       # Don't report on jobs when shell exit.
-#+END_SRC
-
-***** History
-
-#+BEGIN_SRC sh
-# History
-HISTFILE=~/.zsh_history
-HISTSIZE=1000                    # Max events to store in internal history.
-SAVEHIST=1000                    # Max events to store in history file.
-setopt BANG_HIST                 # Don't treat '!' specially during expansion.
-setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
-setopt APPEND_HISTORY            # Appends history to history file on exit
-setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
-setopt SHARE_HISTORY             # Share history between all sessions.
-setopt HIST_EXPIRE_DUPS_FIRST    # Expire a duplicate event first when trimming history.
-setopt HIST_IGNORE_DUPS          # Do not record an event that was just recorded again.
-setopt HIST_IGNORE_ALL_DUPS      # Delete an old recorded event if a new event is a duplicate.
-setopt HIST_FIND_NO_DUPS         # Do not display a previously found event.
-setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space.
-setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
-setopt HIST_VERIFY               # Do not execute immediately upon history expansion.
-setopt HIST_BEEP                 # Beep when accessing non-existent history.
-#+END_SRC
-
-***** Looks
-This setting controls the hightlightstyle
-#+BEGIN_SRC sh
-# Looks
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=blue'
-#+END_SRC
-***** Keybindings
-
-[[https://superuser.com/questions/385175/how-to-reclaim-s-in-zsh][How to reclaim ctrl-s in zsh]]
-
-#+BEGIN_SRC sh
-# Keybindings
-setopt noflowcontrol      # Reclaim Ctrl-s
-#+END_SRC
-
-Then change in the file ~.fzf/shell/keybindings.zsh~
-#+BEGIN_SRC sh :tangle no
-bindkey '^S' fzf-history-widget
-#+END_SRC
-
-**** Fuzzy finding
-
-#+BEGIN_SRC sh :padline yes
-#
-## FZF
-#
-#+END_SRC
-
-***** Keybindings
-#+BEGIN_SRC sh :tangle none
-source /usr/share/fzf/key-bindings.zsh
-#+END_SRC
-
-#+BEGIN_SRC sh :tangel (nc/tangle-system '(work))
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-#+END_SRC
-
-***** Colors
-Tweak the colors used by FZF
-#+BEGIN_SRC sh :tangle no
-# # FZF colors
-# export FZF_DEFAULT_OPTS="
-#     $FZF_DEFAULT_OPTS
-#     --color fg:7,bg:0,hl:1,fg+:232,bg+:1,hl+:255
-#     --color info:7,prompt:2,spinner:1,pointer:232,marker:1
-# "
-
-# # Fix LS_COLORS being unreadable.
-# export LS_COLORS="${LS_COLORS}:su=30;41:ow=30;42:st=30;44:"
-
-# Change the Fzf colors
-#export FZF_DEFAULT_OPTS='
-#--color fg:188,bg:233,hl:103,fg+:222,bg+:234,hl+:104
-#--color info:183,prompt:110,spinner:107,pointer:167,marker:215
-#'
-#+END_SRC
-
-***** Non duplicate history :deprecated:
-
-A better for the history problem is to override the default behaviour of fzf
-when viewing the history. There is a solution in this issue,
-https://github.com/junegunn/fzf/pull/1287.
-
-#+BEGIN_SRC sh :tangle no
-# fuzzy find previous commands
-fzf-history-widget() {
-  local selected num
-  setopt localoptions noglobsubst noposixbuiltins pipefail 2> /dev/null
-  selected=( $(fc -rl 1 | sort -uk2,1000 | sort -nr |
-    FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} $FZF_DEFAULT_OPTS -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)) )
-  local ret=$?
-  if [ -n "$selected" ]; then
-    num=$selected[1]
-    if [ -n "$num" ]; then
-      zle vi-fetch-history -n $num
-    fi
-  fi
-  zle redisplay
-  typeset -f zle-line-init >/dev/null && zle zle-line-init
-  return $ret
-}
-#+END_SRC
-
-After setting the zsh options for history so that, duplicates are not stored but
-latest entry is the one that is kept I think I don't need this function anymore.
-
-***** Custom functions
-
-I found this function in the [[https://github.com/junegunn/fzf/wiki/Examples#opening-files][fzf example section]]. This aligns with the
-functionality that I have in ~eshell~, making it more frictionless to move in
-between.
-#+BEGIN_SRC sh
-# fuzzy find file
-ff() {
-  local files
-  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
-  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
-}
-#+END_SRC
-
-include those hidden files as well
-#+BEGIN_SRC sh
-# fuzzy find hidden file
-fh() {
-  local files
-  IFS=$'\n' files=($(find . | fzf-tmux --query="$1" --multi --select-1 --exit-0))
-  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
-}
-#+END_SRC
-
-***** Use fzf for z
-
-The plugin ~z~ to ~zsh~ makes navigating to known locations easier. However as
-the list of directories grows there might be multiple ones that share similar
-names. By combining ~fzf~ and ~z~ it's possible to fuzzy find among the
-directories.
-
-This unbinds ~z~ and redefines it as this function.
-#+BEGIN_SRC sh
-# fuzzy find visited directories
-unalias z 2> /dev/null
-z() {
-  [ $# -gt 0 ] && _z "$*" && return
-  cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
-}
-#+END_SRC
-
-**** mounting
-
-Dealing with the sd card reader
-#+BEGIN_SRC sh :tangle none :padline yes
-#
-## Mounts
-#
-alias mountsdcard="sudo mount $(lsblk -l -o NAME,PATH,MODEL,SIZE | grep -A1 "SD_Card_Reader" | sed -n 2p | cut -d' ' -f2) /mnt/sdcard/"
-alias unmountsdcard="sudo umount /mnt/sdcard"
-#+END_SRC
-**** local configuration
-
-Load a local ~zshrc~ file if it exists. The benefit is that local settings could
-be stored here. For example aliases that are work specific that should not be
-publicly available.
-
-#+BEGIN_SRC sh :padline yes
-#
-## Local
-#
-[[ -f ~/.zshrc_local ]] && source "${HOME}/.zshrc_local"
-#+END_SRC
-
-*** zshenv
-:PROPERTIES:
-:header-args: :tangle (nc/tangle-system '(work) "~/.zshenv") :mkdirp yes :padline no
-:END:
-
-Set the editors that I use. ~Emacs~ for the gui stuff and ~Neovim~ for the good
-old terminal.
-#+BEGIN_SRC sh :padline yes
-#
-## Variables
-#
-export EDITOR=nvim
-export VISUAL=nvim
-#+END_SRC
-Set ~VISUAL~ to neovim to get files open with nvim as default in ~ranger~.
-
-Solve issue with zsh-autosuggestions highlight
-https://github.com/zsh-users/zsh-autosuggestions/issues/229
-#+BEGIN_SRC sh
-export TERM=xterm-256color
-#+END_SRC
-
-Add ~HOME/bin~ to ~PATH~ to find my local binaries. To ~prepend~ or ~append~ is
-exemplified [[https://stackoverflow.com/questions/11530090/adding-a-new-entry-to-the-path-variable-in-zsh ][here.]]
-#+BEGIN_SRC sh :noweb tangle :padline yes
-#
-## Path
-#
-path=('<<home()>>/bin' $path) # prepend path
-#+END_SRC
-
-Following the installation notes on [[https://github.com/pyenv/pyenv][pyenv]] one needs to setup the following paths
-#+BEGIN_SRC sh :padline yes
-#
-## Pyenv
-#
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-#+END_SRC
-
-as well as initialize the pyenv environment which should preferably be done last
-#+BEGIN_SRC sh
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init - --no-rehash)"
-fi
-#+END_SRC
-
-** Fish
-*** Fishfile
+** Fishfile
 :PROPERTIES:
 :header-args: :tangle ~/.config/fish/fishfile
 :END:
@@ -2526,7 +2033,7 @@ franciscolourenco/done
 fishpkg/fish-humanize-duration
 #+END_SRC
 
-*** Config
+** Config
 :PROPERTIES:
 :header-args: :tangle ~/.config/fish/config.fish
 :END:
@@ -2569,12 +2076,12 @@ end
 function track_directories --on-event fish_prompt; fish_vterm_prompt_end; end
 #+END_SRC
 
-*** Environment
+** Environment
 :PROPERTIES:
 :header-args: :tangle ~/.config/fish/environment.fish
 :END:
 
-**** Variables
+*** Variables
 
 #+BEGIN_SRC sh
 set -x EMAIL niklas.carlsson@posteo.net
@@ -2599,7 +2106,7 @@ bother with case sensitivity.
 set -gx BD_OPT 'insensitive'
 #+END_SRC
 
-**** Paths
+*** Paths
 
 #+BEGIN_SRC sh
 set -a PATH ~/bin
@@ -2608,14 +2115,14 @@ set -a PATH ~/.pyenv/bin
 set -a PATH ~/go/bin
 #+END_SRC
 
-**** Configurations
+*** Configurations
 
 ~I should investigate if I could speed this up, like I did with zsh~:
 #+BEGIN_SRC sh :tangle none
 status --is-interactive; and source (pyenv init -|psub)
 #+END_SRC
-*** Functions
-**** Greeting
+** Functions
+*** Greeting
 
 #+BEGIN_SRC sh :tangle ~/.config/fish/functions/fish_greeting.fish
 #function fish_greeting
@@ -2626,7 +2133,7 @@ status --is-interactive; and source (pyenv init -|psub)
 #end
 #+END_SRC
 
-**** Prompt
+*** Prompt
 
 #+BEGIN_SRC sh :tangle ~/.config/fish/functions/fish_mode_prompt.fish
 function fish_mode_prompt; end
