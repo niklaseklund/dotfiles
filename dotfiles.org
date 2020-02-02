@@ -3083,6 +3083,10 @@ if [ "$connection" = "vpn" ]
    set -lx active_connection (nmcli connection show --active | grep vpn | awk '{print $1}')
    nmcli connection down $active_connection >/dev/null 2>&1
 else
+   printf (pass network/ovpn)'\n' | nmcli connection up ovpn-se-tcp --ask >/dev/null 2>&1
+end
+#+END_SRC
+
 *** Control monitor brightness :python:xrandr:
 :PROPERTIES:
 :header-args: :tangle (nc/tangle-system '(arch work) "~/bin/monitor-brightness") :shebang "#!/usr/bin/env python"
@@ -3567,8 +3571,6 @@ MONITORS=$(xrandr -q | grep ' connected' | cut -d' ' -f1)
 if [ -n "`echo $MONITORS | xargs -n1 echo | grep -e \"^$EXTERNAL_MONITOR$\"`" ]; then
     xrandr --output $EXTERNAL_MONITOR --primary
 fi
-   printf (pass network/ovpn)'\n' | nmcli connection up ovpn-se-tcp --ask >/dev/null 2>&1
-end
 #+END_SRC
 
 * Utility applications
