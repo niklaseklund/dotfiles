@@ -1644,6 +1644,31 @@ Lisp, and has powerful features for productive professionals.
 (setf next/vcs:*vcs-projects-roots* '("~/src" "~/opensource"))
 #+END_SRC
 
+[[https://next.atlas.engineer/documentation#searching-via-search-engine][Searching via search engine]]
+#+BEGIN_SRC common-lisp
+;;
+;;; Search engines
+(defclass my-remote-interface (remote-interface)
+  ((search-engines :initform
+    '(("default"
+       "https://duckduckgo.com/?q=~a"
+       "https://duckduckgo.com/")
+      ("arch"
+       "https://wiki.archlinux.org/index.php?search=~a"
+       "https://wiki.archlinux.org/")
+      ("gh"
+       "https://github.com/search?ref=simplesearch&q=~a"
+       "https://github.com/")
+      ("yt"
+       "https://www.youtube.com/results?search_query=~a"
+       "https://www.youtube.com/")
+      ("wiki"
+       "https://en.wikipedia.org/w/index.php?search=~a"
+       "https://en.wikipedia.org/")))))
+
+(setf *remote-interface-class* 'my-remote-interface)
+#+END_SRC
+
 * Mail
 ** Retrieve
 :PROPERTIES:
