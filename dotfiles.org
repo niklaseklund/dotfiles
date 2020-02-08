@@ -546,12 +546,13 @@ export XDG_CONFIG_HOME
 
 (defvar *my-toggle-bindings*
   (let ((m (stumpwm:make-sparse-keymap)))
-    (stumpwm:define-key m (kbd "g") "toggle-gaps")
-    (stumpwm:define-key m (kbd "e") "toggle-emacs")
-    (stumpwm:define-key m (kbd "t") "exec emacsclient -n -e '(yequake-toggle \"eshell-scratch\")'")
-    (stumpwm:define-key m (kbd "c") "exec emacsclient -n -e '(yequake-toggle \"org-capture\")'")
     (stumpwm:define-key m (kbd "a") "exec emacsclient -n -e '(yequake-toggle \"org-agenda\")'")
+    (stumpwm:define-key m (kbd "c") "exec emacsclient -n -e '(yequake-toggle \"org-capture\")'")
+    (stumpwm:define-key m (kbd "e") "toggle-emacs")
+    (stumpwm:define-key m (kbd "g") "toggle-gaps")
     (stumpwm:define-key m (kbd "r") "exec emacsclient -n -e '(yequake-toggle \"elfeed\")'")
+    (stumpwm:define-key m (kbd "t") "exec emacsclient -n -e '(yequake-toggle \"eshell-scratch\")'")
+    (stumpwm:define-key m (kbd "v") "exec vpn-toggle")
     m                                   ; NOTE: this is important
     ))
 (stumpwm:define-key stumpwm:*top-map* (stumpwm:kbd "s-t") '*my-toggle-bindings*)
