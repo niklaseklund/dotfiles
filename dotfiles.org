@@ -587,7 +587,7 @@ export XDG_CONFIG_HOME
 (define-key *top-map* (kbd "s-e") "exec emacsclient -c -a \"\"")
 (define-key *top-map* (kbd "s-RET") "exec emacsclient -c -e '(+eshell/here)'")
 (define-key *top-map* (kbd "s-S-RET") "exec urxvt")
-(define-key *top-map* (kbd "s-b") "exec firefox")
+(define-key *top-map* (kbd "s-b") "exec next")
 ;; Light
 (define-key *top-map* (kbd "XF86MonBrightnessDown") "exec light -U 5")
 (define-key *top-map* (kbd "XF86MonBrightnessUp") "exec light -A 5")
