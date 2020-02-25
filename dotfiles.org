@@ -1649,25 +1649,30 @@ Lisp, and has powerful features for productive professionals.
 #+BEGIN_SRC common-lisp
 ;;
 ;;; Search engines
+(defvar my-search-engines
+  '(("aa" . "https://aur.archlinux.org/packages.php?O=0&K=~a&do_Search=Go")
+    ("ap" . "https://www.archlinux.org/packages/?sort=&q=~a&maintainer=&flagged=")
+    ("aw" . "https://wiki.archlinux.org/index.php?search=~a")
+    ("dd" . "http://devdocs.io/#q=~a")
+    ("dg" . "https://duckduckgo.com/?q=~a")
+    ("ed" . "https://lists.gnu.org/archive/cgi-bin/namazu.cgi?idxname=emacs-devel&submit=Search&query=~a")
+    ("ee" . "https://lists.gnu.org/archive/cgi-bin/namazu.cgi?idxname=emms-help&submit=Search!&query=~a")
+    ("gh" . "https://github.com/search?ref=simplesearch&q=~a")
+    ("gm" . "https://maps.google.com/maps?q=~a")
+    ("i" . "http://www.imdb.com/find?q=~a&s=all")
+    ("osm" . "https://www.openstreetmap.org/search?query=~a")
+    ("q" . "http://quickdocs.org/search?q=~a")
+    ("s" . "http://stackoverflow.com/search?q=~a")
+    ("wp" . "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=~a")
+    ("wb" . "http://en.wikibooks.org/wiki/Special:Search?search=~a")
+    ("wk" . "http://en.wiktionary.org/wiki/Special:Search?search=~a")
+    ("yt" . "https://www.youtube.com/results?search_query=~a")))
+
 (defclass my-remote-interface (remote-interface)
   ((search-engines :initform
-    '(("default"
-       "https://duckduckgo.com/?q=~a"
-       "https://duckduckgo.com/")
-      ("arch"
-       "https://wiki.archlinux.org/index.php?search=~a"
-       "https://wiki.archlinux.org/")
-      ("gh"
-       "https://github.com/search?ref=simplesearch&q=~a"
-       "https://github.com/")
-      ("yt"
-       "https://www.youtube.com/results?search_query=~a"
-       "https://www.youtube.com/")
-      ("wiki"
-       "https://en.wikipedia.org/w/index.php?search=~a"
-       "https://en.wikipedia.org/")))))
-
-(setf *remote-interface-class* 'my-remote-interface)
+                   (append
+                    my-search-engines
+                    (get-default 'remote-interface 'search-engines)))))
 #+END_SRC
 
 * Mail
